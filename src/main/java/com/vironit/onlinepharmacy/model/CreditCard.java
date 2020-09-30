@@ -8,18 +8,19 @@ public class CreditCard {
     private long cardNumber;
     private Instant validThru;
     private int cvv;
-    private User owner;
+    private long user_id;
 
     public CreditCard() {
     }
 
-    public CreditCard(long id, long cardNumber, Instant validThru, int cvv, User owner) {
+    public CreditCard(long id, long cardNumber, Instant validThru, int cvv, long user_id) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.validThru = validThru;
         this.cvv = cvv;
-        this.owner = owner;
+        this.user_id = user_id;
     }
+
 
     public long getId() {
         return id;
@@ -53,11 +54,11 @@ public class CreditCard {
         this.cvv = cvv;
     }
 
-    public User getOwner() {
-        return owner;
+    public long getUser_id() {
+        return user_id;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setUser_id(long user_id) {
+        this.user_id = user_id;
     }
 }

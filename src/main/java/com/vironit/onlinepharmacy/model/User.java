@@ -1,6 +1,6 @@
 package com.vironit.onlinepharmacy.model;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 public class User {
 
@@ -8,14 +8,14 @@ public class User {
     private String firstName;
     private String middleName;
     private String lastName;
-    private LocalDate dateOfBirth;
+    private Instant dateOfBirth;
     private String email;
     private Role role;
 
     public User() {
     }
 
-    public User(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, Role role) {
+    public User(long id, String firstName, String middleName, String lastName, Instant dateOfBirth, String email, Role role) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -57,11 +57,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public LocalDate getDateOfBirth() {
+    public Instant getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(Instant dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

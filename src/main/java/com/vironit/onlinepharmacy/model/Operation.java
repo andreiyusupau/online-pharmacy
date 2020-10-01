@@ -7,16 +7,18 @@ public class Operation {
     private long id;
     private Instant date;
     private OperationType type;
-    private long user_id;
+    private OperationStatus status;
+    private long useId;
 
     public Operation() {
     }
 
-    public Operation(long id, Instant date, OperationType type, long user_id) {
+    public Operation(long id, Instant date, OperationType type, OperationStatus status, long useId) {
         this.id = id;
         this.date = date;
         this.type = type;
-        this.user_id = user_id;
+        this.status = status;
+        this.useId = useId;
     }
 
     public long getId() {
@@ -42,12 +44,21 @@ public class Operation {
     public void setType(OperationType type) {
         this.type = type;
     }
-    public long getUser_id() {
-        return user_id;
+
+    public OperationStatus getStatus() {
+        return status;
     }
 
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
+    public void setStatus(OperationStatus status) {
+        this.status = status;
+    }
+
+    public long getUseId() {
+        return useId;
+    }
+
+    public void setUseId(long useId) {
+        this.useId = useId;
     }
 
 

@@ -4,17 +4,17 @@ public class Recipe {
 
     private long id;
     private String description;
-    private int amount;
-    private long product_id;
+    private int quantity;
+    private long productId;
 
     public Recipe() {
     }
 
-    public Recipe(long id, String description, int amount, long product_id) {
+    public Recipe(long id, String description, int quantity, long productId) {
         this.id = id;
         this.description = description;
-        this.amount = amount;
-        this.product_id = product_id;
+        this.quantity = quantity;
+        this.productId = productId;
     }
 
     public long getId() {
@@ -33,19 +33,19 @@ public class Recipe {
         this.description = description;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public long getProduct_id() {
-        return product_id;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setProduct_id(long product_id) {
-        this.product_id = product_id;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 }

@@ -3,18 +3,18 @@ package com.vironit.onlinepharmacy.model;
 public class Position {
 
     private long id;
-    private int amount;
-    private long product_id;
-    private long operation_id;
+    private int quantity;
+    private long productId;
+    private long operationId;
 
     public Position() {
     }
 
-    public Position(long id, int amount, long product_id, long operation_id) {
+    public Position(long id, int quantity, long productId, long operationId) {
         this.id = id;
-        this.amount = amount;
-        this.product_id = product_id;
-        this.operation_id = operation_id;
+        this.quantity = quantity;
+        this.productId = productId;
+        this.operationId = operationId;
     }
 
     public long getId() {
@@ -25,27 +25,27 @@ public class Position {
         this.id = id;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public long getProduct_id() {
-        return product_id;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setProduct_id(long product_id) {
-        this.product_id = product_id;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 
-    public long getOperation_id() {
-        return operation_id;
+    public long getOperationId() {
+        return operationId;
     }
 
-    public void setOperation_id(long operation_id) {
-        this.operation_id = operation_id;
+    public void setOperationId(long operationId) {
+        this.operationId = operationId;
     }
 }

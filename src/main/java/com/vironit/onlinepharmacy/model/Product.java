@@ -4,15 +4,15 @@ public class Product {
 
     private long id;
     private String name;
-    private String description;
+    private long productCategoryId;
 
     public Product() {
     }
 
-    public Product(long id, String name, String description) {
+    public Product(long id, String name, long productCategoryId) {
         this.id = id;
         this.name = name;
-        this.description = description;
+       this.productCategoryId=productCategoryId;
     }
 
     public long getId() {
@@ -31,11 +31,11 @@ public class Product {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public long getProductCategoryId() {
+        return productCategoryId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setProductCategoryId(long productCategoryId) {
+        this.productCategoryId = productCategoryId;
     }
 }

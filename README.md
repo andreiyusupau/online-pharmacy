@@ -1,4 +1,7 @@
-```plantuml
-Bob -> Alice : hello
-Alice -> Bob : hi
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
 ```

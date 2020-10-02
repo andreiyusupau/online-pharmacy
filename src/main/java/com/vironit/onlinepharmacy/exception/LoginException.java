@@ -1,5 +1,7 @@
 package com.vironit.onlinepharmacy.exception;
 
 public class LoginException extends Exception {
-    //TODO:
+    public LoginException(String message){
+        super(message);
+    }
 }

@@ -4,10 +4,12 @@ import com.vironit.onlinepharmacy.dao.AuthenticationDAO;
 import com.vironit.onlinepharmacy.dto.UserLoginParameters;
 import com.vironit.onlinepharmacy.dto.UserPublicParameters;
 import com.vironit.onlinepharmacy.dto.UserRegisterParameters;
+import com.vironit.onlinepharmacy.exception.LoginException;
+import com.vironit.onlinepharmacy.exception.RegistrationException;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
+import com.vironit.onlinepharmacy.util.UserParser;
 
-import javax.security.auth.login.LoginException;
 
 public class BasicAuthenticationService implements AuthenticationService {
 
@@ -20,23 +22,30 @@ public class BasicAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public UserPublicParameters login(UserLoginParameters userLoginParameters) {
-
+    public UserPublicParameters login(UserLoginParameters userLoginParameters) throws LoginException {
         String email= userLoginParameters.getEmail();
-       //TODO:Exception
-        User user=userDAO.getByEmail().orElseThrow();
+        User user=userDAO.getByEmail(email).orElseThrow(()->new LoginException("User with email "+email+" does not exist."));
         String password=userLoginParameters.getPassword();
         String hashedPassword= passwordHasher.hashPassword(password);
         if(passwordHasher.comparePasswords(user.getPassword(),hashedPassword)) {
-            return new UserPublicParameters()
+            return UserParser.userPublicParametersFromUser(user);
         }else {
-            throw new LoginException();
+            throw new LoginException("Wrong password for user "+email);
         }
 
     }
 
     @Override
-    public long register(UserRegisterParameters userRegisterParameters) {
-        return -1;
+    public long register(UserRegisterParameters userRegisterParameters) throws RegistrationException {
+        User user=UserParser.userFromUserRegisterParameters(userRegisterParameters);
+        String email=userRegisterParameters.getEmail();
+        if(userDAO.getByEmail(email).isEmpty()){
+            String password=userRegisterParameters.getPassword();
+            String hashedPassword= passwordHasher.hashPassword(password);
+            user.setPassword(hashedPassword);
+            return userDAO.add(user);
+        }else {
+            throw new RegistrationException("User with email "+email+" already exists.");
+        }
     }
 }

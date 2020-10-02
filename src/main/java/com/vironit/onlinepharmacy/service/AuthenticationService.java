@@ -3,12 +3,12 @@ package com.vironit.onlinepharmacy.service;
 import com.vironit.onlinepharmacy.dto.UserLoginParameters;
 import com.vironit.onlinepharmacy.dto.UserRegisterParameters;
 import com.vironit.onlinepharmacy.dto.UserPublicParameters;
-
-import java.util.Optional;
+import com.vironit.onlinepharmacy.exception.LoginException;
+import com.vironit.onlinepharmacy.exception.RegistrationException;
 
 public interface AuthenticationService {
 
-    UserPublicParameters login(UserLoginParameters userLoginParameters);
+    UserPublicParameters login(UserLoginParameters userLoginParameters) throws LoginException;
 
-    long register(UserRegisterParameters userRegisterParameters);
+    long register(UserRegisterParameters userRegisterParameters) throws RegistrationException;
 }

@@ -1,5 +1,7 @@
 package com.vironit.onlinepharmacy.exception;
 
 public class RegistrationException extends Exception {
-    //TODO:
+      public RegistrationException(String message){
+        super(message);
+    }
 }

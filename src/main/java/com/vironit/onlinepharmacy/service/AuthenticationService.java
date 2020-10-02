@@ -1,9 +1,14 @@
 package com.vironit.onlinepharmacy.service;
 
-import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.dto.UserLoginParameters;
+import com.vironit.onlinepharmacy.dto.UserRegisterParameters;
+import com.vironit.onlinepharmacy.dto.UserPublicParameters;
+
+import java.util.Optional;
 
 public interface AuthenticationService {
 
-    boolean login(User user);
-    boolean register(User user);
+    UserPublicParameters login(UserLoginParameters userLoginParameters);
+
+    long register(UserRegisterParameters userRegisterParameters);
 }

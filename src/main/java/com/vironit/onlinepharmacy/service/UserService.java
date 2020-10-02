@@ -1,24 +1,8 @@
 package com.vironit.onlinepharmacy.service;
 
-public class UserService {
+import com.vironit.onlinepharmacy.model.User;
 
-    public void addUser(){
+public interface UserService extends CRUDService<User> {
 
-    }
 
-    public void getUser(){
-
-    }
-
-    public void getAllUsers(){
-
-    }
-
-    public void updateUser(){
-
-    }
-
-    public void removeUser(){
-
-    }
 }

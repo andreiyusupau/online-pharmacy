@@ -1,8 +1,8 @@
 package com.vironit.onlinepharmacy.service;
 
-public class RecipeService {
+import com.vironit.onlinepharmacy.model.Recipe;
 
-    public void validateRecipe(){
+public interface RecipeService extends CRUDService<Recipe> {
 
-    }
+void validateRecipe();
 }

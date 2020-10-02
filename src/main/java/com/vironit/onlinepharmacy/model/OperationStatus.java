@@ -4,5 +4,6 @@ public enum OperationStatus {
     PREPARATION,
     PAID,
     IN_PROGRESS,
-    COMPLETE
+    SUCCESSFUL,
+    CANCELED
 }

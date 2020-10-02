@@ -1,9 +1,12 @@
 package com.vironit.onlinepharmacy.model;
 
+import java.math.BigDecimal;
+
 public class Product {
 
     private long id;
     private String name;
+    private BigDecimal price;
     private long productCategoryId;
 
     public Product() {
@@ -29,6 +32,14 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public long getProductCategoryId() {

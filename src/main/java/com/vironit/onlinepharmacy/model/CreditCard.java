@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.model;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class CreditCard {
 
@@ -8,19 +9,18 @@ public class CreditCard {
     private long cardNumber;
     private Instant validThru;
     private int cvv;
-    private long userId;
+    private User owner;
 
     public CreditCard() {
     }
 
-    public CreditCard(long id, long cardNumber, Instant validThru, int cvv, long userId) {
+    public CreditCard(long id, long cardNumber, Instant validThru, int cvv, User owner) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.validThru = validThru;
         this.cvv = cvv;
-        this.userId = userId;
+        this.owner = owner;
     }
-
 
     public long getId() {
         return id;
@@ -54,11 +54,39 @@ public class CreditCard {
         this.cvv = cvv;
     }
 
-    public long getUserId() {
-        return userId;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CreditCard that = (CreditCard) o;
+        return id == that.id &&
+                cardNumber == that.cardNumber &&
+                cvv == that.cvv &&
+                validThru.equals(that.validThru) &&
+                owner.equals(that.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cardNumber, validThru, cvv, owner);
+    }
+
+    @Override
+    public String toString() {
+        return "CreditCard{" +
+                "id=" + id +
+                ", cardNumber=" + cardNumber +
+                ", validThru=" + validThru +
+                ", cvv=" + cvv +
+                ", owner=" + owner +
+                '}';
     }
 }

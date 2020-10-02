@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.model;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class User {
 
@@ -88,5 +89,39 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                firstName.equals(user.firstName) &&
+                middleName.equals(user.middleName) &&
+                lastName.equals(user.lastName) &&
+                dateOfBirth.equals(user.dateOfBirth) &&
+                email.equals(user.email) &&
+                password.equals(user.password) &&
+                role == user.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, middleName, lastName, dateOfBirth, email, password, role);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                '}';
     }
 }

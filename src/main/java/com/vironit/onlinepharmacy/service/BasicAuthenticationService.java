@@ -26,8 +26,7 @@ public class BasicAuthenticationService implements AuthenticationService {
         String email= userLoginParameters.getEmail();
         User user=userDAO.getByEmail(email).orElseThrow(()->new LoginException("User with email "+email+" does not exist."));
         String password=userLoginParameters.getPassword();
-        String hashedPassword= passwordHasher.hashPassword(password);
-        if(passwordHasher.comparePasswords(user.getPassword(),hashedPassword)) {
+        if(passwordHasher.validatePassword(password,user.getPassword())) {
             return UserParser.userPublicParametersFromUser(user);
         }else {
             throw new LoginException("Wrong password for user "+email);

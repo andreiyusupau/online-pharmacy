@@ -5,8 +5,9 @@ import com.vironit.onlinepharmacy.model.Operation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
-public class MockOrderDAO implements DAO<Operation> {
+public class CollectionBasedOrderDAO implements DAO<Operation> {
 
     private final List<Operation> operationList= new ArrayList<>();
 private long currentId=0;
@@ -20,14 +21,13 @@ private long currentId=0;
     }
 
     @Override
-    public Operation get(long id) {
+    public Optional<Operation> get(long id) {
         for(Operation operation:operationList){
             if(operation.getId()==id){
-                return operation;
+                return Optional.of(operation);
             }
         }
-        //TODO:replace
-        return null;
+        return Optional.empty();
     }
 
     @Override

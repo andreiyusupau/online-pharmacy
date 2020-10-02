@@ -9,7 +9,7 @@ public class UserParser {
 
     public static UserPublicParameters userPublicParametersFromUser(User user){
         return new UserPublicParameters(user.getId(), user.getFirstName(), user.getMiddleName(), user.getLastName(),
-                user.getDateOfBirth(), user.getEmail(), user.getPassword(),user.getRole());
+                user.getDateOfBirth(), user.getEmail(), user.getRole());
     }
 
 public static User userFromUserRegisterParameters(UserRegisterParameters userRegisterParameters){

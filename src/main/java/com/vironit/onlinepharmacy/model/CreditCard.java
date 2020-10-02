@@ -1,20 +1,20 @@
 package com.vironit.onlinepharmacy.model;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class CreditCard {
 
     private long id;
     private long cardNumber;
-    private Instant validThru;
+    private LocalDate validThru;
     private int cvv;
     private User owner;
 
     public CreditCard() {
     }
 
-    public CreditCard(long id, long cardNumber, Instant validThru, int cvv, User owner) {
+    public CreditCard(long id, long cardNumber, LocalDate validThru, int cvv, User owner) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.validThru = validThru;
@@ -38,11 +38,11 @@ public class CreditCard {
         this.cardNumber = cardNumber;
     }
 
-    public Instant getValidThru() {
+    public LocalDate getValidThru() {
         return validThru;
     }
 
-    public void setValidThru(Instant validThru) {
+    public void setValidThru(LocalDate validThru) {
         this.validThru = validThru;
     }
 

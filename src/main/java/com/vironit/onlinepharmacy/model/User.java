@@ -1,6 +1,5 @@
 package com.vironit.onlinepharmacy.model;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
 

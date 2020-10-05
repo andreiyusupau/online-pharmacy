@@ -7,16 +7,16 @@ public class Position {
     private long id;
     private int quantity;
     private Product product;
-    private Operation operation;
+    private Order order;
 
     public Position() {
     }
 
-    public Position(long id, int quantity, Product product, Operation operation) {
+    public Position(long id, int quantity, Product product, Order order) {
         this.id = id;
         this.quantity = quantity;
         this.product = product;
-        this.operation = operation;
+        this.order = order;
     }
 
     public long getId() {
@@ -43,12 +43,12 @@ public class Position {
         this.product = product;
     }
 
-    public Operation getOperation() {
-        return operation;
+    public Order getOperation() {
+        return order;
     }
 
-    public void setOperation(Operation operation) {
-        this.operation = operation;
+    public void setOperation(Order order) {
+        this.order = order;
     }
 
     @Override
@@ -59,12 +59,12 @@ public class Position {
         return id == position.id &&
                 quantity == position.quantity &&
                 product.equals(position.product) &&
-                operation.equals(position.operation);
+                order.equals(position.order);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, product, operation);
+        return Objects.hash(id, quantity, product, order);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Position {
                 "id=" + id +
                 ", quantity=" + quantity +
                 ", product=" + product +
-                ", operation=" + operation +
+                ", order=" + order +
                 '}';
     }
 }

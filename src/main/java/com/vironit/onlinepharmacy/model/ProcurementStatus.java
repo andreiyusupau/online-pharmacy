@@ -1,9 +1,9 @@
 package com.vironit.onlinepharmacy.model;
 
-public enum OperationStatus {
+public enum ProcurementStatus {
     PREPARATION,
+    APPROVED,
     PAID,
-    IN_PROGRESS,
-    SUCCESSFUL,
+    COMPLETE,
     CANCELED
 }

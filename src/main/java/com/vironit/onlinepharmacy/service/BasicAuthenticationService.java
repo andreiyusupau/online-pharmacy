@@ -31,7 +31,6 @@ public class BasicAuthenticationService implements AuthenticationService {
         }else {
             throw new LoginException("Wrong password for user "+email);
         }
-
     }
 
     @Override

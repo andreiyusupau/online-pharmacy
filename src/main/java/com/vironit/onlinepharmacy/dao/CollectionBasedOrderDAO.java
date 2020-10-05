@@ -1,45 +1,45 @@
 package com.vironit.onlinepharmacy.dao;
 
-import com.vironit.onlinepharmacy.model.Operation;
+import com.vironit.onlinepharmacy.model.Order;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class CollectionBasedOrderDAO implements DAO<Operation> {
+public class CollectionBasedOrderDAO implements OrderDAO {
 
-    private final List<Operation> operationList= new ArrayList<>();
-private long currentId=0;
+    private final List<Order> orderList = new ArrayList<>();
+    private long currentId = 0;
 
     @Override
-    public long add(Operation operation) {
-        operation.setId(currentId);
+    public long add(Order order) {
+        order.setId(currentId);
         currentId++;
-        operationList.add(operation);
-        return operation.getId();
+        orderList.add(order);
+        return order.getId();
     }
 
     @Override
-    public Optional<Operation> get(long id) {
-        for(Operation operation:operationList){
-            if(operation.getId()==id){
-                return Optional.of(operation);
+    public Optional<Order> get(long id) {
+        for (Order order : orderList) {
+            if (order.getId() == id) {
+                return Optional.of(order);
             }
         }
         return Optional.empty();
     }
 
     @Override
-    public Collection<Operation> getAll() {
-        return operationList;
+    public Collection<Order> getAll() {
+        return orderList;
     }
 
     @Override
-    public boolean update(Operation operation) {
-        for(Operation currentOperation:operationList){
-            if(currentOperation.getId()==operation.getId()){
-                currentOperation=operation;
+    public boolean update(Order order) {
+        for (Order currentOrder : orderList) {
+            if (currentOrder.getId() == order.getId()) {
+                currentOrder = order;
                 return true;
             }
         }
@@ -49,6 +49,17 @@ private long currentId=0;
 
     @Override
     public boolean remove(long id) {
-        return operationList.removeIf(currentOperation -> currentOperation.getId() == id);
+        return orderList.removeIf(currentOperation -> currentOperation.getId() == id);
+    }
+
+    @Override
+    public Collection<Order> getAllByOwnerId(long id) {
+        Collection<Order> orders=new ArrayList<>();
+        for (Order currentOrder : orderList) {
+            if (currentOrder.getOwner().getId() == id) {
+                orders.add(currentOrder);
+            }
+        }
+        return orders;
     }
 }

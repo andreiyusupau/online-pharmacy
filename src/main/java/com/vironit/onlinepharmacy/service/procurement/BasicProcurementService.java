@@ -1,10 +1,11 @@
-package com.vironit.onlinepharmacy.service;
+package com.vironit.onlinepharmacy.service.procurement;
 
-import com.vironit.onlinepharmacy.dao.DAO;
 import com.vironit.onlinepharmacy.dao.ProcurementDAO;
+import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.model.Procurement;
 import com.vironit.onlinepharmacy.model.ProcurementStatus;
 import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.service.stock.StockService;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -61,7 +62,8 @@ private final StockService stockService;
     public void completeProcurement(long id) {
         //TODO:add exception
         Procurement procurement = procurementDAO.get(id).orElseThrow();
-        stockService.put();
+        Collection<Position> positions=procurementDAO.getAllSlaves(id);
+        stockService.put(positions);
         procurement.setProcurementStatus(ProcurementStatus.COMPLETE);
         procurementDAO.update(procurement);
     }

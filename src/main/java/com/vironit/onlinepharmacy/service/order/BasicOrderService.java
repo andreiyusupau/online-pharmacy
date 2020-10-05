@@ -1,9 +1,11 @@
-package com.vironit.onlinepharmacy.service;
+package com.vironit.onlinepharmacy.service.order;
 
 import com.vironit.onlinepharmacy.dao.OrderDAO;
 import com.vironit.onlinepharmacy.model.Order;
 import com.vironit.onlinepharmacy.model.OrderStatus;
+import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.service.stock.StockService;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -35,7 +37,9 @@ public class BasicOrderService implements OrderService {
     public void confirmOrder(long id) {
         //TODO:add exception
         Order order=orderDAO.get(id).orElseThrow();
-        order.setStatus(OrderStatus.PAID);
+        order.setStatus(OrderStatus.IN_PROGRESS);
+        Collection<Position> positions=orderDAO.getAllSlaves(id);
+        stockService.reserve(positions);
         orderDAO.update(order);
     }
 
@@ -44,6 +48,7 @@ public class BasicOrderService implements OrderService {
         //TODO:add exception
         Order order=orderDAO.get(id).orElseThrow();
         order.setStatus(OrderStatus.COMPLETE);
+        stockService.take(id);
         orderDAO.update(order);
     }
 
@@ -52,6 +57,7 @@ public class BasicOrderService implements OrderService {
         //TODO:add exception
         Order order=orderDAO.get(id).orElseThrow();
         order.setStatus(OrderStatus.CANCELED);
+        stockService.annul(id);
         orderDAO.update(order);
     }
 
@@ -68,7 +74,7 @@ public class BasicOrderService implements OrderService {
 
     @Override
     public Collection<Order> getAll() {
-        return null;
+        return orderDAO.getAll();
     }
 
     @Override

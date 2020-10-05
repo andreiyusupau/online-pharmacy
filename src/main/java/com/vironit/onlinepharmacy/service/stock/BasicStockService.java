@@ -1,8 +1,7 @@
-package com.vironit.onlinepharmacy.service;
+package com.vironit.onlinepharmacy.service.stock;
 
 import com.vironit.onlinepharmacy.dao.StockDAO;
 import com.vironit.onlinepharmacy.model.Position;
-import com.vironit.onlinepharmacy.model.Procurement;
 
 import java.util.Collection;
 
@@ -41,13 +40,22 @@ public class BasicStockService implements StockService {
     }
 
     @Override
-    public void put(Procurement procurement) {
-        stockDAO.getAllByOwnerId(procurement.getId())
-        Position existingPosition= stockDAO.get(position.getId()).orElse(new Position());
+    public boolean put(Collection<Position> positions) {
+    return stockDAO.createAll(positions);
     }
 
     @Override
-    public void take(Position position) {
+    public boolean reserve(Collection<Position> positions) {
+       return stockDAO.reserve(positions);
+    }
 
+    @Override
+    public boolean take(long orderId) {
+return stockDAO.removeAllByOwnerId(orderId);
+    }
+
+    @Override
+    public boolean annul(long orderId) {
+       return stockDAO.annul(orderId);
     }
 }

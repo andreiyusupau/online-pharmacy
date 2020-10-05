@@ -5,11 +5,11 @@ import com.vironit.onlinepharmacy.dao.CollectionBasedAuthenticationDAO;
 import com.vironit.onlinepharmacy.dto.UserLoginParameters;
 import com.vironit.onlinepharmacy.dto.UserPublicParameters;
 import com.vironit.onlinepharmacy.dto.UserRegisterParameters;
-import com.vironit.onlinepharmacy.exception.LoginException;
-import com.vironit.onlinepharmacy.exception.RegistrationException;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.security.PBKDF2PasswordHasher;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
+import com.vironit.onlinepharmacy.service.authentication.exception.LoginException;
+import com.vironit.onlinepharmacy.service.authentication.exception.RegistrationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

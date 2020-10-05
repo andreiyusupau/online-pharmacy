@@ -1,7 +1,8 @@
-package com.vironit.onlinepharmacy.service;
+package com.vironit.onlinepharmacy.service.order;
 
 import com.vironit.onlinepharmacy.model.Order;
 import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.service.CRUDService;
 
 import java.util.Collection;
 

@@ -6,10 +6,10 @@ import com.vironit.onlinepharmacy.dao.OrderDAO;
 import com.vironit.onlinepharmacy.dao.ProcurementDAO;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
-import com.vironit.onlinepharmacy.service.BasicOrderService;
-import com.vironit.onlinepharmacy.service.BasicProcurementService;
-import com.vironit.onlinepharmacy.service.OrderService;
-import com.vironit.onlinepharmacy.service.ProcurementService;
+import com.vironit.onlinepharmacy.service.order.BasicOrderService;
+import com.vironit.onlinepharmacy.service.procurement.BasicProcurementService;
+import com.vironit.onlinepharmacy.service.order.OrderService;
+import com.vironit.onlinepharmacy.service.procurement.ProcurementService;
 
 import java.time.LocalDate;
 

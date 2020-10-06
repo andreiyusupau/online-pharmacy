@@ -1,10 +1,7 @@
 package com.vironit.onlinepharmacy.service.order;
 
 import com.vironit.onlinepharmacy.dao.OrderDAO;
-import com.vironit.onlinepharmacy.model.Order;
-import com.vironit.onlinepharmacy.model.OrderStatus;
-import com.vironit.onlinepharmacy.model.Position;
-import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.order.exception.OrderException;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 
@@ -39,7 +36,7 @@ public class BasicOrderService implements OrderService {
         Order order = orderDAO.get(id)
                 .orElseThrow(() -> new OrderException("Can't confirm order. Order with id "+id+" not found."));
         order.setStatus(OrderStatus.IN_PROGRESS);
-        Collection<Position> positions = orderDAO.getAllSlaves(id);
+        Collection<OperationPosition> positions = orderDAO.getAllSlaves(id);
         stockService.reserve(positions);
         orderDAO.update(order);
     }

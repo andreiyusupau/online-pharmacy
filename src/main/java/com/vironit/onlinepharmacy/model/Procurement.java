@@ -7,7 +7,7 @@ public class Procurement extends Operation {
     private ProcurementStatus procurementStatus;
 
     public Procurement() {
-       super();
+        super();
     }
 
     public Procurement(long id, Instant date, User owner, ProcurementStatus procurementStatus) {

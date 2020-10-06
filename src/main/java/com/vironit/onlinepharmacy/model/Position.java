@@ -1,22 +1,18 @@
 package com.vironit.onlinepharmacy.model;
 
-import java.util.Objects;
-
 public class Position {
 
     private long id;
     private int quantity;
     private Product product;
-    private Order order;
 
     public Position() {
     }
 
-    public Position(long id, int quantity, Product product, Order order) {
+    public Position(long id, int quantity, Product product) {
         this.id = id;
         this.quantity = quantity;
         this.product = product;
-        this.order = order;
     }
 
     public long getId() {
@@ -43,37 +39,33 @@ public class Position {
         this.product = product;
     }
 
-    public Order getOperation() {
-        return order;
-    }
-
-    public void setOperation(Order order) {
-        this.order = order;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Position position = (Position) o;
-        return id == position.id &&
-                quantity == position.quantity &&
-                product.equals(position.product) &&
-                order.equals(position.order);
+
+        if (id != position.id) return false;
+        if (quantity != position.quantity) return false;
+        return product.equals(position.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, product, order);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + quantity;
+        result = 31 * result + product.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        return "Position{" +
-                "id=" + id +
-                ", quantity=" + quantity +
-                ", product=" + product +
-                ", order=" + order +
-                '}';
+        final StringBuffer sb = new StringBuffer("Position{");
+        sb.append("id=").append(id);
+        sb.append(", quantity=").append(quantity);
+        sb.append(", product=").append(product);
+        sb.append('}');
+        return sb.toString();
     }
 }

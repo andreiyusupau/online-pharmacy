@@ -1,20 +1,19 @@
 package com.vironit.onlinepharmacy.service.procurement;
 
 import com.vironit.onlinepharmacy.dao.ProcurementDAO;
-import com.vironit.onlinepharmacy.model.Position;
-import com.vironit.onlinepharmacy.model.Procurement;
-import com.vironit.onlinepharmacy.model.ProcurementStatus;
-import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.procurement.exception.ProcurementException;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class BasicProcurementService implements ProcurementService {
 
     private final ProcurementDAO procurementDAO;
-private final StockService stockService;
+    private final StockService stockService;
+
     public BasicProcurementService(ProcurementDAO procurementDAO, StockService stockService) {
         this.procurementDAO = procurementDAO;
         this.stockService = stockService;
@@ -28,7 +27,7 @@ private final StockService stockService;
     @Override
     public Procurement get(long id) {
         return procurementDAO.get(id)
-                .orElseThrow(()->new ProcurementException("Can't get procurement. Procurement with id "+id+" not found."));
+                .orElseThrow(() -> new ProcurementException("Can't get procurement. Procurement with id " + id + " not found."));
     }
 
     @Override
@@ -54,7 +53,7 @@ private final StockService stockService;
     @Override
     public void approveProcurement(long id) {
         Procurement procurement = procurementDAO.get(id)
-                .orElseThrow(()->new ProcurementException("Can't approve procurement.Procurement with id "+id+" not found."));
+                .orElseThrow(() -> new ProcurementException("Can't approve procurement.Procurement with id " + id + " not found."));
         procurement.setProcurementStatus(ProcurementStatus.APPROVED);
         procurementDAO.update(procurement);
     }
@@ -62,8 +61,11 @@ private final StockService stockService;
     @Override
     public void completeProcurement(long id) {
         Procurement procurement = procurementDAO.get(id)
-                .orElseThrow(()->new ProcurementException("Can't complete procurement.Procurement with id "+id+" not found."));
-        Collection<Position> positions=procurementDAO.getAllSlaves(id);
+                .orElseThrow(() -> new ProcurementException("Can't complete procurement.Procurement with id " + id + " not found."));
+        Collection<Position> positions = procurementDAO.getAllSlaves(id)
+                .stream()
+                .map(operationPosition -> new Position(operationPosition.getId(),operationPosition.getQuantity(), operationPosition.getProduct()))
+                .collect(Collectors.toList());
         stockService.put(positions);
         procurement.setProcurementStatus(ProcurementStatus.COMPLETE);
         procurementDAO.update(procurement);
@@ -72,8 +74,13 @@ private final StockService stockService;
     @Override
     public void cancelProcurement(long id) {
         Procurement procurement = procurementDAO.get(id)
-                .orElseThrow(()->new ProcurementException("Can't cancel procurement.Procurement with id "+id+" not found."));
+                .orElseThrow(() -> new ProcurementException("Can't cancel procurement.Procurement with id " + id + " not found."));
         procurement.setProcurementStatus(ProcurementStatus.CANCELED);
         procurementDAO.update(procurement);
+    }
+
+    @Override
+    public boolean addAll(Collection<OperationPosition> positions) {
+        return procurementDAO.createAll(positions);
     }
 }

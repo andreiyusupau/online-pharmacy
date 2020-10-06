@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.service.stock;
 
 import com.vironit.onlinepharmacy.dao.StockDAO;
+import com.vironit.onlinepharmacy.model.OperationPosition;
 import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.service.stock.exception.StockException;
 
@@ -45,7 +46,7 @@ public class BasicStockService implements StockService {
     }
 
     @Override
-    public boolean reserve(Collection<Position> positions) {
+    public boolean reserve(Collection<OperationPosition> positions) {
        return stockDAO.reserve(positions);
     }
 

@@ -2,6 +2,7 @@ package com.vironit.onlinepharmacy.service.stock;
 
 import com.vironit.onlinepharmacy.dao.StockDAO;
 import com.vironit.onlinepharmacy.model.Position;
+import com.vironit.onlinepharmacy.service.stock.exception.StockException;
 
 import java.util.Collection;
 
@@ -20,8 +21,7 @@ public class BasicStockService implements StockService {
 
     @Override
     public Position get(long id) {
-        //TODO:add nice exception
-        return stockDAO.get(id).orElseThrow();
+        return stockDAO.get(id).orElseThrow(()->new StockException("Can't get stock position. Position with id "+id+" not found."));
     }
 
     @Override

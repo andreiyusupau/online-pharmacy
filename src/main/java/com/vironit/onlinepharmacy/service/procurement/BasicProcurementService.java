@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.model.Procurement;
 import com.vironit.onlinepharmacy.model.ProcurementStatus;
 import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.service.procurement.exception.ProcurementException;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 
 import java.time.Instant;
@@ -26,8 +27,8 @@ private final StockService stockService;
 
     @Override
     public Procurement get(long id) {
-        //TODO:add exception
-        return procurementDAO.get(id).orElseThrow();
+        return procurementDAO.get(id)
+                .orElseThrow(()->new ProcurementException("Can't get procurement. Procurement with id "+id+" not found."));
     }
 
     @Override
@@ -52,16 +53,16 @@ private final StockService stockService;
 
     @Override
     public void approveProcurement(long id) {
-        //TODO:add exception
-        Procurement procurement = procurementDAO.get(id).orElseThrow();
+        Procurement procurement = procurementDAO.get(id)
+                .orElseThrow(()->new ProcurementException("Can't approve procurement.Procurement with id "+id+" not found."));
         procurement.setProcurementStatus(ProcurementStatus.APPROVED);
         procurementDAO.update(procurement);
     }
 
     @Override
     public void completeProcurement(long id) {
-        //TODO:add exception
-        Procurement procurement = procurementDAO.get(id).orElseThrow();
+        Procurement procurement = procurementDAO.get(id)
+                .orElseThrow(()->new ProcurementException("Can't complete procurement.Procurement with id "+id+" not found."));
         Collection<Position> positions=procurementDAO.getAllSlaves(id);
         stockService.put(positions);
         procurement.setProcurementStatus(ProcurementStatus.COMPLETE);
@@ -70,8 +71,8 @@ private final StockService stockService;
 
     @Override
     public void cancelProcurement(long id) {
-        //TODO:add exception
-        Procurement procurement = procurementDAO.get(id).orElseThrow();
+        Procurement procurement = procurementDAO.get(id)
+                .orElseThrow(()->new ProcurementException("Can't cancel procurement.Procurement with id "+id+" not found."));
         procurement.setProcurementStatus(ProcurementStatus.CANCELED);
         procurementDAO.update(procurement);
     }

@@ -1,7 +1,11 @@
 package com.vironit.onlinepharmacy.dao;
 
-import com.vironit.onlinepharmacy.model.Position;
+import com.vironit.onlinepharmacy.model.OperationPosition;
 import com.vironit.onlinepharmacy.model.Procurement;
 
-public interface ProcurementDAO extends DAO<Procurement>,SlaveDAO<Procurement>, MasterDAO<Position>  {
+import java.util.Collection;
+
+public interface ProcurementDAO extends DAO<Procurement>, SlaveDAO<Procurement>, MasterDAO<OperationPosition> {
+
+    boolean createAll(Collection<OperationPosition> positions);
 }

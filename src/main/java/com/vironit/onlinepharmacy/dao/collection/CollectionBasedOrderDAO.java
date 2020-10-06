@@ -1,15 +1,16 @@
-package com.vironit.onlinepharmacy.dao;
+package com.vironit.onlinepharmacy.dao.collection;
 
+import com.vironit.onlinepharmacy.dao.OrderDAO;
+import com.vironit.onlinepharmacy.model.OperationPosition;
 import com.vironit.onlinepharmacy.model.Order;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class CollectionBasedOrderDAO implements OrderDAO {
 
-    private final List<Order> orderList = new ArrayList<>();
+    private final Collection<Order> orderList = new ArrayList<>();
     private long currentId = 0;
 
     @Override
@@ -54,12 +55,22 @@ public class CollectionBasedOrderDAO implements OrderDAO {
 
     @Override
     public Collection<Order> getAllByOwnerId(long id) {
-        Collection<Order> orders=new ArrayList<>();
+        Collection<Order> orders = new ArrayList<>();
         for (Order currentOrder : orderList) {
             if (currentOrder.getOwner().getId() == id) {
                 orders.add(currentOrder);
             }
         }
         return orders;
+    }
+
+    @Override
+    public boolean removeAllByOwnerId(long id) {
+        return false;
+    }
+
+    @Override
+    public Collection<OperationPosition> getAllSlaves(long masterId) {
+        return null;
     }
 }

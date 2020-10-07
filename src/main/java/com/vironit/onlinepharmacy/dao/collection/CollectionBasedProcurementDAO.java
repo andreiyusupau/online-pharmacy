@@ -53,6 +53,11 @@ public class CollectionBasedProcurementDAO implements ProcurementDAO {
     }
 
     @Override
+    public boolean addAll(Collection<Procurement> t) {
+        return false;
+    }
+
+    @Override
     public Collection<Procurement> getAllByOwnerId(long id) {
         return procurementList.stream()
                 .filter(procurement -> procurement.getOwner().getId()==id)

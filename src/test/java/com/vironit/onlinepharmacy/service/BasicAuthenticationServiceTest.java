@@ -1,13 +1,15 @@
 package com.vironit.onlinepharmacy.service;
 
 import com.vironit.onlinepharmacy.dao.AuthenticationDAO;
-import com.vironit.onlinepharmacy.dao.CollectionBasedAuthenticationDAO;
+import com.vironit.onlinepharmacy.dao.collection.CollectionBasedUserDAO;
 import com.vironit.onlinepharmacy.dto.UserLoginParameters;
 import com.vironit.onlinepharmacy.dto.UserPublicParameters;
 import com.vironit.onlinepharmacy.dto.UserRegisterParameters;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.security.PBKDF2PasswordHasher;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
+import com.vironit.onlinepharmacy.service.authentication.AuthenticationService;
+import com.vironit.onlinepharmacy.service.authentication.BasicAuthenticationService;
 import com.vironit.onlinepharmacy.service.authentication.exception.LoginException;
 import com.vironit.onlinepharmacy.service.authentication.exception.RegistrationException;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +21,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testRegisterShouldReturnIdEqualToZero() throws RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedAuthenticationDAO();
+        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
@@ -32,7 +34,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testRegisterShouldThrowRegistrationExceptionUserWithSuchEmailAlreadyExists() throws RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedAuthenticationDAO();
+        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
@@ -49,7 +51,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldReturnUserPublicParameters() throws LoginException, RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedAuthenticationDAO();
+        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
@@ -66,7 +68,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldThrowExceptionEmailDoesNotExist() throws RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedAuthenticationDAO();
+        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
@@ -87,7 +89,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldThrowExceptionWrongPassword() throws RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedAuthenticationDAO();
+        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",

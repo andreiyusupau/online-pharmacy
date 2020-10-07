@@ -7,5 +7,4 @@ import java.util.Collection;
 
 public interface ProcurementDAO extends DAO<Procurement>, SlaveDAO<Procurement>, MasterDAO<OperationPosition> {
 
-    boolean createAll(Collection<OperationPosition> positions);
 }

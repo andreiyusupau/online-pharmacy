@@ -78,7 +78,7 @@ public class CollectionBasedStockDAO implements StockDAO {
 
     @Override
     public Collection<Position> getAll() {
-        return null;
+        return stock;
     }
 
     @Override
@@ -88,6 +88,11 @@ public class CollectionBasedStockDAO implements StockDAO {
 
     @Override
     public boolean remove(long id) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(Collection<OperationPosition> t) {
         return false;
     }
 

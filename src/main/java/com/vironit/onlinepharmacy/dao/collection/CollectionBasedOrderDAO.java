@@ -54,6 +54,11 @@ public class CollectionBasedOrderDAO implements OrderDAO {
     }
 
     @Override
+    public boolean addAll(Collection<Order> t) {
+        return false;
+    }
+
+    @Override
     public Collection<Order> getAllByOwnerId(long id) {
         Collection<Order> orders = new ArrayList<>();
         for (Order currentOrder : orderList) {

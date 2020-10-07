@@ -1,4 +1,6 @@
 package com.vironit.onlinepharmacy.dao;
 
-public interface ProductDAO {
+import com.vironit.onlinepharmacy.model.Product;
+
+public interface ProductDAO extends DAO<Product> {
 }

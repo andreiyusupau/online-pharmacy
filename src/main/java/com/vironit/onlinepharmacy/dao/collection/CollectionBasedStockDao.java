@@ -1,6 +1,6 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
-import com.vironit.onlinepharmacy.dao.StockDAO;
+import com.vironit.onlinepharmacy.dao.StockDao;
 import com.vironit.onlinepharmacy.model.OperationPosition;
 import com.vironit.onlinepharmacy.model.Position;
 
@@ -9,10 +9,15 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CollectionBasedStockDAO implements StockDAO {
+public class CollectionBasedStockDao implements StockDao {
 
+    private final IdGenerator idGenerator;
     private final Collection<Position> stock= new ArrayList<>();
     private final Collection<OperationPosition> reserved= new ArrayList<>();
+
+    public CollectionBasedStockDao(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+    }
 
     @Override
     public boolean createAll(Collection<Position> positions) {
@@ -26,6 +31,8 @@ public class CollectionBasedStockDAO implements StockDAO {
                 }
             }
             if (positionShouldBeCreated) {
+                long id=idGenerator.getNextId();
+                createdPosition.setId(id);
                 stock.add(createdPosition);
             }
         }
@@ -33,8 +40,8 @@ public class CollectionBasedStockDAO implements StockDAO {
     }
 
     @Override
-    public boolean reserve(Collection<OperationPosition> positions) {
-        for (OperationPosition reservedPosition : positions) {
+    public boolean reserve(Collection<OperationPosition> operationPositions) {
+        for (OperationPosition reservedPosition : operationPositions) {
             boolean positionIsInStock=false;
             for (Position stockPosition : stock) {
                 if (reservedPosition.getProduct().equals(stockPosition.getProduct())) {
@@ -48,7 +55,10 @@ public class CollectionBasedStockDAO implements StockDAO {
                 //TODO:throw
             }
         }
-        reserved.addAll(positions);
+        reserved.addAll(operationPositions);
+        for (OperationPosition operationPosition:operationPositions){
+           stock.removeIf(stockPosition -> stockPosition.getId()==operationPosition.getId());
+        }
         return true;
     }
 
@@ -98,11 +108,13 @@ public class CollectionBasedStockDAO implements StockDAO {
 
     @Override
     public Collection<OperationPosition> getAllByOwnerId(long id) {
-        return null;
+        return reserved.stream()
+                .filter(procurement -> procurement.getOperation().getId()==id)
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean removeAllByOwnerId(long id) {
-        return false;
+        return reserved.removeIf(operationPosition -> operationPosition.getOperation().getId()==id);
     }
 }

@@ -1,22 +1,25 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
-import com.vironit.onlinepharmacy.dao.OrderDAO;
-import com.vironit.onlinepharmacy.model.OperationPosition;
+import com.vironit.onlinepharmacy.dao.OrderDao;
 import com.vironit.onlinepharmacy.model.Order;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-public class CollectionBasedOrderDAO implements OrderDAO {
+public class CollectionBasedOrderDao implements OrderDao {
 
+    private final IdGenerator idGenerator;
     private final Collection<Order> orderList = new ArrayList<>();
-    private long currentId = 0;
+
+    public CollectionBasedOrderDao(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+    }
 
     @Override
     public long add(Order order) {
-        order.setId(currentId);
-        currentId++;
+        long id=idGenerator.getNextId();
+        order.setId(id);
         orderList.add(order);
         return order.getId();
     }
@@ -38,24 +41,24 @@ public class CollectionBasedOrderDAO implements OrderDAO {
 
     @Override
     public boolean update(Order order) {
-        for (Order currentOrder : orderList) {
-            if (currentOrder.getId() == order.getId()) {
-                currentOrder = order;
-                return true;
-            }
+        if(remove(order.getId())){
+            return orderList.add(order);
+        }else {
+            return false;
         }
-        return false;
-
     }
 
     @Override
     public boolean remove(long id) {
-        return orderList.removeIf(currentOperation -> currentOperation.getId() == id);
+        return orderList.removeIf(order -> order.getId() == id);
     }
 
     @Override
-    public boolean addAll(Collection<Order> t) {
-        return false;
+    public boolean addAll(Collection<Order> orders) {
+        for (Order order:orders){
+            add(order);
+        }
+        return true;
     }
 
     @Override
@@ -71,11 +74,7 @@ public class CollectionBasedOrderDAO implements OrderDAO {
 
     @Override
     public boolean removeAllByOwnerId(long id) {
-        return false;
+        return orderList.removeIf(order -> order.getOwner().getId()==id);
     }
 
-    @Override
-    public Collection<OperationPosition> getAllSlaves(long masterId) {
-        return null;
-    }
 }

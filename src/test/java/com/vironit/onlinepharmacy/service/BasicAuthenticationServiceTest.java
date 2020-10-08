@@ -1,7 +1,9 @@
 package com.vironit.onlinepharmacy.service;
 
-import com.vironit.onlinepharmacy.dao.AuthenticationDAO;
-import com.vironit.onlinepharmacy.dao.collection.CollectionBasedUserDAO;
+import com.vironit.onlinepharmacy.dao.UserDao;
+import com.vironit.onlinepharmacy.dao.collection.BasicIdGenerator;
+import com.vironit.onlinepharmacy.dao.collection.CollectionBasedUserDao;
+import com.vironit.onlinepharmacy.dao.collection.IdGenerator;
 import com.vironit.onlinepharmacy.dto.UserLoginParameters;
 import com.vironit.onlinepharmacy.dto.UserPublicParameters;
 import com.vironit.onlinepharmacy.dto.UserRegisterParameters;
@@ -21,9 +23,10 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testRegisterShouldReturnIdEqualToZero() throws RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
+        IdGenerator idGenerator=new BasicIdGenerator();
+        UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
-        AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
+        AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123");
@@ -34,9 +37,10 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testRegisterShouldThrowRegistrationExceptionUserWithSuchEmailAlreadyExists() throws RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
+        IdGenerator idGenerator=new BasicIdGenerator();
+        UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
-        AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
+        AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123");
@@ -51,9 +55,10 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldReturnUserPublicParameters() throws LoginException, RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
+        IdGenerator idGenerator=new BasicIdGenerator();
+        UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
-        AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
+        AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123");
@@ -68,9 +73,10 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldThrowExceptionEmailDoesNotExist() throws RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
+        IdGenerator idGenerator=new BasicIdGenerator();
+        UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
-        AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
+        AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123");
@@ -89,9 +95,10 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldThrowExceptionWrongPassword() throws RegistrationException {
-        AuthenticationDAO authenticationDAO = new CollectionBasedUserDAO();
+        IdGenerator idGenerator=new BasicIdGenerator();
+        UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
-        AuthenticationService authenticationService = new BasicAuthenticationService(authenticationDAO, passwordHasher);
+        AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
         UserRegisterParameters userRegisterParameters = new UserRegisterParameters("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123");

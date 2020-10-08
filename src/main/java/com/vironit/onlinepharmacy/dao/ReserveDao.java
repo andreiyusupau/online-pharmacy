@@ -1,15 +1,13 @@
 package com.vironit.onlinepharmacy.dao;
 
 import com.vironit.onlinepharmacy.model.OperationPosition;
-import com.vironit.onlinepharmacy.model.Position;
+import com.vironit.onlinepharmacy.model.Order;
 
 import java.util.Collection;
 
-public interface StockDAO extends DAO<Position>, SlaveDAO<OperationPosition> {
-
-    boolean createAll(Collection<Position> positions);
-
+public interface ReserveDao extends Dao<Order>{
+    @Deprecated
     boolean reserve(Collection<OperationPosition> positions);
-
+    @Deprecated
     boolean annul(long orderId);
 }

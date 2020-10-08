@@ -1,6 +1,6 @@
 package com.vironit.onlinepharmacy.service.user;
 
-import com.vironit.onlinepharmacy.dao.UserDAO;
+import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.user.exception.UserServiceException;
 
@@ -8,9 +8,9 @@ import java.util.Collection;
 
 public class BasicUserService implements UserService {
 
-    private final UserDAO userDAO;
+    private final UserDao userDAO;
 
-    public BasicUserService(UserDAO userDAO) {
+    public BasicUserService(UserDao userDAO) {
         this.userDAO = userDAO;
     }
 
@@ -21,7 +21,7 @@ public class BasicUserService implements UserService {
 
     @Override
     public User get(long id) {
-        return userDAO.get(id).orElseThrow(()->new UserServiceException("Can't get user. User with id \"+id+\" not found."));
+        return userDAO.get(id).orElseThrow(()->new UserServiceException("Can't get user. User with id "+id+" not found."));
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.vironit.onlinepharmacy.service.stock;
 
-import com.vironit.onlinepharmacy.dao.StockDAO;
-import com.vironit.onlinepharmacy.model.OperationPosition;
+import com.vironit.onlinepharmacy.dao.ReserveDao;
+import com.vironit.onlinepharmacy.dao.StockDao;
+import com.vironit.onlinepharmacy.model.Order;
 import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.service.stock.exception.StockException;
 
@@ -9,10 +10,12 @@ import java.util.Collection;
 
 public class BasicStockService implements StockService {
 
-    private final StockDAO stockDAO;
+    private final StockDao stockDAO;
+    private final ReserveDao reserveDao;
 
-    public BasicStockService(StockDAO stockDAO) {
+    public BasicStockService(StockDao stockDAO, ReserveDao reserveDao) {
         this.stockDAO = stockDAO;
+        this.reserveDao = reserveDao;
     }
 
     @Override
@@ -46,7 +49,11 @@ public class BasicStockService implements StockService {
     }
 
     @Override
-    public boolean reserve(Collection<OperationPosition> positions) {
+    public boolean reserve(Order order) {
+        //TODO:reserve or use OperationPosition
+        for(Position position:stockDAO.getAll()){
+            if()
+        }
        return stockDAO.reserve(positions);
     }
 

@@ -1,11 +1,11 @@
 package com.vironit.onlinepharmacy.dto;
 
-public class ProcurementPositionData {
+public class OperationPositionData {
 
     private final long productId;
     private final int quantity;
 
-    public ProcurementPositionData(long productId, int quantity) {
+    public OperationPositionData(long productId, int quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }

@@ -1,16 +1,11 @@
 package com.vironit.onlinepharmacy.service.procurement;
 
-import com.vironit.onlinepharmacy.dto.ProcurementData;
-import com.vironit.onlinepharmacy.model.OperationPosition;
+import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
+import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
 import com.vironit.onlinepharmacy.model.Procurement;
-import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.CRUDService;
 
-import java.util.Collection;
-
-public interface ProcurementService extends CRUDService<Procurement> {
-
-    long add(ProcurementData procurementData);
+public interface ProcurementService extends CRUDService<ProcurementCreateData,Procurement,ProcurementUpdateData> {
 
     void approveProcurement(long id);
 

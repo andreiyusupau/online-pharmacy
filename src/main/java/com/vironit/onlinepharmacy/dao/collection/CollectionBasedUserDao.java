@@ -1,22 +1,25 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
-import com.vironit.onlinepharmacy.dao.UserDAO;
+import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.model.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
-public class CollectionBasedUserDAO implements UserDAO {
+public class CollectionBasedUserDao implements UserDao {
 
-    private final List<User> userList = new ArrayList<>();
-    private long currentId = 0;
+    private final IdGenerator idGenerator;
+    private final Collection<User> userList = new ArrayList<>();
+
+    public CollectionBasedUserDao(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+    }
 
     @Override
     public long add(User user) {
-        user.setId(currentId);
-        currentId++;
+        long id=idGenerator.getNextId();
+        user.setId(id);
         userList.add(user);
         return user.getId();
     }

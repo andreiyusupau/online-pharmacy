@@ -56,4 +56,13 @@ public abstract class Operation {
     public int hashCode() {
         return Objects.hash(id, date, owner);
     }
+
+    @Override
+    public String toString() {
+        return "Operation{" +
+                "id=" + id +
+                ", date=" + date +
+                ", owner=" + owner +
+                '}';
+    }
 }

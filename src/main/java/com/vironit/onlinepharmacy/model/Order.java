@@ -6,10 +6,6 @@ public class Order extends Operation {
 
     private OrderStatus status;
 
-    public Order() {
-        super();
-    }
-
     public Order(long id, Instant date, User owner, OrderStatus status) {
         super(id, date, owner);
         this.status = status;

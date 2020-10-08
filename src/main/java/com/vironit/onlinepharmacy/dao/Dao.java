@@ -3,7 +3,7 @@ package com.vironit.onlinepharmacy.dao;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface DAO<T> {
+public interface Dao<T> {
 
     long add(T t);
 

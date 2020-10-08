@@ -1,21 +1,25 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
-import com.vironit.onlinepharmacy.dao.ProductDAO;
+import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.model.Product;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-public class CollectionBasedProductDAO implements ProductDAO {
+public class CollectionBasedProductDao implements ProductDao {
 
+    private final IdGenerator idGenerator;
     private final Collection<Product> productList=new ArrayList<>();
-    private long currentId = 0;
+
+    public CollectionBasedProductDao(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
+    }
 
     @Override
     public long add(Product product) {
-        product.setId(currentId);
-        currentId++;
+        long id=idGenerator.getNextId();
+        product.setId(id);
         productList.add(product);
         return product.getId();
     }
@@ -34,11 +38,15 @@ public class CollectionBasedProductDAO implements ProductDAO {
 
     @Override
     public boolean update(Product product) {
-        return false;
+        if(remove(product.getId())){
+           return productList.add(product);
+        }else {
+            return false;
+        }
     }
 
     @Override
     public boolean remove(long id) {
-        return false;
+        return productList.removeIf(product -> product.getId()==id);
     }
 }

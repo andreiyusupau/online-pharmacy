@@ -1,13 +1,14 @@
 package com.vironit.onlinepharmacy.service.procurement;
 
-import com.vironit.onlinepharmacy.dao.OperationPositionDAO;
-import com.vironit.onlinepharmacy.dao.ProcurementDAO;
-import com.vironit.onlinepharmacy.dto.ProcurementData;
+import com.vironit.onlinepharmacy.dao.OperationPositionDao;
+import com.vironit.onlinepharmacy.dao.ProcurementDao;
+import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
+import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
 import com.vironit.onlinepharmacy.model.*;
-import com.vironit.onlinepharmacy.service.user.UserService;
 import com.vironit.onlinepharmacy.service.procurement.exception.ProcurementException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
+import com.vironit.onlinepharmacy.service.user.UserService;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -16,86 +17,83 @@ import java.util.stream.Collectors;
 
 public class BasicProcurementService implements ProcurementService {
 
-    private final ProcurementDAO procurementDAO;
-    private final OperationPositionDAO operationPositionDAO;
+    private final ProcurementDao procurementDao;
+    private final OperationPositionDao operationPositionDao;
     private final StockService stockService;
     private final ProductService productService;
     private final UserService userService;
 
-    public BasicProcurementService(ProcurementDAO procurementDAO, OperationPositionDAO operationPositionDAO, StockService stockService, ProductService productService, UserService userService) {
-        this.procurementDAO = procurementDAO;
-        this.operationPositionDAO = operationPositionDAO;
+    public BasicProcurementService(ProcurementDao procurementDao, OperationPositionDao operationPositionDao, StockService stockService, ProductService productService, UserService userService) {
+        this.procurementDao = procurementDao;
+        this.operationPositionDao = operationPositionDao;
         this.stockService = stockService;
         this.productService = productService;
         this.userService = userService;
     }
 
     @Override
-    public long add(ProcurementData procurementData) {
-        User owner= userService.get(procurementData.getOwnerId());
-        Procurement procurement=new Procurement(-1,Instant.now(),owner,ProcurementStatus.PREPARATION);
-        List<OperationPosition> operationPositions=procurementData.getProcurementPositionDataList()
+    public long add(ProcurementCreateData procurementCreateData) {
+        User owner = userService.get(procurementCreateData.getOwnerId());
+        Procurement procurement = new Procurement(-1, Instant.now(), owner, ProcurementStatus.PREPARATION);
+        List<OperationPosition> operationPositions = procurementCreateData.getOperationPositionDataList()
                 .stream()
-                .map(positionData-> new OperationPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()),procurement))
+                .map(positionData -> new OperationPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), procurement))
                 .collect(Collectors.toList());
-        operationPositionDAO.addAll(operationPositions);
-        return procurementDAO.add(procurement);
-    }
-
-    @Override
-    public long add(Procurement procurement) {
-        return 0;//TODO:remove
+        operationPositionDao.addAll(operationPositions);
+        return procurementDao.add(procurement);
     }
 
     @Override
     public Procurement get(long id) {
-        return procurementDAO.get(id)
+        return procurementDao.get(id)
                 .orElseThrow(() -> new ProcurementException("Can't get procurement. Procurement with id " + id + " not found."));
     }
 
     @Override
     public Collection<Procurement> getAll() {
-        return procurementDAO.getAll();
+        return procurementDao.getAll();
     }
 
     @Override
-    public void update(Procurement procurement) {
-        //TODO:add input dto
-        procurementDAO.update(procurement);
+    public void update(ProcurementUpdateData procurementUpdateData) {
+        Procurement procurement = get(procurementUpdateData.getId());
+        List<OperationPosition> operationPositions = procurementUpdateData.getOperationPositionDataList()
+                .stream()
+                .map(positionData -> new OperationPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), procurement))
+                .collect(Collectors.toList());
+        operationPositionDao.removeAllByOwnerId(procurementUpdateData.getOwnerId());
+        operationPositionDao.addAll(operationPositions);
     }
 
     @Override
     public void remove(long id) {
-        procurementDAO.remove(id);
-        operationPositionDAO.removeAllByOwnerId(id);
+        procurementDao.remove(id);
+        operationPositionDao.removeAllByOwnerId(id);
     }
 
     @Override
     public void approveProcurement(long id) {
-        Procurement procurement = procurementDAO.get(id)
-                .orElseThrow(() -> new ProcurementException("Can't approve procurement.Procurement with id " + id + " not found."));
+        Procurement procurement = get(id);
         procurement.setProcurementStatus(ProcurementStatus.APPROVED);
-        procurementDAO.update(procurement);
+        procurementDao.update(procurement);
     }
 
     @Override
     public void completeProcurement(long id) {
-        Procurement procurement = procurementDAO.get(id)
-                .orElseThrow(() -> new ProcurementException("Can't complete procurement.Procurement with id " + id + " not found."));
-        Collection<Position> positions = procurementDAO.getAllSlaves(id)
+        Procurement procurement = get(id);
+        Collection<Position> positions = operationPositionDao.getAllByOwnerId(id)
                 .stream()
-                .map(operationPosition -> new Position(operationPosition.getId(),operationPosition.getQuantity(), operationPosition.getProduct()))
+                .map(operationPosition -> new Position(operationPosition.getId(), operationPosition.getQuantity(), operationPosition.getProduct()))
                 .collect(Collectors.toList());
         stockService.put(positions);
         procurement.setProcurementStatus(ProcurementStatus.COMPLETE);
-        procurementDAO.update(procurement);
+        procurementDao.update(procurement);
     }
 
     @Override
     public void cancelProcurement(long id) {
-        Procurement procurement = procurementDAO.get(id)
-                .orElseThrow(() -> new ProcurementException("Can't cancel procurement.Procurement with id " + id + " not found."));
+        Procurement procurement = get(id);
         procurement.setProcurementStatus(ProcurementStatus.CANCELED);
-        procurementDAO.update(procurement);
+        procurementDao.update(procurement);
     }
 }

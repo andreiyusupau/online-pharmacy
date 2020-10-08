@@ -17,13 +17,14 @@ public class User {
     public User() {
     }
 
-    public User(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, Role role) {
+    public User(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, String password, Role role) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
+        this.password = password;
         this.role = role;
     }
 

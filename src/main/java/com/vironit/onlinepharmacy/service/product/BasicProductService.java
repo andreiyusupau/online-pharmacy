@@ -1,6 +1,6 @@
 package com.vironit.onlinepharmacy.service.product;
 
-import com.vironit.onlinepharmacy.dao.ProductDAO;
+import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.service.product.exception.ProductException;
 
@@ -8,9 +8,9 @@ import java.util.Collection;
 
 public class BasicProductService implements ProductService {
 
-    private final ProductDAO productDAO;
+    private final ProductDao productDAO;
 
-    public BasicProductService(ProductDAO productDAO) {
+    public BasicProductService(ProductDao productDAO) {
         this.productDAO = productDAO;
     }
 

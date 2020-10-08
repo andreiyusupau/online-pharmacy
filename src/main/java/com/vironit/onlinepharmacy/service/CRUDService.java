@@ -2,15 +2,15 @@ package com.vironit.onlinepharmacy.service;
 
 import java.util.Collection;
 
-public interface CRUDService<T> {
+public interface CRUDService<T,S,U> {
 
     long add(T t);
 
-    T get(long id);
+    S get(long id);
 
-    Collection<T> getAll();
+    Collection<S> getAll();
 
-    void update(T t);
+    void update(U u);
 
     void remove(long id);
 }

@@ -2,7 +2,7 @@ package com.vironit.onlinepharmacy.dao;
 
 import java.util.Collection;
 
-public interface SlaveDAO<T> {
+public interface SlaveDao<T> {
 
     boolean addAll(Collection<T> t);
 

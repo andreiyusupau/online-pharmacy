@@ -23,27 +23,27 @@ public class BasicAuthenticationService implements AuthenticationService {
 
     @Override
     public UserPublicParameters login(UserLoginParameters userLoginParameters) throws LoginException {
-        String email= userLoginParameters.getEmail();
-        User user= userDao.getByEmail(email).orElseThrow(()->new LoginException("User with email "+email+" does not exist."));
-        String password=userLoginParameters.getPassword();
-        if(passwordHasher.validatePassword(password,user.getPassword())) {
+        String email = userLoginParameters.getEmail();
+        User user = userDao.getByEmail(email).orElseThrow(() -> new LoginException("User with email " + email + " does not exist."));
+        String password = userLoginParameters.getPassword();
+        if (passwordHasher.validatePassword(password, user.getPassword())) {
             return UserParser.userPublicParametersFromUser(user);
-        }else {
-            throw new LoginException("Wrong password for user "+email);
+        } else {
+            throw new LoginException("Wrong password for user " + email);
         }
     }
 
     @Override
     public long register(UserRegisterParameters userRegisterParameters) throws RegistrationException {
-        User user=UserParser.userFromUserRegisterParameters(userRegisterParameters);
-        String email=userRegisterParameters.getEmail();
-        if(userDao.getByEmail(email).isEmpty()){
-            String password=userRegisterParameters.getPassword();
-            String hashedPassword= passwordHasher.hashPassword(password);
+        User user = UserParser.userFromUserRegisterParameters(userRegisterParameters);
+        String email = userRegisterParameters.getEmail();
+        if (userDao.getByEmail(email).isEmpty()) {
+            String password = userRegisterParameters.getPassword();
+            String hashedPassword = passwordHasher.hashPassword(password);
             user.setPassword(hashedPassword);
             return userDao.add(user);
-        }else {
-            throw new RegistrationException("User with email "+email+" already exists.");
+        } else {
+            throw new RegistrationException("User with email " + email + " already exists.");
         }
     }
 }

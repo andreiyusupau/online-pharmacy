@@ -85,7 +85,7 @@ public class BasicProcurementService implements ProcurementService {
                 .stream()
                 .map(operationPosition -> new Position(operationPosition.getId(), operationPosition.getQuantity(), operationPosition.getProduct()))
                 .collect(Collectors.toList());
-        stockService.put(positions);
+        stockService.addAll(positions);
         procurement.setProcurementStatus(ProcurementStatus.COMPLETE);
         procurementDao.update(procurement);
     }

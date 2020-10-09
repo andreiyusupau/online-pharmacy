@@ -18,7 +18,7 @@ public class CollectionBasedUserDao implements UserDao {
 
     @Override
     public long add(User user) {
-        long id=idGenerator.getNextId();
+        long id = idGenerator.getNextId();
         user.setId(id);
         userList.add(user);
         return user.getId();

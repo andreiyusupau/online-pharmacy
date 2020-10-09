@@ -1,6 +1,6 @@
 package com.vironit.onlinepharmacy.model;
 
-public class OperationPosition extends Position{
+public class OperationPosition extends Position {
 
     private Operation operation;
 

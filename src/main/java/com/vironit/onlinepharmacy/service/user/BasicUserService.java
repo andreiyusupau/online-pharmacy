@@ -21,7 +21,7 @@ public class BasicUserService implements UserService {
 
     @Override
     public User get(long id) {
-        return userDAO.get(id).orElseThrow(()->new UserServiceException("Can't get user. User with id "+id+" not found."));
+        return userDAO.get(id).orElseThrow(() -> new UserServiceException("Can't get user. User with id " + id + " not found."));
     }
 
     @Override

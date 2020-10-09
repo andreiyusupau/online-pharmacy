@@ -4,7 +4,10 @@ import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.dao.OrderDao;
 import com.vironit.onlinepharmacy.dto.OrderCreateData;
 import com.vironit.onlinepharmacy.dto.OrderUpdateData;
-import com.vironit.onlinepharmacy.model.*;
+import com.vironit.onlinepharmacy.model.OperationPosition;
+import com.vironit.onlinepharmacy.model.Order;
+import com.vironit.onlinepharmacy.model.OrderStatus;
+import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.order.exception.OrderException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
@@ -35,7 +38,7 @@ public class BasicOrderService implements OrderService {
     @Override
     public long add(OrderCreateData orderCreateData) {
         User owner = userService.get(orderCreateData.getOwnerId());
-        Order order=new Order(-1,Instant.now(),owner,OrderStatus.PREPARATION);
+        Order order = new Order(-1, Instant.now(), owner, OrderStatus.PREPARATION);
         List<OperationPosition> operationPositions = orderCreateData.getOperationPositionDataList()
                 .stream()
                 .map(positionData -> new OperationPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), order))
@@ -47,7 +50,7 @@ public class BasicOrderService implements OrderService {
     @Override
     public void payForOrder(long id) throws OrderException {
         Order order = orderDao.get(id)
-                .orElseThrow(() -> new OrderException("Can't pay for order. Order with id "+id+" not found."));
+                .orElseThrow(() -> new OrderException("Can't pay for order. Order with id " + id + " not found."));
         order.setStatus(OrderStatus.PAID);
         orderDao.update(order);
     }
@@ -55,7 +58,7 @@ public class BasicOrderService implements OrderService {
     @Override
     public void confirmOrder(long id) throws OrderException {
         Order order = orderDao.get(id)
-                .orElseThrow(() -> new OrderException("Can't confirm order. Order with id "+id+" not found."));
+                .orElseThrow(() -> new OrderException("Can't confirm order. Order with id " + id + " not found."));
         order.setStatus(OrderStatus.IN_PROGRESS);
         Collection<OperationPosition> positions = operationPositionDao.getAllByOwnerId(id);
         stockService.reserve(positions);
@@ -65,7 +68,7 @@ public class BasicOrderService implements OrderService {
     @Override
     public void completeOrder(long id) throws OrderException {
         Order order = orderDao.get(id)
-                .orElseThrow(() -> new OrderException("Can't complete order. Order with id "+id+" not found."));
+                .orElseThrow(() -> new OrderException("Can't complete order. Order with id " + id + " not found."));
         order.setStatus(OrderStatus.COMPLETE);
         stockService.take(id);
         orderDao.update(order);
@@ -74,7 +77,7 @@ public class BasicOrderService implements OrderService {
     @Override
     public void cancelOrder(long id) throws OrderException {
         Order order = orderDao.get(id)
-                .orElseThrow(() -> new OrderException("Can't cancel order. Order with id "+id+" not found."));
+                .orElseThrow(() -> new OrderException("Can't cancel order. Order with id " + id + " not found."));
         order.setStatus(OrderStatus.CANCELED);
         stockService.annul(id);
         orderDao.update(order);
@@ -83,7 +86,7 @@ public class BasicOrderService implements OrderService {
     @Override
     public Order get(long id) {
         return orderDao.get(id)
-                .orElseThrow(() -> new OrderException("Can't cancel order. Order with id "+id+" not found."));
+                .orElseThrow(() -> new OrderException("Can't cancel order. Order with id " + id + " not found."));
     }
 
     @Override

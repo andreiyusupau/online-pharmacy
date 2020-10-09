@@ -19,21 +19,21 @@ public class CollectionBasedOperationPositionDao implements OperationPositionDao
 
     @Override
     public long add(OperationPosition operationPosition) {
-     long id=0;
-            boolean positionShouldBeCreated = true;
-            for (Position procurementPosition : operationPositionList) {
-                if (operationPosition.getProduct().equals(procurementPosition.getProduct())) {
-                    procurementPosition.setQuantity(procurementPosition.getQuantity() + operationPosition.getQuantity());
-                    id= procurementPosition.getId();
-                    positionShouldBeCreated = false;
-                    break;
-                }
+        long id = 0;
+        boolean positionShouldBeCreated = true;
+        for (Position procurementPosition : operationPositionList) {
+            if (operationPosition.getProduct().equals(procurementPosition.getProduct())) {
+                procurementPosition.setQuantity(procurementPosition.getQuantity() + operationPosition.getQuantity());
+                id = procurementPosition.getId();
+                positionShouldBeCreated = false;
+                break;
             }
-            if (positionShouldBeCreated) {
-                id=idGenerator.getNextId();
-                operationPosition.setId(id);
-               operationPositionList.add(operationPosition);
-            }
+        }
+        if (positionShouldBeCreated) {
+            id = idGenerator.getNextId();
+            operationPosition.setId(id);
+            operationPositionList.add(operationPosition);
+        }
         return id;
     }
 
@@ -54,9 +54,9 @@ public class CollectionBasedOperationPositionDao implements OperationPositionDao
 
     @Override
     public boolean update(OperationPosition operationPosition) {
-        if(remove(operationPosition.getId())){
+        if (remove(operationPosition.getId())) {
             return operationPositionList.add(operationPosition);
-        }else {
+        } else {
             return false;
         }
     }
@@ -77,7 +77,7 @@ public class CollectionBasedOperationPositionDao implements OperationPositionDao
     @Override
     public Collection<OperationPosition> getAllByOwnerId(long id) {
         Collection<OperationPosition> operationPositions = new ArrayList<>();
-        for (OperationPosition operationPosition:operationPositionList) {
+        for (OperationPosition operationPosition : operationPositionList) {
             if (operationPosition.getOperation().getId() == id) {
                 operationPositions.add(operationPosition);
             }

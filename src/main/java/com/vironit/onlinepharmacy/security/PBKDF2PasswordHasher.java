@@ -15,29 +15,6 @@ public class PBKDF2PasswordHasher implements PasswordHasher {
     public static final int ITERATIONS = 65536;
     public static final int KEY_LENGTH = 128;
 
-    @Override
-    public String hashPassword(String password) {
-
-        int iterations = ITERATIONS;
-        char[] chars = password.toCharArray();
-        byte[] salt = getSalt();
-
-        PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, KEY_LENGTH);
-        SecretKeyFactory skf = null;
-        try {
-            skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        } catch (NoSuchAlgorithmException e) {
-            throw new PasswordHashException("SecretKeyFactory not found.", e);
-        }
-        byte[] hash;
-        try {
-            hash = skf.generateSecret(spec).getEncoded();
-        } catch (InvalidKeySpecException e) {
-            throw new PasswordHashException("Invalid key specification.", e);
-        }
-        return iterations + ":" + toHex(salt) + ":" + toHex(hash);
-    }
-
     private static byte[] getSalt() {
         SecureRandom sr = null;
         try {
@@ -59,6 +36,37 @@ public class PBKDF2PasswordHasher implements PasswordHasher {
         } else {
             return hex;
         }
+    }
+
+    private static byte[] fromHex(String hex) {
+        byte[] bytes = new byte[hex.length() / 2];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
+        }
+        return bytes;
+    }
+
+    @Override
+    public String hashPassword(String password) {
+
+        int iterations = ITERATIONS;
+        char[] chars = password.toCharArray();
+        byte[] salt = getSalt();
+
+        PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, KEY_LENGTH);
+        SecretKeyFactory skf = null;
+        try {
+            skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        } catch (NoSuchAlgorithmException e) {
+            throw new PasswordHashException("SecretKeyFactory not found.", e);
+        }
+        byte[] hash;
+        try {
+            hash = skf.generateSecret(spec).getEncoded();
+        } catch (InvalidKeySpecException e) {
+            throw new PasswordHashException("Invalid key specification.", e);
+        }
+        return iterations + ":" + toHex(salt) + ":" + toHex(hash);
     }
 
     @Override
@@ -86,13 +94,5 @@ public class PBKDF2PasswordHasher implements PasswordHasher {
             diff |= hash[i] ^ testHash[i];
         }
         return diff == 0;
-    }
-
-    private static byte[] fromHex(String hex) {
-        byte[] bytes = new byte[hex.length() / 2];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
-        }
-        return bytes;
     }
 }

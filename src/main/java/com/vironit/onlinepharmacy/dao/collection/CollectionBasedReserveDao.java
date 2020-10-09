@@ -2,62 +2,61 @@ package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.dao.ReserveDao;
 import com.vironit.onlinepharmacy.model.OperationPosition;
-import com.vironit.onlinepharmacy.model.Order;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CollectionBasedReserveDao implements ReserveDao {
 
-    private final IdGenerator idGenerator;
-    private final Collection<Order> reserved= new ArrayList<>();
+    private final Collection<OperationPosition> reserved = new ArrayList<>();
 
-    public CollectionBasedReserveDao(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
+    @Override
+    public long add(OperationPosition operationPosition) {
+        return reserved.add(operationPosition) ? operationPosition.getId() : -1;
     }
 
     @Override
-    public boolean reserve(Collection<OperationPosition> positions) {
-        return false;
+    public Optional<OperationPosition> get(long id) {
+        return reserved.stream()
+                .filter(operationPosition -> operationPosition.getId() == id)
+                .findFirst();
     }
 
     @Override
-    public boolean annul(long orderId) {
-        return false;
-    }
-
-    @Override
-    public long add(Order order) {
-        return reserved.add(order) ?order.getId():-1;
-    }
-
-    @Override
-    public Optional<Order> get(long id) {
-        for (Order order : reserved) {
-            if (order.getId() == id) {
-                return Optional.of(order);
-            }
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Collection<Order> getAll() {
+    public Collection<OperationPosition> getAll() {
         return reserved;
     }
 
     @Override
-    public boolean update(Order order) {
-        if(remove(order.getId())){
-            return reserved.add(order);
-        }else {
+    public boolean update(OperationPosition operationPosition) {
+        if (remove(operationPosition.getId())) {
+            return reserved.add(operationPosition);
+        } else {
             return false;
         }
     }
 
     @Override
     public boolean remove(long id) {
-        return reserved.removeIf(order -> order.getId() == id);
+        return reserved.removeIf(operationPosition -> operationPosition.getId() == id);
+    }
+
+    @Override
+    public boolean addAll(Collection<OperationPosition> operationPositions) {
+        return reserved.addAll(operationPositions);
+    }
+
+    @Override
+    public Collection<OperationPosition> getAllByOwnerId(long id) {
+        return reserved.stream()
+                .filter(operationPosition -> operationPosition.getOperation().getId() == id)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean removeAllByOwnerId(long id) {
+        return reserved.removeIf(operationPosition -> operationPosition.getOperation().getId() == id);
     }
 }

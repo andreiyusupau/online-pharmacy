@@ -8,7 +8,7 @@ import com.vironit.onlinepharmacy.service.order.exception.OrderException;
 
 import java.util.Collection;
 
-public interface OrderService extends CRUDService<OrderCreateData,Order, OrderUpdateData> {
+public interface OrderService extends CRUDService<OrderCreateData, Order, OrderUpdateData> {
 
     void payForOrder(long id) throws OrderException;
 
@@ -19,7 +19,6 @@ public interface OrderService extends CRUDService<OrderCreateData,Order, OrderUp
     void cancelOrder(long id) throws OrderException;
 
     Collection<Order> getOrdersByUserId(long id);
-
 
 
 }

@@ -18,7 +18,7 @@ public class CollectionBasedOrderDao implements OrderDao {
 
     @Override
     public long add(Order order) {
-        long id=idGenerator.getNextId();
+        long id = idGenerator.getNextId();
         order.setId(id);
         orderList.add(order);
         return order.getId();
@@ -41,9 +41,9 @@ public class CollectionBasedOrderDao implements OrderDao {
 
     @Override
     public boolean update(Order order) {
-        if(remove(order.getId())){
+        if (remove(order.getId())) {
             return orderList.add(order);
-        }else {
+        } else {
             return false;
         }
     }
@@ -55,7 +55,7 @@ public class CollectionBasedOrderDao implements OrderDao {
 
     @Override
     public boolean addAll(Collection<Order> orders) {
-        for (Order order:orders){
+        for (Order order : orders) {
             add(order);
         }
         return true;
@@ -74,7 +74,7 @@ public class CollectionBasedOrderDao implements OrderDao {
 
     @Override
     public boolean removeAllByOwnerId(long id) {
-        return orderList.removeIf(order -> order.getOwner().getId()==id);
+        return orderList.removeIf(order -> order.getOwner().getId() == id);
     }
 
 }

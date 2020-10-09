@@ -22,7 +22,7 @@ public class BasicProductService implements ProductService {
     @Override
     public Product get(long id) {
         return productDAO.get(id)
-                .orElseThrow(()->new ProductException("Can't get product. Product with id "+id+" not found."));
+                .orElseThrow(() -> new ProductException("Can't get product. Product with id " + id + " not found."));
     }
 
     @Override
@@ -32,11 +32,11 @@ public class BasicProductService implements ProductService {
 
     @Override
     public void update(Product product) {
-productDAO.update(product);
+        productDAO.update(product);
     }
 
     @Override
     public void remove(long id) {
-productDAO.remove(id);
+        productDAO.remove(id);
     }
 }

@@ -1,16 +1,16 @@
 package com.vironit.onlinepharmacy.service.stock;
 
-import com.vironit.onlinepharmacy.model.Order;
+import com.vironit.onlinepharmacy.model.OperationPosition;
 import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.service.CRUDService;
 
 import java.util.Collection;
 
-public interface StockService extends CRUDService<Position,Position,Position> {
+public interface StockService extends CRUDService<Position, Position, Position> {
 
-    boolean put(Collection<Position> positions);
+    boolean addAll(Collection<Position> positions);
 
-    boolean reserve(Order order);
+    boolean reserve(Collection<OperationPosition> operationPositions);
 
     boolean take(long orderId);
 

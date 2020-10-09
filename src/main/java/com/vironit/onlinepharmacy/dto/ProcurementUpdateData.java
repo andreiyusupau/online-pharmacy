@@ -2,11 +2,11 @@ package com.vironit.onlinepharmacy.dto;
 
 import java.util.List;
 
-public class ProcurementUpdateData  extends ProcurementCreateData{
+public class ProcurementUpdateData extends ProcurementCreateData {
 
     private final long id;
 
-    public ProcurementUpdateData(long id,long ownerId, List<OperationPositionData> operationPositionDataList) {
+    public ProcurementUpdateData(long id, long ownerId, List<OperationPositionData> operationPositionDataList) {
         super(ownerId, operationPositionDataList);
         this.id = id;
     }

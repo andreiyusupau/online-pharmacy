@@ -23,7 +23,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testRegisterShouldReturnIdEqualToZero() throws RegistrationException {
-        IdGenerator idGenerator=new BasicIdGenerator();
+        IdGenerator idGenerator = new BasicIdGenerator();
         UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
@@ -37,7 +37,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testRegisterShouldThrowRegistrationExceptionUserWithSuchEmailAlreadyExists() throws RegistrationException {
-        IdGenerator idGenerator=new BasicIdGenerator();
+        IdGenerator idGenerator = new BasicIdGenerator();
         UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
@@ -55,7 +55,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldReturnUserPublicParameters() throws LoginException, RegistrationException {
-        IdGenerator idGenerator=new BasicIdGenerator();
+        IdGenerator idGenerator = new BasicIdGenerator();
         UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
@@ -73,7 +73,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldThrowExceptionEmailDoesNotExist() throws RegistrationException {
-        IdGenerator idGenerator=new BasicIdGenerator();
+        IdGenerator idGenerator = new BasicIdGenerator();
         UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);
@@ -95,7 +95,7 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void testLoginShouldThrowExceptionWrongPassword() throws RegistrationException {
-        IdGenerator idGenerator=new BasicIdGenerator();
+        IdGenerator idGenerator = new BasicIdGenerator();
         UserDao userDAO = new CollectionBasedUserDao(idGenerator);
         PasswordHasher passwordHasher = new PBKDF2PasswordHasher();
         AuthenticationService authenticationService = new BasicAuthenticationService(userDAO, passwordHasher);

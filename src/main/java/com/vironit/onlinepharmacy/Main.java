@@ -27,6 +27,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        //TODO:put into tests
 //Test
         //Create products
         IdGenerator productDaoIdGenerator = new BasicIdGenerator();
@@ -40,13 +41,15 @@ public class Main {
 //Create stock
         IdGenerator stockDaoIdGenerator = new BasicIdGenerator();
         StockDao stockDAO = new CollectionBasedStockDao(stockDaoIdGenerator);
+        ReserveDao reserveDao = new CollectionBasedReserveDao();
+
         StockService stockService = new BasicStockService(stockDAO, reserveDao);
 
         //create users
         IdGenerator userDaoIdGenerator = new BasicIdGenerator();
         UserDao userDAO = new CollectionBasedUserDao(userDaoIdGenerator);
         UserService userService = new BasicUserService(userDAO);
-        User supplier = new User(-1, "supplier", "name", "name", LocalDate.of(2000, 12, 12), "email2","password", Role.PROCUREMENT_SPECIALIST);
+        User supplier = new User(-1, "supplier", "name", "name", LocalDate.of(2000, 12, 12), "email2", "password", Role.PROCUREMENT_SPECIALIST);
         userService.add(supplier);
 //Create procurement
         IdGenerator procurementDaoIdGenerator = new BasicIdGenerator();
@@ -69,24 +72,24 @@ public class Main {
         System.out.println(procurementService.getAll().toString());
         System.out.println(stockService.getAll().toString());
         //Create orders
-        User customer = new User(1, "customer", "name", "name", LocalDate.of(2000, 12, 12), "email","password", Role.CONSUMER);
+        User customer = new User(1, "customer", "name", "name", LocalDate.of(2000, 12, 12), "email", "password", Role.CONSUMER);
         userService.add(customer);
         IdGenerator orderDaoIdGenerator = new BasicIdGenerator();
         OrderDao orderDao = new CollectionBasedOrderDao(orderDaoIdGenerator);
         IdGenerator operationPositionDaoIdGeneratorOrder = new BasicIdGenerator();
-        OperationPositionDao operationPositionDaoOrder=new CollectionBasedOperationPositionDao(operationPositionDaoIdGeneratorOrder);
-        OrderService orderService = new BasicOrderService(orderDao,operationPositionDaoOrder, stockService, userService, productService);
+        OperationPositionDao operationPositionDaoOrder = new CollectionBasedOperationPositionDao(operationPositionDaoIdGeneratorOrder);
+        OrderService orderService = new BasicOrderService(orderDao, operationPositionDaoOrder, stockService, userService, productService);
 
 
         OperationPositionData operationPositionDataOrder1 = new OperationPositionData(1, 3);
         OperationPositionData operationPositionDataOrder2 = new OperationPositionData(2, 2);
         OperationPositionData operationPositionDataOrder3 = new OperationPositionData(3, 5);
-        List<OperationPositionData> operationPositionDataOrder=new ArrayList<>();
+        List<OperationPositionData> operationPositionDataOrder = new ArrayList<>();
         operationPositionDataOrder.add(operationPositionDataOrder1);
         operationPositionDataOrder.add(operationPositionDataOrder2);
         operationPositionDataOrder.add(operationPositionDataOrder3);
 
-        OrderCreateData orderCreateData=new OrderCreateData(2,operationPositionDataOrder);
+        OrderCreateData orderCreateData = new OrderCreateData(2, operationPositionDataOrder);
 
         long orderId = orderService.add(orderCreateData);
         orderService.payForOrder(orderId);

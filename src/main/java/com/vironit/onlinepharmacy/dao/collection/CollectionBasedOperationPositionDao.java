@@ -2,7 +2,6 @@ package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.model.OperationPosition;
-import com.vironit.onlinepharmacy.model.Position;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,9 +18,9 @@ public class CollectionBasedOperationPositionDao implements OperationPositionDao
 
     @Override
     public long add(OperationPosition operationPosition) {
-        long id = 0;
+       /* long id = 0;
         boolean positionShouldBeCreated = true;
-        for (Position procurementPosition : operationPositionList) {
+        for (OperationPosition procurementPosition : operationPositionList) {
             if (operationPosition.getProduct().equals(procurementPosition.getProduct())) {
                 procurementPosition.setQuantity(procurementPosition.getQuantity() + operationPosition.getQuantity());
                 id = procurementPosition.getId();
@@ -34,6 +33,10 @@ public class CollectionBasedOperationPositionDao implements OperationPositionDao
             operationPosition.setId(id);
             operationPositionList.add(operationPosition);
         }
+        return id;*/
+        long id = idGenerator.getNextId();
+        operationPosition.setId(id);
+        operationPositionList.add(operationPosition);
         return id;
     }
 

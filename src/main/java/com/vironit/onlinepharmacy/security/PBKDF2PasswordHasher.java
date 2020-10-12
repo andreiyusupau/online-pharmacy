@@ -9,25 +9,24 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
-//TODO:exception handling
 public class PBKDF2PasswordHasher implements PasswordHasher {
 
     public static final int ITERATIONS = 65536;
     public static final int KEY_LENGTH = 128;
 
-    private static byte[] getSalt() {
-        SecureRandom sr = null;
+    private byte[] getSalt() {
+        SecureRandom sr;
         try {
             sr = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
-            throw new PasswordHashException("No such secure algorithm.", e);
+            throw new PasswordHashException("No such secure random algorithm.", e);
         }
         byte[] salt = new byte[16];
         sr.nextBytes(salt);
         return salt;
     }
 
-    private static String toHex(byte[] array) {
+    private String toHex(byte[] array) {
         BigInteger bi = new BigInteger(1, array);
         String hex = bi.toString(16);
         int paddingLength = (array.length * 2) - hex.length();
@@ -38,7 +37,7 @@ public class PBKDF2PasswordHasher implements PasswordHasher {
         }
     }
 
-    private static byte[] fromHex(String hex) {
+    private byte[] fromHex(String hex) {
         byte[] bytes = new byte[hex.length() / 2];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
@@ -48,24 +47,11 @@ public class PBKDF2PasswordHasher implements PasswordHasher {
 
     @Override
     public String hashPassword(String password) {
-
         int iterations = ITERATIONS;
         char[] chars = password.toCharArray();
         byte[] salt = getSalt();
-
         PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, KEY_LENGTH);
-        SecretKeyFactory skf = null;
-        try {
-            skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        } catch (NoSuchAlgorithmException e) {
-            throw new PasswordHashException("SecretKeyFactory not found.", e);
-        }
-        byte[] hash;
-        try {
-            hash = skf.generateSecret(spec).getEncoded();
-        } catch (InvalidKeySpecException e) {
-            throw new PasswordHashException("Invalid key specification.", e);
-        }
+        byte[] hash= getHash(spec);
         return iterations + ":" + toHex(salt) + ":" + toHex(hash);
     }
 
@@ -77,22 +63,30 @@ public class PBKDF2PasswordHasher implements PasswordHasher {
         byte[] hash = fromHex(parts[2]);
 
         PBEKeySpec spec = new PBEKeySpec(originalPassword.toCharArray(), salt, iterations, hash.length * 8);
+
+        byte[] testHash= getHash(spec);
+
+        int diff = hash.length ^ testHash.length;
+        for (int i = 0; i < hash.length && i < testHash.length; i++) {
+            diff |= hash[i] ^ testHash[i];
+        }
+        return diff == 0;
+    }
+
+    private byte [] getHash(PBEKeySpec spec){
+
         SecretKeyFactory skf;
         try {
             skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         } catch (NoSuchAlgorithmException e) {
             throw new PasswordHashException("SecretKeyFactory not found.", e);
         }
-        byte[] testHash;
+        byte[] hash;
         try {
-            testHash = skf.generateSecret(spec).getEncoded();
+            hash = skf.generateSecret(spec).getEncoded();
         } catch (InvalidKeySpecException e) {
             throw new PasswordHashException("Invalid key specification.", e);
         }
-        int diff = hash.length ^ testHash.length;
-        for (int i = 0; i < hash.length && i < testHash.length; i++) {
-            diff |= hash[i] ^ testHash[i];
-        }
-        return diff == 0;
+        return hash;
     }
 }

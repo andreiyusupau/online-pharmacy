@@ -21,6 +21,7 @@ public class CollectionBasedUserDao implements UserDao {
         long id = idGenerator.getNextId();
         user.setId(id);
         userList.add(user);
+        System.out.println(userList.toString());
         return user.getId();
     }
 

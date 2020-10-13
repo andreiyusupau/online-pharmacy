@@ -86,7 +86,7 @@ public class BasicOrderService implements OrderService {
     @Override
     public Order get(long id) {
         return orderDao.get(id)
-                .orElseThrow(() -> new OrderException("Can't cancel order. Order with id " + id + " not found."));
+                .orElseThrow(() -> new OrderException("Can't get order. Order with id " + id + " not found."));
     }
 
     @Override

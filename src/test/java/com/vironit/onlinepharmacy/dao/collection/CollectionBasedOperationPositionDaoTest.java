@@ -1,5 +1,6 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
+import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.model.Operation;
 import com.vironit.onlinepharmacy.model.OperationPosition;
 import com.vironit.onlinepharmacy.model.Product;
@@ -30,16 +31,16 @@ public class CollectionBasedOperationPositionDaoTest {
     @Mock
     Operation thirdOperation;
     @Mock
-    BasicIdGenerator idGenerator;
+    IdGenerator idGenerator;
     @InjectMocks
-    CollectionBasedOperationPositionDao collectionBasedOperationPositionDao;
+    OperationPositionDao operationPositionDao;
 
   @Test
     void testAdd() {
       when(idGenerator.getNextId()).thenReturn(0L);
       OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
 
-      long id=collectionBasedOperationPositionDao.add(operationPosition);
+      long id= operationPositionDao.add(operationPosition);
 
       Assertions.assertEquals(0, id);
     }
@@ -48,9 +49,9 @@ public class CollectionBasedOperationPositionDaoTest {
     void testGet() {
         when(idGenerator.getNextId()).thenReturn(0L);
         OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
-        long id=collectionBasedOperationPositionDao.add(operationPosition);
+        long id= operationPositionDao.add(operationPosition);
 
-        OperationPosition acquiredOperationPosition=collectionBasedOperationPositionDao.get(id)
+        OperationPosition acquiredOperationPosition= operationPositionDao.get(id)
                 .get();
 
         Assertions.assertEquals(operationPosition,acquiredOperationPosition);
@@ -66,9 +67,9 @@ public class CollectionBasedOperationPositionDaoTest {
         operationPositions.add(operationPosition);
         operationPositions.add(secondOperationPosition);
         operationPositions.add(thirdOperationPosition);
-        collectionBasedOperationPositionDao.addAll(operationPositions);
+        operationPositionDao.addAll(operationPositions);
 
-        Collection<OperationPosition> acquiredOperationPositions=collectionBasedOperationPositionDao.getAll();
+        Collection<OperationPosition> acquiredOperationPositions= operationPositionDao.getAll();
 //TODO:
         Assertions.assertEquals(operationPositions,acquiredOperationPositions);
   }
@@ -77,11 +78,11 @@ public class CollectionBasedOperationPositionDaoTest {
     void testUpdate() {
         when(idGenerator.getNextId()).thenReturn(0L);
         OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
-        collectionBasedOperationPositionDao.add(operationPosition);
+        operationPositionDao.add(operationPosition);
         OperationPosition operationPositionForUpdate=new OperationPosition(0,15,product,operation);
-        collectionBasedOperationPositionDao.update(operationPositionForUpdate);
+        operationPositionDao.update(operationPositionForUpdate);
 
-        OperationPosition updatedOperationPosition=collectionBasedOperationPositionDao.get(0)
+        OperationPosition updatedOperationPosition= operationPositionDao.get(0)
                 .get();
 
         Assertions.assertEquals(operationPositionForUpdate,updatedOperationPosition);
@@ -91,13 +92,13 @@ public class CollectionBasedOperationPositionDaoTest {
     void testRemove() {
         when(idGenerator.getNextId()).thenReturn(0L);
         OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
-        collectionBasedOperationPositionDao.add(operationPosition);
+        operationPositionDao.add(operationPosition);
 
-        long sizeAfterAdd=collectionBasedOperationPositionDao.getAll().size();
+        long sizeAfterAdd= operationPositionDao.getAll().size();
         Assertions.assertEquals(1,sizeAfterAdd);
 
-        collectionBasedOperationPositionDao.remove(0);
-        long sizeAfterRemove=collectionBasedOperationPositionDao.getAll().size();
+        operationPositionDao.remove(0);
+        long sizeAfterRemove= operationPositionDao.getAll().size();
 
         Assertions.assertEquals(0,sizeAfterRemove);
     }

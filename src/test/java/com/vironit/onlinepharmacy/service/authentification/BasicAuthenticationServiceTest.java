@@ -23,19 +23,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BasicAuthenticationServiceTest {
-
-    @Mock
-    UserToUserPublicParametersConverter userToUserPublicParametersConverter;
-    @Mock
-    UserRegisterParametersToUserConverter userRegisterParametersToUserConverter;
     @Mock
     UserDao userDao;
     @Mock
     PasswordHasher passwordHasher;
+    @Mock
+    UserToUserPublicParametersConverter userToUserPublicParametersConverter;
+    @Mock
+    UserRegisterParametersToUserConverter userRegisterParametersToUserConverter;
     @InjectMocks
     BasicAuthenticationService authenticationService;
 
@@ -46,7 +45,6 @@ public class BasicAuthenticationServiceTest {
         userRegisterParameters = new UserRegisterParameters("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123");
-
     }
 
     @Test
@@ -58,12 +56,13 @@ public class BasicAuthenticationServiceTest {
                 .thenReturn(Optional.empty());
         when(userRegisterParametersToUserConverter.convert(userRegisterParameters))
                 .thenReturn(user);
-        when(userDao.add(user)).thenReturn(0L);
+        when(userDao.add(user))
+                .thenReturn(0L);
         when(passwordHasher.hashPassword("testPassword123"))
                 .thenReturn("testPassword123");
-
         long id = authenticationService.register(userRegisterParameters);
-
+        verify(userRegisterParametersToUserConverter).convert(userRegisterParameters);
+        verify(userDao).getByEmail("test@test.com");
         Assertions.assertEquals(0, id);
     }
 
@@ -81,6 +80,8 @@ public class BasicAuthenticationServiceTest {
             authenticationService.register(userRegisterParameters);
         });
 
+        verify(userRegisterParametersToUserConverter).convert(userRegisterParameters);
+        verify(userDao).getByEmail("test@test.com");
         String expectedMessage = "User with email " + userRegisterParameters.getEmail() + " already exists.";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
@@ -104,6 +105,10 @@ public class BasicAuthenticationServiceTest {
 
         UserPublicParameters userPublicParameters = authenticationService.login(userLoginParameters);
 
+        verify(userToUserPublicParametersConverter).convert(user);
+        verify(userDao).getByEmail("test@test.com");
+        verify(passwordHasher).validatePassword("testPassword123","testPassword123");
+
         Assertions.assertEquals(expectedUserPublicParameters, userPublicParameters);
     }
 
@@ -116,6 +121,11 @@ public class BasicAuthenticationServiceTest {
         Exception exception = Assertions.assertThrows(LoginException.class, () -> {
             authenticationService.login(userLoginParameters);
         });
+
+        verify(userToUserPublicParametersConverter,never()).convert(any(User.class));
+        verify(userDao).getByEmail("nonexistentemail@test.com");
+        verify(passwordHasher,never()).validatePassword(anyString(),anyString());
+        verify(userDao,never()).add(any(User.class));
 
         String expectedMessage = "User with email " + userLoginParameters.getEmail() + " does not exist.";
         String actualMessage = exception.getMessage();
@@ -137,6 +147,11 @@ public class BasicAuthenticationServiceTest {
         Exception exception = Assertions.assertThrows(LoginException.class, () -> {
             authenticationService.login(userLoginParameters);
         });
+
+        verify(userToUserPublicParametersConverter,never()).convert(any(User.class));
+        verify(userDao).getByEmail("test@test.com");
+        verify(passwordHasher).validatePassword("wrongPassword", "testPassword123");
+        verify(userDao,never()).add(any(User.class));
 
         String expectedMessage = "Wrong password for user " + userLoginParameters.getEmail();
         String actualMessage = exception.getMessage();

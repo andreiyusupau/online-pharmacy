@@ -20,8 +20,8 @@ public class CollectionBasedProductDao implements ProductDao {
     public long add(Product product) {
         long id = idGenerator.getNextId();
         product.setId(id);
-        productList.add(product);
-        return product.getId();
+        boolean successfulAdd = productList.add(product);
+        return successfulAdd ? id : -1L;
     }
 
     @Override
@@ -38,11 +38,7 @@ public class CollectionBasedProductDao implements ProductDao {
 
     @Override
     public boolean update(Product product) {
-        if (remove(product.getId())) {
-            return productList.add(product);
-        } else {
-            return false;
-        }
+        return remove(product.getId()) && productList.add(product);
     }
 
     @Override

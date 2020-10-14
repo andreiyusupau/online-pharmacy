@@ -21,8 +21,8 @@ public class CollectionBasedProcurementDao implements ProcurementDao {
     public long add(Procurement procurement) {
         long id = idGenerator.getNextId();
         procurement.setId(id);
-        procurementList.add(procurement);
-        return procurement.getId();
+        boolean successfulAdd = procurementList.add(procurement);
+        return successfulAdd ? id : -1L;
     }
 
     @Override
@@ -39,11 +39,7 @@ public class CollectionBasedProcurementDao implements ProcurementDao {
 
     @Override
     public boolean update(Procurement updatedProcurement) {
-        if (remove(updatedProcurement.getId())) {
-            return procurementList.add(updatedProcurement);
-        } else {
-            return false;
-        }
+        return remove(updatedProcurement.getId()) && procurementList.add(updatedProcurement);
     }
 
     @Override

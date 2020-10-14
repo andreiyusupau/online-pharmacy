@@ -1,115 +1,153 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
-import com.vironit.onlinepharmacy.dao.OperationPositionDao;
-import com.vironit.onlinepharmacy.model.Operation;
-import com.vironit.onlinepharmacy.model.OperationPosition;
-import com.vironit.onlinepharmacy.model.Product;
+import com.vironit.onlinepharmacy.model.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CollectionBasedOperationPositionDaoTest {
+class CollectionBasedOperationPositionDaoTest {
+
+    private static Product product;
+    private static Operation operation;
+    private OperationPosition operationPosition;
     @Mock
-    Product product;
-    @Mock
-    Product secondProduct;
-    @Mock
-    Product thirdProduct;
-    @Mock
-    Operation operation;
-    @Mock
-    Operation secondOperation;
-    @Mock
-    Operation thirdOperation;
-    @Mock
-    IdGenerator idGenerator;
+    private IdGenerator idGenerator;
     @InjectMocks
-    OperationPositionDao operationPositionDao;
+    private CollectionBasedOperationPositionDao operationPositionDao;
 
-  @Test
+    @BeforeAll
+    static void init() {
+        product = new Product(1, "testProduct", new BigDecimal("100"), null);
+        operation = new Procurement(1, Instant.now(), null,
+                ProcurementStatus.PREPARATION);
+    }
+
+    @BeforeEach
+    void set() {
+        operationPosition = new OperationPosition(-1, 10, product, operation);
+    }
+
+    @Test
     void testAdd() {
-      when(idGenerator.getNextId()).thenReturn(0L);
-      OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
+        when(idGenerator.getNextId()).thenReturn(0L);
 
-      long id= operationPositionDao.add(operationPosition);
+        long id = operationPositionDao.add(operationPosition);
 
-      Assertions.assertEquals(0, id);
+        long sizeAfterAdd = operationPositionDao.getAll().size();
+        Assertions.assertEquals(1, sizeAfterAdd);
+        verify(idGenerator, times(1)).getNextId();
+        Assertions.assertEquals(0, id);
     }
 
     @Test
     void testGet() {
         when(idGenerator.getNextId()).thenReturn(0L);
-        OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
-        long id= operationPositionDao.add(operationPosition);
+        long id = operationPositionDao.add(operationPosition);
 
-        OperationPosition acquiredOperationPosition= operationPositionDao.get(id)
+        OperationPosition acquiredOperationPosition = operationPositionDao.get(id)
                 .get();
 
-        Assertions.assertEquals(operationPosition,acquiredOperationPosition);
+        Assertions.assertEquals(operationPosition, acquiredOperationPosition);
     }
 
     @Test
     void testAddAllGetAll() {
-        when(idGenerator.getNextId()).thenReturn(0L);
-        OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
-        OperationPosition secondOperationPosition=new OperationPosition(-1,11,product,secondOperation);
-        OperationPosition thirdOperationPosition=new OperationPosition(-1,14,product,thirdOperation);
-        Collection<OperationPosition> operationPositions=new ArrayList<>();
+        Operation secondOperation = new Procurement();
+        Operation thirdOperation = new Procurement();
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        OperationPosition secondOperationPosition = new OperationPosition(-1, 11, product, secondOperation);
+        OperationPosition thirdOperationPosition = new OperationPosition(-1, 14, product, thirdOperation);
+        Collection<OperationPosition> operationPositions = new ArrayList<>();
         operationPositions.add(operationPosition);
         operationPositions.add(secondOperationPosition);
         operationPositions.add(thirdOperationPosition);
+
         operationPositionDao.addAll(operationPositions);
 
-        Collection<OperationPosition> acquiredOperationPositions= operationPositionDao.getAll();
-//TODO:
-        Assertions.assertEquals(operationPositions,acquiredOperationPositions);
-  }
+        Collection<OperationPosition> acquiredOperationPositions = operationPositionDao.getAll();
+        Assertions.assertEquals(operationPositions, acquiredOperationPositions);
+    }
 
     @Test
     void testUpdate() {
         when(idGenerator.getNextId()).thenReturn(0L);
-        OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
         operationPositionDao.add(operationPosition);
-        OperationPosition operationPositionForUpdate=new OperationPosition(0,15,product,operation);
+        OperationPosition operationPositionForUpdate = new OperationPosition(0, 15, product, operation);
+
         operationPositionDao.update(operationPositionForUpdate);
 
-        OperationPosition updatedOperationPosition= operationPositionDao.get(0)
+        OperationPosition updatedOperationPosition = operationPositionDao.get(0)
                 .get();
 
-        Assertions.assertEquals(operationPositionForUpdate,updatedOperationPosition);
-  }
+        Assertions.assertEquals(operationPositionForUpdate, updatedOperationPosition);
+    }
 
     @Test
     void testRemove() {
         when(idGenerator.getNextId()).thenReturn(0L);
-        OperationPosition operationPosition=new OperationPosition(-1,10,product,operation);
         operationPositionDao.add(operationPosition);
 
-        long sizeAfterAdd= operationPositionDao.getAll().size();
-        Assertions.assertEquals(1,sizeAfterAdd);
-
         operationPositionDao.remove(0);
-        long sizeAfterRemove= operationPositionDao.getAll().size();
+        long sizeAfterRemove = operationPositionDao.getAll().size();
 
-        Assertions.assertEquals(0,sizeAfterRemove);
+        Assertions.assertEquals(0, sizeAfterRemove);
     }
 
     @Test
     void testGetAllByOwnerId() {
+        Operation secondOperation = new Procurement(2, Instant.now(), null, ProcurementStatus.PREPARATION);
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        OperationPosition secondOperationPosition = new OperationPosition(-1, 11, product, secondOperation);
+        OperationPosition thirdOperationPosition = new OperationPosition(-1, 14, product, operation);
+        operationPositionDao.add(operationPosition);
+        operationPositionDao.add(secondOperationPosition);
+        operationPositionDao.add(thirdOperationPosition);
 
+        Collection<OperationPosition> actualOperationPositions = operationPositionDao.getAllByOwnerId(1);
+
+        Collection<OperationPosition> expectedOperationPositions = new ArrayList<>();
+        expectedOperationPositions.add(operationPosition);
+        expectedOperationPositions.add(thirdOperationPosition);
+        Assertions.assertEquals(expectedOperationPositions, actualOperationPositions);
     }
 
     @Test
     void testRemoveAllByOwnerId() {
+        Operation secondOperation = new Procurement(2, Instant.now(), null, ProcurementStatus.PREPARATION);
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        OperationPosition secondOperationPosition = new OperationPosition(-1, 11, product, secondOperation);
+        OperationPosition thirdOperationPosition = new OperationPosition(-1, 14, product, operation);
+        operationPositionDao.add(operationPosition);
+        operationPositionDao.add(secondOperationPosition);
+        operationPositionDao.add(thirdOperationPosition);
 
+        operationPositionDao.removeAllByOwnerId(1);
+        Collection<OperationPosition> actualOperationPositions = operationPositionDao.getAll();
+
+        Collection<OperationPosition> expectedOperationPositions = new ArrayList<>();
+        expectedOperationPositions.add(secondOperationPosition);
+        Assertions.assertEquals(expectedOperationPositions, actualOperationPositions);
     }
 }

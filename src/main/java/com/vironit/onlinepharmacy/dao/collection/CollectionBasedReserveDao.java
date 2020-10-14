@@ -31,11 +31,7 @@ public class CollectionBasedReserveDao implements ReserveDao {
 
     @Override
     public boolean update(OperationPosition operationPosition) {
-        if (remove(operationPosition.getId())) {
-            return reserved.add(operationPosition);
-        } else {
-            return false;
-        }
+        return remove(operationPosition.getId()) && reserved.add(operationPosition);
     }
 
     @Override

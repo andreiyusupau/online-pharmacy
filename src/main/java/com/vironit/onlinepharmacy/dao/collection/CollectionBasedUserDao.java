@@ -20,19 +20,15 @@ public class CollectionBasedUserDao implements UserDao {
     public long add(User user) {
         long id = idGenerator.getNextId();
         user.setId(id);
-        userList.add(user);
-        System.out.println(userList.toString());
-        return user.getId();
+        boolean successfulAdd = userList.add(user);
+        return successfulAdd ? id : -1L;
     }
 
     @Override
     public Optional<User> get(long id) {
-        for (User user : userList) {
-            if (user.getId() == id) {
-                return Optional.of(user);
-            }
-        }
-        return Optional.empty();
+        return userList.stream()
+                .filter(user -> user.getId() == id)
+                .findFirst();
     }
 
     @Override
@@ -42,12 +38,12 @@ public class CollectionBasedUserDao implements UserDao {
 
     @Override
     public boolean update(User user) {
-        return false;
+        return remove(user.getId()) && userList.add(user);
     }
 
     @Override
     public boolean remove(long id) {
-        return false;
+        return userList.removeIf(user -> user.getId() == id);
     }
 
     @Override

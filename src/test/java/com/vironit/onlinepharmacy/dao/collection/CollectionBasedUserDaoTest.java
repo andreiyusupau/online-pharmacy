@@ -1,94 +1,129 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
+import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CollectionBasedUserDaoTest {
+class CollectionBasedUserDaoTest {
+
+    private User user;
+
     @Mock
-    User firstInputUser;
-    @Mock
-    User secondInputUser;
-    @Mock
-    User thirdInputUser;
-@Mock
-    IdGenerator idGenerator;
-@InjectMocks
-   CollectionBasedUserDao collectionBasedUserDao;
+    private IdGenerator idGenerator;
+    @InjectMocks
+    private CollectionBasedUserDao userDao;
+
+    @BeforeEach
+    void set() {
+        user = new User(-1, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
+    }
+
+    @Test
+    void testGetByEmail() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L);
+        userDao.add(user);
+
+        User actualUser = userDao.getByEmail("test@email.com")
+                .get();
+
+        Assertions.assertEquals(user, actualUser);
+        Assertions.assertEquals(0, user.getId());
+    }
 
     @Test
     void testAdd() {
-        long id = 1;
-        when(idGenerator.getNextId()).thenReturn(id);
+        when(idGenerator.getNextId())
+                .thenReturn(0L);
 
-       long idFromAdd= collectionBasedUserDao.add(any(User.class));
-
-        Assertions.assertEquals(id,idFromAdd);
+        long idFromAdd = userDao.add(user);
+        long sizeAfterAdd = userDao.getAll()
+                .size();
+        Assertions.assertEquals(1, sizeAfterAdd);
+        Assertions.assertEquals(0, idFromAdd);
     }
 
     @Test
     void testGet() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L);
+        userDao.add(user);
 
-        long id = 1;
-        when(idGenerator.getNextId()).thenReturn(id);
-        collectionBasedUserDao.add(firstInputUser);
+        User actualUser = userDao.get(0)
+                .get();
 
-        User user=collectionBasedUserDao.get(id).get();
-
-        Assertions.assertEquals(user,firstInputUser);
-        Assertions.assertEquals(1,user.getId());
+        Assertions.assertEquals(user, actualUser);
+        Assertions.assertEquals(0, user.getId());
     }
 
     @Test
     void testGetShouldReturnEmptyOptional() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L);
+        userDao.add(user);
 
-        long id = 1;
-        when(idGenerator.getNextId()).thenReturn(id);
-        collectionBasedUserDao.add(firstInputUser);
+        Optional<User> actualUser = userDao.get(5);
 
-        long wrongId=5;
-        Optional<User> user=collectionBasedUserDao.get(wrongId);
-
-        Assertions.assertTrue(user.isEmpty());
+        Assertions.assertTrue(actualUser.isEmpty());
     }
 
     @Test
     void testGetAll() {
+        User secondUser = new User(-1, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test2@email.com", "testpass123", Role.MODERATOR);
+        User thirdUser = new User(-1, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test3@email.com", "testpass123", Role.PROCUREMENT_SPECIALIST);
         when(idGenerator.getNextId())
+                .thenReturn(0L)
                 .thenReturn(1L)
-                .thenReturn(2L)
-                .thenReturn(3L);
-        collectionBasedUserDao.add(firstInputUser);
-        collectionBasedUserDao.add(secondInputUser);
-        collectionBasedUserDao.add(thirdInputUser);
-        long expectedSize=3;
-long actualSize=collectionBasedUserDao.getAll().size();
-        Assertions.assertEquals(expectedSize,actualSize);
+                .thenReturn(2L);
+        userDao.add(user);
+        userDao.add(secondUser);
+        userDao.add(thirdUser);
+
+        long actualSize = userDao.getAll()
+                .size();
+        Assertions.assertEquals(3, actualSize);
     }
 
     @Test
-    void update() {
+    void testUpdate() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L);
+        userDao.add(user);
+        User userForUpdate = new User(0, "updatedFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test@email.com", "testpass123", Role.MODERATOR);
 
+        userDao.update(userForUpdate);
+
+        User updatedUser = userDao.get(0)
+                .get();
+        Assertions.assertEquals(userForUpdate, updatedUser);
     }
 
     @Test
-    void remove() {
+    void testRemove() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L);
+        userDao.add(user);
 
+        userDao.remove(0);
+
+        long sizeAfterRemove = userDao.getAll()
+                .size();
+        Assertions.assertEquals(0, sizeAfterRemove);
     }
-
-    @Test
-    void getByEmail() {
-
-    }
-
 }

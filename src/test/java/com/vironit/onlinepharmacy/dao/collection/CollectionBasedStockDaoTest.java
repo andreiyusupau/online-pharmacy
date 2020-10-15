@@ -3,7 +3,6 @@ package com.vironit.onlinepharmacy.dao.collection;
 import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.model.Product;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,25 +19,22 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CollectionBasedStockDaoTest {
 
-    private static Product product;
     @Mock
     private IdGenerator idGenerator;
     @InjectMocks
     private CollectionBasedStockDao stockDao;
-    private Position position;
 
-    @BeforeAll
-    static void init() {
-        product = new Product(1, "testProduct", new BigDecimal("100"), null);
-    }
+    private Product product;
+    private Position position;
 
     @BeforeEach
     void set() {
+        product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
         position = new Position(1, 10, product);
     }
 
     @Test
-    void testGetByProductId() {
+    void getByProductIdShouldReturnPositionWithProductId() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         stockDao.add(position);
@@ -50,7 +46,7 @@ class CollectionBasedStockDaoTest {
     }
 
     @Test
-    void testAdd() {
+    void addShouldAddPositionToCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         long id = stockDao.add(position);
@@ -62,7 +58,7 @@ class CollectionBasedStockDaoTest {
     }
 
     @Test
-    void testGet() {
+    void getShouldGetPositionFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         long id = stockDao.add(position);
@@ -74,9 +70,9 @@ class CollectionBasedStockDaoTest {
     }
 
     @Test
-    void testGetAll() {
-        Product secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null);
-        Product thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null);
+    void getAllShouldGetAllPositionsFromCollection() {
+        Product secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null,false);
+        Product thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null,false);
         Position secondPosition = new Position(2, 11, secondProduct);
         Position thirdPosition = new Position(3, 14, thirdProduct);
 
@@ -98,7 +94,7 @@ class CollectionBasedStockDaoTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUpdatePositionInCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         stockDao.add(position);
@@ -113,7 +109,7 @@ class CollectionBasedStockDaoTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldRemovePositionFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         stockDao.add(position);

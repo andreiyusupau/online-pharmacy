@@ -41,9 +41,9 @@ public class BasicStockServiceTest {
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal("1421"), null);
+        product = new Product(1, "testProduct", new BigDecimal("1421"), null,false);
         position = new Position(1, 2, product);
-        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("152"), null);
+        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("152"), null,false);
         secondPosition = new Position(2, 51, secondProduct);
         positions = new ArrayList<>();
         positions.add(position);
@@ -52,7 +52,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testAdd() {
+    void addShouldUseDao() {
         when(stockDao.add(any()))
                 .thenReturn(0L);
 
@@ -63,7 +63,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testGetShouldNotThrowException() {
+    void getShouldNotThrowException() {
         when(stockDao.get(anyLong()))
                 .thenReturn(Optional.of(position));
 
@@ -74,7 +74,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testGetShouldThrowException() {
+    void getShouldThrowException() {
         when(stockDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -87,7 +87,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testGetAllShouldNotThrowException() {
+    void getAllShouldNotThrowException() {
         when(stockDao.getAll())
                 .thenReturn(positions);
 
@@ -97,7 +97,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUseDao() {
         Position positionForUpdate = new Position(1, 6, secondProduct);
         when(stockDao.update(any()))
                 .thenReturn(true);
@@ -108,7 +108,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldUseDao() {
         when(stockDao.remove(anyLong()))
                 .thenReturn(true);
 
@@ -118,7 +118,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testAddAll() {
+    void addAllShouldUseDao() {
         when(stockDao.add(any(Position.class)))
                 .thenReturn(1L)
                 .thenReturn(2L);
@@ -127,7 +127,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testReserve() {
+    void reserveShouldPutDesiredPositionQuantitiesFromStockToReserve() {
         OperationPosition operationPosition = new OperationPosition(1, 2, product, order);
         OperationPosition secondOperationPosition = new OperationPosition(2, 5, secondProduct, order);
         Collection<OperationPosition> operationPositions = new ArrayList<>();
@@ -144,8 +144,8 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testReserveShouldThrowException() {
-        Product unknownProduct = new Product(3, "unknownProduct", new BigDecimal("124"), null);
+    void reserveShouldThrowExceptionNotInStock() {
+        Product unknownProduct = new Product(3, "unknownProduct", new BigDecimal("124"), null,false);
         OperationPosition operationPosition = new OperationPosition(1, 2, product, order);
         OperationPosition secondOperationPosition = new OperationPosition(2, 5, unknownProduct, order);
         Collection<OperationPosition> operationPositions = new ArrayList<>();
@@ -165,7 +165,7 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testReserveShouldThrowException4() {
+    void reserveShouldThrowExceptionNotEnough() {
         OperationPosition operationPosition = new OperationPosition(1, 6, product, order);
         OperationPosition secondOperationPosition = new OperationPosition(2, 5, secondProduct, order);
         Collection<OperationPosition> operationPositions = new ArrayList<>();
@@ -184,13 +184,13 @@ public class BasicStockServiceTest {
     }
 
     @Test
-    void testTake() {
+    void takeShouldRemoveOrderPositionsFromReserve() {
         stockService.take(1);
         verify(reserveDao).removeAllByOwnerId(1);
     }
 
     @Test
-    void testAnnul() {
+    void annulShouldMovePositionsFromReserveToStock() {
         stockService.annul(1);
         verify(reserveDao).getAllByOwnerId(1);
         verify(reserveDao).removeAllByOwnerId(1);

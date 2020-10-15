@@ -66,9 +66,9 @@ public class BasicOrderServiceTest {
         user = new User(1, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
-        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null);
-        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null);
-        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null);
+        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null,false);
+        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null,false);
+        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null,false);
         order = new Order(1, Instant.now(), user, OrderStatus.PREPARATION);
         firstOperationPosition = new OperationPosition(1, 7, firstProduct, order);
         secondOperationPosition = new OperationPosition(2, 64, secondProduct, order);
@@ -89,7 +89,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testAdd() {
+    void addShouldUseDao() {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
@@ -101,7 +101,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testPayForOrderShouldNotThrowException() {
+    void payForOrderShouldNotThrowException() {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -109,7 +109,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testPayForOrderShouldThrowException() {
+    void payForOrderShouldThrowException() {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -122,7 +122,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testConfirmOrderShouldNotThrowException() {
+    void confirmOrderShouldNotThrowException() {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -130,7 +130,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testConfirmOrderShouldThrowException() {
+    void confirmOrderShouldThrowException() {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -142,7 +142,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testCompleteOrderShouldNotThrowException() {
+    void completeOrderShouldNotThrowException() {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.of(order));
 
@@ -150,7 +150,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testCompleteOrderShouldThrowException() {
+    void completeOrderShouldThrowException() {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -162,14 +162,14 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testCancelOrderShouldNotThrowException() {
+    void cancelOrderShouldNotThrowException() {
         when(orderDao.get(anyLong())).thenReturn(Optional.of(order));
 
         orderService.cancelOrder(1);
     }
 
     @Test
-    void testCancelOrderShouldThrowException() {
+    void cancelOrderShouldThrowException() {
         when(orderDao.get(anyLong())).thenReturn(Optional.empty());
 
         Exception exception = Assertions.assertThrows(OrderException.class, () -> orderService.cancelOrder(1));
@@ -180,7 +180,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testGetShouldNotThrowException() {
+    void getShouldNotThrowException() {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.of(order));
         Order actualOrder = orderDao.get(1)
@@ -189,7 +189,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testGetShouldThrowException() {
+    void getShouldThrowException() {
         when(orderDao.get(anyLong())).thenReturn(Optional.empty());
 
         Exception exception = Assertions.assertThrows(OrderException.class, () -> orderService.get(1));
@@ -200,7 +200,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testGetAllShouldNotThrowException() {
+    void getAllShouldNotThrowException() {
 
         when(orderDao.getAll())
                 .thenReturn(orders);
@@ -211,7 +211,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUseDao() {
         OrderUpdateData orderUpdateData = new OrderUpdateData(1, 1, operationPositionDataList);
         when(orderDao.get(1))
                 .thenReturn(Optional.of(order));
@@ -223,7 +223,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testGetOrdersByUserId() {
+    void getOrdersByUserId() {
         when(orderDao.getAllByOwnerId(anyLong()))
                 .thenReturn(orders);
 
@@ -234,7 +234,7 @@ public class BasicOrderServiceTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldUseDao() {
         when(orderDao.remove(anyLong()))
                 .thenReturn(true);
         when(operationPositionDao.removeAllByOwnerId(anyLong()))

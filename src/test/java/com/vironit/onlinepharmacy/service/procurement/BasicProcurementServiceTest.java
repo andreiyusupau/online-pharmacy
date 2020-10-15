@@ -69,9 +69,9 @@ public class BasicProcurementServiceTest {
         user = new User(1, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
-        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null);
-        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null);
-        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null);
+        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null,false);
+        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null,false);
+        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null,false);
         procurement = new Procurement(1, Instant.now(), user, ProcurementStatus.PREPARATION);
         firstOperationPosition = new OperationPosition(1, 7, firstProduct, procurement);
         secondOperationPosition = new OperationPosition(2, 64, secondProduct, procurement);
@@ -92,7 +92,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testAdd() {
+    void addShouldUseDao() {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
@@ -104,7 +104,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testApproveProcurementShouldNotThrowException() {
+    void approveProcurementShouldNotThrowException() {
         when(procurementDao.get(anyLong()))
                 .thenReturn(Optional.of(procurement));
 
@@ -112,7 +112,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testApproveProcurementShouldThrowException() {
+    void approveProcurementShouldThrowException() {
         when(procurementDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -126,7 +126,7 @@ public class BasicProcurementServiceTest {
 
 
     @Test
-    void testCompleteProcurementShouldNotThrowException() {
+    void completeProcurementShouldNotThrowException() {
         when(procurementDao.get(anyLong()))
                 .thenReturn(Optional.of(procurement));
 
@@ -134,7 +134,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testCompleteProcurementShouldThrowException() {
+    void completeProcurementShouldThrowException() {
         when(procurementDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -146,14 +146,14 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testCancelProcurementShouldNotThrowException() {
+    void cancelProcurementShouldNotThrowException() {
         when(procurementDao.get(anyLong())).thenReturn(Optional.of(procurement));
 
         procurementService.cancelProcurement(1);
     }
 
     @Test
-    void testCancelProcurementShouldThrowException() {
+    void cancelProcurementShouldThrowException() {
         when(procurementDao.get(anyLong())).thenReturn(Optional.empty());
 
         Exception exception = Assertions.assertThrows(ProcurementException.class, () -> procurementService.cancelProcurement(1));
@@ -164,7 +164,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testGetShouldNotThrowException() {
+    void getShouldNotThrowException() {
         when(procurementDao.get(anyLong()))
                 .thenReturn(Optional.of(procurement));
         Procurement actualProcurement = procurementDao.get(1)
@@ -173,7 +173,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testGetShouldThrowException() {
+    void getShouldThrowException() {
         when(procurementDao.get(anyLong())).thenReturn(Optional.empty());
 
         Exception exception = Assertions.assertThrows(ProcurementException.class, () -> procurementService.get(1));
@@ -184,7 +184,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testGetAllShouldNotThrowException() {
+    void getAllShouldNotThrowException() {
         when(procurementDao.getAll())
                 .thenReturn(procurements);
 
@@ -194,7 +194,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUseDao() {
         ProcurementUpdateData procurementUpdateData = new ProcurementUpdateData(1, 1, operationPositionDataList);
         when(procurementDao.get(1))
                 .thenReturn(Optional.of(procurement));
@@ -206,7 +206,7 @@ public class BasicProcurementServiceTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldUseDao() {
         when(procurementDao.remove(anyLong()))
                 .thenReturn(true);
         when(operationPositionDao.removeAllByOwnerId(anyLong()))

@@ -2,7 +2,6 @@ package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.model.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,29 +12,23 @@ import java.util.Collection;
 
 class CollectionBasedReserveDaoTest {
 
-    private static Product product;
-
-    private static Operation operation;
-
     private CollectionBasedReserveDao reserveDao;
 
+    private Product product;
+    private Operation operation;
     private OperationPosition operationPosition;
-
-    @BeforeAll
-    static void init() {
-        product = new Product(1, "testProduct", new BigDecimal("100"), null);
-        operation = new Order(1, Instant.now(), null,
-                OrderStatus.PREPARATION);
-    }
 
     @BeforeEach
     void set() {
+        product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
+        operation = new Order(1, Instant.now(), null,
+                OrderStatus.PREPARATION);
         reserveDao = new CollectionBasedReserveDao();
         operationPosition = new OperationPosition(1, 10, product, operation);
     }
 
     @Test
-    void testAdd() {
+    void addShouldPutOperationPositionInReserve() {
         long id = reserveDao.add(operationPosition);
 
         long sizeAfterAdd = reserveDao.getAll().size();
@@ -44,7 +37,7 @@ class CollectionBasedReserveDaoTest {
     }
 
     @Test
-    void testGet() {
+    void getShouldReturnOperationPositionFromReserve() {
         long id = reserveDao.add(operationPosition);
 
         OperationPosition acquiredOperationPosition = reserveDao.get(id)
@@ -54,9 +47,9 @@ class CollectionBasedReserveDaoTest {
     }
 
     @Test
-    void testAddAllGetAll() {
-        Product secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null);
-        Product thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null);
+    void addAllGetAllShouldAddAndGetAllOperationPositionsFromReserve() {
+        Product secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null,false);
+        Product thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null,false);
         OperationPosition secondOperationPosition = new OperationPosition(2, 11, secondProduct, operation);
         OperationPosition thirdOperationPosition = new OperationPosition(3, 14, thirdProduct, operation);
         Collection<OperationPosition> operationPositions = new ArrayList<>();
@@ -71,7 +64,7 @@ class CollectionBasedReserveDaoTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUpdateOperationPositionInReserve() {
         reserveDao.add(operationPosition);
         OperationPosition operationPositionForUpdate = new OperationPosition(1, 15, product, operation);
 
@@ -84,7 +77,7 @@ class CollectionBasedReserveDaoTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldRemoveOperationPositionFromReserve() {
         reserveDao.add(operationPosition);
 
         reserveDao.remove(1);
@@ -94,7 +87,7 @@ class CollectionBasedReserveDaoTest {
     }
 
     @Test
-    void testGetAllByOwnerId() {
+    void getAllByOwnerIdShouldReturnOperationPositionOfOrder() {
         Operation secondOperation = new Order(2, Instant.now(), null, OrderStatus.PREPARATION);
 
         OperationPosition secondOperationPosition = new OperationPosition(2, 11, product, secondOperation);
@@ -112,7 +105,7 @@ class CollectionBasedReserveDaoTest {
     }
 
     @Test
-    void testRemoveAllByOwnerId() {
+    void removeAllByOwnerIdShouldRemoveOperationPositionOfOrder() {
         Operation secondOperation = new Order(2, Instant.now(), null, OrderStatus.PREPARATION);
 
         OperationPosition secondOperationPosition = new OperationPosition(-1, 11, product, secondOperation);

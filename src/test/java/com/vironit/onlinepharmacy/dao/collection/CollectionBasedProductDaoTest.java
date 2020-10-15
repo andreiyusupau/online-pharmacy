@@ -27,11 +27,11 @@ class CollectionBasedProductDaoTest {
 
     @BeforeEach
     void set() {
-        product = new Product(-1, "testProduct", new BigDecimal("100"), null);
+        product = new Product(-1, "testProduct", new BigDecimal("100"), null,false);
     }
 
     @Test
-    void testAdd() {
+    void addShouldAddProductToCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
 
@@ -45,7 +45,7 @@ class CollectionBasedProductDaoTest {
     }
 
     @Test
-    void testGet() {
+    void getShouldGetProductFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         long id = productDao.add(product);
@@ -57,13 +57,13 @@ class CollectionBasedProductDaoTest {
     }
 
     @Test
-    void testGetAll() {
+    void getAllShouldGetAllProductsFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
                 .thenReturn(2L);
-        Product secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), null);
-        Product thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), null);
+        Product secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), null,false);
+        Product thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), null,false);
 
         productDao.add(product);
         productDao.add(secondProduct);
@@ -79,11 +79,11 @@ class CollectionBasedProductDaoTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUpdateProductInCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         productDao.add(product);
-        Product productForUpdate = new Product(0, "updatedTestProduct", new BigDecimal("180"), null);
+        Product productForUpdate = new Product(0, "updatedTestProduct", new BigDecimal("180"), null,false);
 
         productDao.update(productForUpdate);
 
@@ -94,7 +94,7 @@ class CollectionBasedProductDaoTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldRemoveProductFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         productDao.add(product);

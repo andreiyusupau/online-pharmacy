@@ -18,12 +18,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CollectionBasedUserDaoTest {
 
-    private User user;
-
     @Mock
     private IdGenerator idGenerator;
     @InjectMocks
     private CollectionBasedUserDao userDao;
+
+    private User user;
 
     @BeforeEach
     void set() {
@@ -32,7 +32,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void testGetByEmail() {
+    void getByEmailShouldReturnUserWithCertainEmail() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         userDao.add(user);
@@ -45,7 +45,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void testAdd() {
+    void addShouldAddUserToCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
 
@@ -57,7 +57,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void testGet() {
+    void getShouldGetUserFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         userDao.add(user);
@@ -70,7 +70,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void testGetShouldReturnEmptyOptional() {
+    void getShouldReturnEmptyOptional() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         userDao.add(user);
@@ -81,7 +81,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void testGetAll() {
+    void getAllShouldGetAllUsersFromCollection() {
         User secondUser = new User(-1, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test2@email.com", "testpass123", Role.MODERATOR);
         User thirdUser = new User(-1, "testFirstName", "testMiddleName", "testLastName",
@@ -100,7 +100,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUpdateUserInCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         userDao.add(user);
@@ -115,7 +115,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldRemoveUserFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         userDao.add(user);

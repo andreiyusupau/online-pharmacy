@@ -40,7 +40,7 @@ public class BasicUserServiceTest {
     }
 
     @Test
-    void testAdd() {
+    void addShouldUseDao() {
         when(userDao.add(any()))
                 .thenReturn(0L);
 
@@ -51,7 +51,7 @@ public class BasicUserServiceTest {
     }
 
     @Test
-    void testGetShouldNotThrowException() {
+    void getShouldNotThrowException() {
         when(userDao.get(anyLong()))
                 .thenReturn(Optional.of(user));
 
@@ -62,7 +62,7 @@ public class BasicUserServiceTest {
     }
 
     @Test
-    void testGetShouldThrowException() {
+    void getShouldThrowException() {
         when(userDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -75,7 +75,7 @@ public class BasicUserServiceTest {
     }
 
     @Test
-    void testGetAllShouldNotThrowException() {
+    void getAllShouldNotThrowException() {
         Collection<User> users = new ArrayList<>();
         users.add(user);
 
@@ -88,7 +88,7 @@ public class BasicUserServiceTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUseDao() {
         User userForUpdate = new User(0, "updatedFirstName",
                 "updatedMiddleName", "updatedLastName", LocalDate.of(1999, 12, 12),
                 "test@test2.com", "testPass4word123", Role.MODERATOR);
@@ -101,7 +101,7 @@ public class BasicUserServiceTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldUseDao() {
         when(userDao.remove(anyLong()))
                 .thenReturn(true);
 

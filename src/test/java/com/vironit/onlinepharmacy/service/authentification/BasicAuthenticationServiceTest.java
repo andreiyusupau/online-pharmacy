@@ -10,8 +10,7 @@ import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.authentication.BasicAuthenticationService;
 import com.vironit.onlinepharmacy.service.authentication.exception.LoginException;
 import com.vironit.onlinepharmacy.service.authentication.exception.RegistrationException;
-import com.vironit.onlinepharmacy.util.UserRegisterParametersToUserConverter;
-import com.vironit.onlinepharmacy.util.UserToUserPublicParametersConverter;
+import com.vironit.onlinepharmacy.util.Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,9 @@ public class BasicAuthenticationServiceTest {
     @Mock
     private PasswordHasher passwordHasher;
     @Mock
-    private UserToUserPublicParametersConverter userToUserPublicParametersConverter;
+    private Converter<UserPublicParameters, User> userToUserPublicParametersConverter;
     @Mock
-    private UserRegisterParametersToUserConverter userRegisterParametersToUserConverter;
+    private Converter<User, UserRegisterParameters> userRegisterParametersToUserConverter;
     @InjectMocks
     private BasicAuthenticationService authenticationService;
 
@@ -53,7 +52,7 @@ public class BasicAuthenticationServiceTest {
     }
 
     @Test
-    void testRegisterShouldReturnIdEqualToZero() throws RegistrationException {
+    void registerShouldReturnIdEqualToZero() {
         when(userDao.getByEmail("test@test.com"))
                 .thenReturn(Optional.empty());
         when(userRegisterParametersToUserConverter.convert(userRegisterParameters))
@@ -71,15 +70,15 @@ public class BasicAuthenticationServiceTest {
     }
 
     @Test
-    void testRegisterShouldThrowRegistrationExceptionUserWithSuchEmailAlreadyExists() {
-        when(userDao.getByEmail("test@test.com"))
-                .thenReturn(Optional.of(user));
+    void registerShouldThrowRegistrationExceptionUserWithSuchEmailAlreadyExists() {
         when(userRegisterParametersToUserConverter.convert(userRegisterParameters))
                 .thenReturn(user);
+        when(userDao.getByEmail("test@test.com"))
+                .thenReturn(Optional.of(user));
 
         Exception exception = Assertions.assertThrows(RegistrationException.class,
                 () -> authenticationService.register(userRegisterParameters));
-
+//TODO:Not working properly
         verify(userRegisterParametersToUserConverter).convert(userRegisterParameters);
         verify(userDao).getByEmail("test@test.com");
         String expectedMessage = "User with email " + userRegisterParameters.getEmail() + " already exists.";
@@ -88,7 +87,7 @@ public class BasicAuthenticationServiceTest {
     }
 
     @Test
-    void testLoginShouldReturnUserPublicParameters() throws LoginException {
+    void loginShouldReturnUserPublicParameters() {
         UserPublicParameters expectedUserPublicParameters = new UserPublicParameters(0, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", Role.CONSUMER);
@@ -110,7 +109,7 @@ public class BasicAuthenticationServiceTest {
     }
 
     @Test
-    void testLoginShouldThrowExceptionEmailDoesNotExist() {
+    void loginShouldThrowExceptionEmailDoesNotExist() {
         UserLoginParameters userLoginParameters = new UserLoginParameters("nonexistentemail@test.com",
                 "testPassword123");
         when(userDao.getByEmail("nonexistentemail@test.com"))
@@ -129,7 +128,7 @@ public class BasicAuthenticationServiceTest {
     }
 
     @Test
-    void testLoginShouldThrowExceptionWrongPassword() {
+    void loginShouldThrowExceptionWrongPassword() {
         UserLoginParameters userLoginParameters = new UserLoginParameters("test@test.com", "wrongPassword");
         when(userDao.getByEmail("test@test.com"))
                 .thenReturn(Optional.of(user));

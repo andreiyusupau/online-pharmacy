@@ -2,7 +2,6 @@ package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.model.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,28 +19,24 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CollectionBasedOperationPositionDaoTest {
 
-    private static Product product;
-    private static Operation operation;
+    private Product product;
+    private Operation operation;
     private OperationPosition operationPosition;
     @Mock
     private IdGenerator idGenerator;
     @InjectMocks
     private CollectionBasedOperationPositionDao operationPositionDao;
 
-    @BeforeAll
-    static void init() {
-        product = new Product(1, "testProduct", new BigDecimal("100"), null);
-        operation = new Procurement(1, Instant.now(), null,
-                ProcurementStatus.PREPARATION);
-    }
-
     @BeforeEach
     void set() {
+        product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
+        operation = new Procurement(1, Instant.now(), null,
+                ProcurementStatus.PREPARATION);
         operationPosition = new OperationPosition(-1, 10, product, operation);
     }
 
     @Test
-    void testAdd() {
+    void addShouldInsertPositionToCollection() {
         when(idGenerator.getNextId()).thenReturn(0L);
 
         long id = operationPositionDao.add(operationPosition);
@@ -53,7 +48,7 @@ class CollectionBasedOperationPositionDaoTest {
     }
 
     @Test
-    void testGet() {
+    void getShouldGetPositionFromCollection() {
         when(idGenerator.getNextId()).thenReturn(0L);
         long id = operationPositionDao.add(operationPosition);
 
@@ -64,7 +59,7 @@ class CollectionBasedOperationPositionDaoTest {
     }
 
     @Test
-    void testAddAllGetAll() {
+    void addAllGetAllShouldAddAndGetAllPositionsFromCollection() {
         Operation secondOperation = new Procurement();
         Operation thirdOperation = new Procurement();
         when(idGenerator.getNextId())
@@ -85,7 +80,7 @@ class CollectionBasedOperationPositionDaoTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUpdatePositionInCollection() {
         when(idGenerator.getNextId()).thenReturn(0L);
         operationPositionDao.add(operationPosition);
         OperationPosition operationPositionForUpdate = new OperationPosition(0, 15, product, operation);
@@ -99,7 +94,7 @@ class CollectionBasedOperationPositionDaoTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldRemovePositionFromCollection() {
         when(idGenerator.getNextId()).thenReturn(0L);
         operationPositionDao.add(operationPosition);
 
@@ -110,7 +105,7 @@ class CollectionBasedOperationPositionDaoTest {
     }
 
     @Test
-    void testGetAllByOwnerId() {
+    void getAllByOwnerIdShouldGetAllPositionsOfOperation() {
         Operation secondOperation = new Procurement(2, Instant.now(), null, ProcurementStatus.PREPARATION);
         when(idGenerator.getNextId())
                 .thenReturn(0L)
@@ -131,7 +126,7 @@ class CollectionBasedOperationPositionDaoTest {
     }
 
     @Test
-    void testRemoveAllByOwnerId() {
+    void removeAllByOwnerIdShouldRemoveAllPositionsOfOperation() {
         Operation secondOperation = new Procurement(2, Instant.now(), null, ProcurementStatus.PREPARATION);
         when(idGenerator.getNextId())
                 .thenReturn(0L)

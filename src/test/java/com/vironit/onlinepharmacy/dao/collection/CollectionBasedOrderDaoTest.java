@@ -5,7 +5,6 @@ import com.vironit.onlinepharmacy.model.OrderStatus;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,26 +22,24 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CollectionBasedOrderDaoTest {
 
-    private static User user;
+
     @Mock
     private IdGenerator idGenerator;
     @InjectMocks
     private CollectionBasedOrderDao orderDao;
-    private Order order;
 
-    @BeforeAll
-    static void init() {
-        user = new User(1, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
-    }
+    private User user;
+    private Order order;
 
     @BeforeEach
     void set() {
+        user = new User(1, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         order = new Order(-1, Instant.now(), user, OrderStatus.PREPARATION);
     }
 
     @Test
-    void testAdd() {
+    void addShouldAddOrderToCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
 
@@ -56,7 +53,7 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void testGet() {
+    void getShouldGetOrderFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         long id = orderDao.add(order);
@@ -68,7 +65,7 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void testAddAllGetAll() {
+    void addAllGetAllShouldAddAndGetAllOrdersFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
@@ -87,7 +84,7 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUpdateOrderInCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         orderDao.add(order);
@@ -102,7 +99,7 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldRemoveOrderFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         orderDao.add(order);
@@ -115,7 +112,7 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void testGetAllByOwnerId() {
+    void getAllByOwnerIdShouldReturnAllOrdersOfUser() {
         User secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         when(idGenerator.getNextId())
@@ -137,7 +134,7 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void testRemoveAllByOwnerId() {
+    void removeAllByOwnerIdShouldRemoveAllOrdersOfUser() {
         User secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         when(idGenerator.getNextId())

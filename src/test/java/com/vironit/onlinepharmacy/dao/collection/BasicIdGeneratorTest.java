@@ -14,7 +14,7 @@ class BasicIdGeneratorTest {
     }
 
     @Test
-    void testGetNextIdShouldReturnOneOnFirstLaunch() {
+    void getNextIdShouldReturnOneOnFirstLaunch() {
         long id = idGenerator.getNextId();
 
         long expected = 1;
@@ -22,7 +22,7 @@ class BasicIdGeneratorTest {
     }
 
     @Test
-    void testGetNextIdShouldReturnOneTwoThree() {
+    void getNextIdShouldReturnOneTwoThree() {
         long[] idList = new long[3];
 
         idList[0] = idGenerator.getNextId();

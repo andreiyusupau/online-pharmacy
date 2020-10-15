@@ -35,15 +35,15 @@ public class BasicProductServiceTest {
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal(1245), null);
-        product = new Product(2, "secondTestProduct", new BigDecimal(1632), null);
+        product = new Product(1, "testProduct", new BigDecimal(1245), null,false);
+        product = new Product(2, "secondTestProduct", new BigDecimal(1632), null,false);
         products = new ArrayList<>();
         products.add(product);
         products.add(secondProduct);
     }
 
     @Test
-    void testAdd() {
+    void addShouldUseDao() {
         when(productDao.add(any()))
                 .thenReturn(0L);
 
@@ -54,7 +54,7 @@ public class BasicProductServiceTest {
     }
 
     @Test
-    void testGetShouldNotThrowException() {
+    void getShouldNotThrowException() {
         when(productDao.get(anyLong()))
                 .thenReturn(Optional.of(product));
 
@@ -65,7 +65,7 @@ public class BasicProductServiceTest {
     }
 
     @Test
-    void testGetShouldThrowException() {
+    void getShouldThrowException() {
         when(productDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -78,7 +78,7 @@ public class BasicProductServiceTest {
     }
 
     @Test
-    void testGetAllShouldNotThrowException() {
+    void getAllShouldNotThrowException() {
         when(productDao.getAll())
                 .thenReturn(products);
 
@@ -88,8 +88,8 @@ public class BasicProductServiceTest {
     }
 
     @Test
-    void testUpdate() {
-        Product productForUpdate = new Product(1, "updatedName", new BigDecimal("1245"), null);
+    void updateShouldUseDao() {
+        Product productForUpdate = new Product(1, "updatedName", new BigDecimal("1245"), null,false);
         when(productDao.update(any()))
                 .thenReturn(true);
 
@@ -99,7 +99,7 @@ public class BasicProductServiceTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldUseDao() {
         when(productDao.remove(anyLong()))
                 .thenReturn(true);
 

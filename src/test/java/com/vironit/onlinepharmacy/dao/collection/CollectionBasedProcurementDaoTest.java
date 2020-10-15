@@ -5,7 +5,6 @@ import com.vironit.onlinepharmacy.model.ProcurementStatus;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,26 +22,24 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CollectionBasedProcurementDaoTest {
 
-    private static User user;
+
     @Mock
     private IdGenerator idGenerator;
     @InjectMocks
     private CollectionBasedProcurementDao procurementDao;
-    private Procurement procurement;
 
-    @BeforeAll
-    static void init() {
-        user = new User(1, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
-    }
+    private Procurement procurement;
+    private User user;
 
     @BeforeEach
     void set() {
+        user = new User(1, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         procurement = new Procurement(-1, Instant.now(), user, ProcurementStatus.PREPARATION);
     }
 
     @Test
-    void testAdd() {
+    void addShouldAddProcurementToCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
 
@@ -56,7 +53,7 @@ class CollectionBasedProcurementDaoTest {
     }
 
     @Test
-    void testGet() {
+    void getShouldReturnProcurementFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         long id = procurementDao.add(procurement);
@@ -68,7 +65,7 @@ class CollectionBasedProcurementDaoTest {
     }
 
     @Test
-    void testAddAllGetAll() {
+    void addAllGetAllShouldAddAndGetAllProcurementsFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
@@ -87,7 +84,7 @@ class CollectionBasedProcurementDaoTest {
     }
 
     @Test
-    void testUpdate() {
+    void updateShouldUpdateProcurementInCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         procurementDao.add(procurement);
@@ -102,7 +99,7 @@ class CollectionBasedProcurementDaoTest {
     }
 
     @Test
-    void testRemove() {
+    void removeShouldRemoveProcurementFromCollection() {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         procurementDao.add(procurement);
@@ -115,7 +112,7 @@ class CollectionBasedProcurementDaoTest {
     }
 
     @Test
-    void testGetAllByOwnerId() {
+    void getAllByOwnerIdShouldReturnAllProcurementsOfUser() {
         User secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         when(idGenerator.getNextId())
@@ -138,7 +135,7 @@ class CollectionBasedProcurementDaoTest {
     }
 
     @Test
-    void testRemoveAllByOwnerId() {
+    void removeAllByOwnerIdShouldRemoveAllProcurementsOfUser() {
         User secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         when(idGenerator.getNextId())

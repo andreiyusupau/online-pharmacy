@@ -28,7 +28,7 @@ public class BasicAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public UserPublicParameters login(UserLoginParameters userLoginParameters) throws LoginException {
+    public UserPublicParameters login(UserLoginParameters userLoginParameters) {
         String email = userLoginParameters.getEmail();
         User user = userDao.getByEmail(email).orElseThrow(() -> new LoginException("User with email " + email + " does not exist."));
         String password = userLoginParameters.getPassword();
@@ -40,7 +40,7 @@ public class BasicAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public long register(UserRegisterParameters userRegisterParameters) throws RegistrationException {
+    public long register(UserRegisterParameters userRegisterParameters) {
         User user = userRegisterParametersToUserConverter.convert(userRegisterParameters);
         String email = userRegisterParameters.getEmail();
         if (userDao.getByEmail(email).isEmpty()) {

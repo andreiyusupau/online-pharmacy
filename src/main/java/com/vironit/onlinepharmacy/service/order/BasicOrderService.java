@@ -26,7 +26,6 @@ public class BasicOrderService implements OrderService {
     private final UserService userService;
     private final ProductService productService;
 
-
     public BasicOrderService(OrderDao orderDao, OperationPositionDao operationPositionDao, StockService stockService, UserService userService, ProductService productService) {
         this.orderDao = orderDao;
         this.operationPositionDao = operationPositionDao;

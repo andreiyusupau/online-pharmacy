@@ -31,11 +31,11 @@ public class BasicUserService implements UserService {
 
     @Override
     public void update(User user) {
-//TODO:
+        userDAO.update(user);
     }
 
     @Override
     public void remove(long id) {
-
+        userDAO.remove(id);
     }
 }

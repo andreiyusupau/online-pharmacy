@@ -67,20 +67,20 @@ public class BasicStockService implements StockService {
         for (OperationPosition operationPosition : operationPositions) {
             long productId = operationPosition.getProduct()
                     .getId();
-            Optional<Position> stockPositionResult = stockDAO.getByProductId(productId);
-            if (stockPositionResult.isPresent()) {
-                Position stockPosition = stockPositionResult.get();
-                int reservedPositionQuantity = operationPosition.getQuantity();
+            Position stockPosition = stockDAO.getByProductId(productId)
+                    .orElseThrow(()-> new StockException("Can't reserve position "+operationPosition+", because it's not in stock."));
+            System.out.println(operationPosition);
+            System.out.println(stockPosition);
+            int reservedPositionQuantity = operationPosition.getQuantity();
                 int stockPositionQuantity = stockPosition.getQuantity();
                 if (stockPositionQuantity >= reservedPositionQuantity) {
                     stockPosition.setQuantity(stockPositionQuantity + reservedPositionQuantity);
                     stockDAO.update(stockPosition);
-                    reserveDao.addAll(operationPositions);
+                    reserveDao.add(operationPosition);
                 } else {
-                    //TODO: exception
-                    System.err.println("Not enough");
+                    throw new StockException("Can't reserve position "+operationPosition+". Desired quantity "+
+                            reservedPositionQuantity+", quantity in stock "+stockPositionQuantity+".");
                 }
-            }
         }
         return true;
     }

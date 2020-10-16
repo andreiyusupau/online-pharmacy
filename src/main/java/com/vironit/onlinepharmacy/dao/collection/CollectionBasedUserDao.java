@@ -6,6 +6,7 @@ import com.vironit.onlinepharmacy.model.User;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CollectionBasedUserDao implements UserDao {
 
@@ -54,5 +55,18 @@ public class CollectionBasedUserDao implements UserDao {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public int getTotalElements() {
+        return userList.size();
+    }
+
+    @Override
+    public Collection<User> getPage(int currentPage, int pageLimit) {
+        return userList.stream()
+                .skip(currentPage*pageLimit)
+                .limit(pageLimit)
+                .collect(Collectors.toList());
     }
 }

@@ -20,18 +20,15 @@ public class CollectionBasedOrderDao implements OrderDao {
     public long add(Order order) {
         long id = idGenerator.getNextId();
         order.setId(id);
-        orderList.add(order);
-        return order.getId();
+        boolean successfulAdd = orderList.add(order);
+        return successfulAdd ? id : -1L;
     }
 
     @Override
     public Optional<Order> get(long id) {
-        for (Order order : orderList) {
-            if (order.getId() == id) {
-                return Optional.of(order);
-            }
-        }
-        return Optional.empty();
+        return orderList.stream()
+                .filter(order -> order.getId() == id)
+                .findFirst();
     }
 
     @Override
@@ -41,11 +38,7 @@ public class CollectionBasedOrderDao implements OrderDao {
 
     @Override
     public boolean update(Order order) {
-        if (remove(order.getId())) {
-            return orderList.add(order);
-        } else {
-            return false;
-        }
+        return remove(order.getId()) && orderList.add(order);
     }
 
     @Override

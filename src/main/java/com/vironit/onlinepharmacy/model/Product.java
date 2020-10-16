@@ -9,15 +9,17 @@ public class Product {
     private String name;
     private BigDecimal price;
     private ProductCategory productCategory;
+    private boolean recipeRequired;
 
     public Product() {
     }
 
-    public Product(long id, String name, BigDecimal price, ProductCategory productCategory) {
+    public Product(long id, String name, BigDecimal price, ProductCategory productCategory, boolean recipeRequired) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.productCategory = productCategory;
+        this.recipeRequired = recipeRequired;
     }
 
     public long getId() {
@@ -50,6 +52,14 @@ public class Product {
 
     public void setProductCategory(ProductCategory productCategory) {
         this.productCategory = productCategory;
+    }
+
+    public boolean isRecipeRequired() {
+        return recipeRequired;
+    }
+
+    public void setRecipeRequired(boolean recipeRequired) {
+        this.recipeRequired = recipeRequired;
     }
 
     @Override

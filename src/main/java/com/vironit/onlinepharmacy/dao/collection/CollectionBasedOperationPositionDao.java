@@ -2,11 +2,11 @@ package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.model.OperationPosition;
-import com.vironit.onlinepharmacy.model.Position;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CollectionBasedOperationPositionDao implements OperationPositionDao {
 
@@ -19,32 +19,17 @@ public class CollectionBasedOperationPositionDao implements OperationPositionDao
 
     @Override
     public long add(OperationPosition operationPosition) {
-        long id = 0;
-        boolean positionShouldBeCreated = true;
-        for (Position procurementPosition : operationPositionList) {
-            if (operationPosition.getProduct().equals(procurementPosition.getProduct())) {
-                procurementPosition.setQuantity(procurementPosition.getQuantity() + operationPosition.getQuantity());
-                id = procurementPosition.getId();
-                positionShouldBeCreated = false;
-                break;
-            }
-        }
-        if (positionShouldBeCreated) {
-            id = idGenerator.getNextId();
-            operationPosition.setId(id);
-            operationPositionList.add(operationPosition);
-        }
-        return id;
+        long id = idGenerator.getNextId();
+        operationPosition.setId(id);
+        boolean successfulAdd = operationPositionList.add(operationPosition);
+        return successfulAdd ? id : -1L;
     }
 
     @Override
     public Optional<OperationPosition> get(long id) {
-        for (OperationPosition operationPosition : operationPositionList) {
-            if (operationPosition.getId() == id) {
-                return Optional.of(operationPosition);
-            }
-        }
-        return Optional.empty();
+        return operationPositionList.stream()
+                .filter(operationPosition -> operationPosition.getId() == id)
+                .findFirst();
     }
 
     @Override
@@ -53,12 +38,8 @@ public class CollectionBasedOperationPositionDao implements OperationPositionDao
     }
 
     @Override
-    public boolean update(OperationPosition operationPosition) {
-        if (remove(operationPosition.getId())) {
-            return operationPositionList.add(operationPosition);
-        } else {
-            return false;
-        }
+    public boolean update(OperationPosition updatedOperationPosition) {
+        return remove(updatedOperationPosition.getId()) && operationPositionList.add(updatedOperationPosition);
     }
 
     @Override
@@ -68,25 +49,19 @@ public class CollectionBasedOperationPositionDao implements OperationPositionDao
 
     @Override
     public boolean addAll(Collection<OperationPosition> operationPositions) {
-        for (OperationPosition operationPosition : operationPositions) {
-            add(operationPosition);
-        }
+        operationPositions.forEach(this::add);
         return true;
     }
 
     @Override
     public Collection<OperationPosition> getAllByOwnerId(long id) {
-        Collection<OperationPosition> operationPositions = new ArrayList<>();
-        for (OperationPosition operationPosition : operationPositionList) {
-            if (operationPosition.getOperation().getId() == id) {
-                operationPositions.add(operationPosition);
-            }
-        }
-        return operationPositions;
+        return operationPositionList.stream()
+                .filter(operationPosition -> operationPosition.getOperation().getId() == id)
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean removeAllByOwnerId(long id) {
-        return false;
+        return operationPositionList.removeIf(operationPosition -> operationPosition.getOperation().getId() == id);
     }
 }

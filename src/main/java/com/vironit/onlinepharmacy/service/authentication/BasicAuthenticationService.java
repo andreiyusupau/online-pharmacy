@@ -8,34 +8,40 @@ import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.authentication.exception.LoginException;
 import com.vironit.onlinepharmacy.service.authentication.exception.RegistrationException;
-import com.vironit.onlinepharmacy.util.UserParser;
+import com.vironit.onlinepharmacy.util.Converter;
 
 
 public class BasicAuthenticationService implements AuthenticationService {
 
     private final UserDao userDao;
     private final PasswordHasher passwordHasher;
+    private final Converter<UserPublicParameters,User> userToUserPublicParametersConverter;
+    private final Converter<User,UserRegisterParameters> userRegisterParametersToUserConverter;
 
-    public BasicAuthenticationService(UserDao userDao, PasswordHasher passwordHasher) {
+    public BasicAuthenticationService(UserDao userDao, PasswordHasher passwordHasher,
+    Converter<UserPublicParameters, User> userToUserPublicParametersConverter,
+    Converter<User, UserRegisterParameters> userRegisterParametersToUserConverter) {
         this.userDao = userDao;
         this.passwordHasher = passwordHasher;
+        this.userToUserPublicParametersConverter = userToUserPublicParametersConverter;
+        this.userRegisterParametersToUserConverter = userRegisterParametersToUserConverter;
     }
 
     @Override
-    public UserPublicParameters login(UserLoginParameters userLoginParameters) throws LoginException {
+    public UserPublicParameters login(UserLoginParameters userLoginParameters) {
         String email = userLoginParameters.getEmail();
         User user = userDao.getByEmail(email).orElseThrow(() -> new LoginException("User with email " + email + " does not exist."));
         String password = userLoginParameters.getPassword();
         if (passwordHasher.validatePassword(password, user.getPassword())) {
-            return UserParser.userPublicParametersFromUser(user);
+            return userToUserPublicParametersConverter.convert(user);
         } else {
             throw new LoginException("Wrong password for user " + email);
         }
     }
 
     @Override
-    public long register(UserRegisterParameters userRegisterParameters) throws RegistrationException {
-        User user = UserParser.userFromUserRegisterParameters(userRegisterParameters);
+    public long register(UserRegisterParameters userRegisterParameters) {
+        User user = userRegisterParametersToUserConverter.convert(userRegisterParameters);
         String email = userRegisterParameters.getEmail();
         if (userDao.getByEmail(email).isEmpty()) {
             String password = userRegisterParameters.getPassword();

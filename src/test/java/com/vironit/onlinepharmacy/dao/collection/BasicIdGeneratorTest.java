@@ -1,14 +1,20 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class BasicIdGeneratorTest {
+class BasicIdGeneratorTest {
+
+    private IdGenerator idGenerator;
+
+    @BeforeEach
+    void init() {
+        idGenerator = new BasicIdGenerator();
+    }
 
     @Test
-    void testGetNextIdShouldReturnOneOnFirstLaunch() {
-        IdGenerator idGenerator = new BasicIdGenerator();
-
+    void getNextIdShouldReturnOneOnFirstLaunch() {
         long id = idGenerator.getNextId();
 
         long expected = 1;
@@ -16,8 +22,7 @@ public class BasicIdGeneratorTest {
     }
 
     @Test
-    void testGetNextIdShouldReturnOneTwoThree() {
-        IdGenerator idGenerator = new BasicIdGenerator();
+    void getNextIdShouldReturnOneTwoThree() {
         long[] idList = new long[3];
 
         idList[0] = idGenerator.getNextId();

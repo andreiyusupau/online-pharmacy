@@ -25,10 +25,11 @@ public class CollectionBasedStockDao implements StockDao {
 
     @Override
     public long add(Position position) {
+        //TODO:rewrite
         long id = idGenerator.getNextId();
         position.setId(id);
-        stock.add(position);
-        return position.getId();
+        boolean successfulAdd = stock.add(position);
+        return successfulAdd ? id : -1L;
     }
 
     @Override
@@ -45,11 +46,7 @@ public class CollectionBasedStockDao implements StockDao {
 
     @Override
     public boolean update(Position position) {
-        if (remove(position.getId())) {
-            return stock.add(position);
-        } else {
-            return false;
-        }
+        return remove(position.getId()) && stock.add(position);
     }
 
     @Override

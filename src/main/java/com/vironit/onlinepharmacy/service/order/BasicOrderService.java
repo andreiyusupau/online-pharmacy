@@ -26,7 +26,6 @@ public class BasicOrderService implements OrderService {
     private final UserService userService;
     private final ProductService productService;
 
-
     public BasicOrderService(OrderDao orderDao, OperationPositionDao operationPositionDao, StockService stockService, UserService userService, ProductService productService) {
         this.orderDao = orderDao;
         this.operationPositionDao = operationPositionDao;
@@ -86,7 +85,7 @@ public class BasicOrderService implements OrderService {
     @Override
     public Order get(long id) {
         return orderDao.get(id)
-                .orElseThrow(() -> new OrderException("Can't cancel order. Order with id " + id + " not found."));
+                .orElseThrow(() -> new OrderException("Can't get order. Order with id " + id + " not found."));
     }
 
     @Override

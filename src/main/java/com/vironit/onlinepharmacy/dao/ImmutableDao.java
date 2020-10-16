@@ -3,7 +3,7 @@ package com.vironit.onlinepharmacy.dao;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface Dao<T> {
+public interface ImmutableDao<T> {
 
     long add(T t);
 
@@ -11,8 +11,5 @@ public interface Dao<T> {
 
     Collection<T> getAll();
 
-    boolean update(T t);
-
     boolean remove(long id);
-
 }

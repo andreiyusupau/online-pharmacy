@@ -7,7 +7,7 @@ import java.util.Objects;
 public class CreditCard {
 
     private long id;
-    private long cardNumber;
+    private String cardNumber;
     private String ownerName;
     private LocalDate validThru;
     private int cvv;
@@ -16,7 +16,7 @@ public class CreditCard {
     public CreditCard() {
     }
 
-    public CreditCard(long id, long cardNumber,String ownerName, LocalDate validThru, int cvv, User owner) {
+    public CreditCard(long id, String cardNumber,String ownerName, LocalDate validThru, int cvv, User owner) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.ownerName=ownerName;
@@ -33,11 +33,11 @@ public class CreditCard {
         this.id = id;
     }
 
-    public long getCardNumber() {
+    public String getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(long cardNumber) {
+    public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
 
@@ -79,8 +79,8 @@ public class CreditCard {
         if (!(o instanceof CreditCard)) return false;
         CreditCard that = (CreditCard) o;
         return id == that.id &&
-                cardNumber == that.cardNumber &&
                 cvv == that.cvv &&
+                cardNumber.equals(that.cardNumber) &&
                 ownerName.equals(that.ownerName) &&
                 validThru.equals(that.validThru) &&
                 owner.equals(that.owner);
@@ -95,7 +95,7 @@ public class CreditCard {
     public String toString() {
         return "CreditCard{" +
                 "id=" + id +
-                ", cardNumber=" + cardNumber +
+                ", cardNumber='" + cardNumber + '\'' +
                 ", ownerName='" + ownerName + '\'' +
                 ", validThru=" + validThru +
                 ", cvv=" + cvv +

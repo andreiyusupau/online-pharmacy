@@ -1,9 +1,6 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
-import com.vironit.onlinepharmacy.model.Procurement;
-import com.vironit.onlinepharmacy.model.ProcurementStatus;
-import com.vironit.onlinepharmacy.model.Role;
-import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,20 +19,26 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CollectionBasedProcurementDaoTest {
 
-
     @Mock
     private IdGenerator idGenerator;
     @InjectMocks
     private CollectionBasedProcurementDao procurementDao;
 
-    private Procurement procurement;
     private User user;
+    private User secondUser;
+    private Procurement procurement;
+    private Procurement secondProcurement;
+    private Procurement thirdProcurement;
 
     @BeforeEach
     void set() {
         user = new User(1, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
+                LocalDate.now(), "test@email.com", "testpass123", Role.PROCUREMENT_SPECIALIST);
+        secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test@email.com", "testpass123", Role.PROCUREMENT_SPECIALIST);
         procurement = new Procurement(-1, Instant.now(), user, ProcurementStatus.PREPARATION);
+        secondProcurement = new Procurement(-1, Instant.now(), secondUser, ProcurementStatus.PREPARATION);
+        thirdProcurement = new Procurement(-1, Instant.now(), user, ProcurementStatus.PREPARATION);
     }
 
     @Test
@@ -70,8 +73,6 @@ class CollectionBasedProcurementDaoTest {
                 .thenReturn(0L)
                 .thenReturn(1L)
                 .thenReturn(2L);
-        Procurement secondProcurement = new Procurement(-1, Instant.now(), user, ProcurementStatus.PREPARATION);
-        Procurement thirdProcurement = new Procurement(-1, Instant.now(), user, ProcurementStatus.PREPARATION);
         Collection<Procurement> procurements = new ArrayList<>();
         procurements.add(procurement);
         procurements.add(secondProcurement);
@@ -113,15 +114,10 @@ class CollectionBasedProcurementDaoTest {
 
     @Test
     void getAllByOwnerIdShouldReturnAllProcurementsOfUser() {
-        User secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
                 .thenReturn(2L);
-        Procurement secondProcurement = new Procurement(-1, Instant.now(), secondUser, ProcurementStatus.PREPARATION);
-        Procurement thirdProcurement = new Procurement(-1, Instant.now(), user, ProcurementStatus.PREPARATION);
-
         procurementDao.add(procurement);
         procurementDao.add(secondProcurement);
         procurementDao.add(thirdProcurement);
@@ -136,14 +132,10 @@ class CollectionBasedProcurementDaoTest {
 
     @Test
     void removeAllByOwnerIdShouldRemoveAllProcurementsOfUser() {
-        User secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
                 .thenReturn(2L);
-        Procurement secondProcurement = new Procurement(-1, Instant.now(), secondUser, ProcurementStatus.PREPARATION);
-        Procurement thirdProcurement = new Procurement(-1, Instant.now(), user, ProcurementStatus.PREPARATION);
         procurementDao.add(procurement);
         procurementDao.add(secondProcurement);
         procurementDao.add(thirdProcurement);
@@ -156,4 +148,53 @@ class CollectionBasedProcurementDaoTest {
         Assertions.assertEquals(expectedProcurement, actualProcurement);
     }
 
+    @Test
+    void shouldReturnTotalElementsEqualZero() {
+        int totalElements = procurementDao.getTotalElements();
+        Assertions.assertEquals(0, totalElements);
+    }
+
+    @Test
+    void shouldReturnTotalElementsEqualTwo() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L);
+        procurementDao.add(procurement);
+        procurementDao.add(secondProcurement);
+        int totalElements = procurementDao.getTotalElements();
+        Assertions.assertEquals(2, totalElements);
+    }
+
+    @Test
+    void shouldReturnASecondPageWithOneElement() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        procurementDao.add(procurement);
+        procurementDao.add(secondProcurement);
+        procurementDao.add(thirdProcurement);
+
+        Collection<Procurement> procurementPage = procurementDao.getPage(2, 2);
+
+        Collection<Procurement> expectedProcurementPage = new ArrayList<>();
+        expectedProcurementPage.add(thirdProcurement);
+        Assertions.assertEquals(expectedProcurementPage, procurementPage);
+    }
+
+    @Test
+    void shouldReturnAThirdPageWithNoElements() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        procurementDao.add(procurement);
+        procurementDao.add(secondProcurement);
+        procurementDao.add(thirdProcurement);
+
+        Collection<Procurement> procurementPage = procurementDao.getPage(3, 2);
+
+        Collection<Procurement> expectedProcurementPage = new ArrayList<>();
+        Assertions.assertEquals(expectedProcurementPage, procurementPage);
+    }
 }

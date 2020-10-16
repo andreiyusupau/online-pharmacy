@@ -55,7 +55,7 @@ public class CollectionBasedProductDao implements ProductDao {
     @Override
     public Collection<Product> getPage(int currentPage, int pageLimit) {
         return productList.stream()
-                .skip(currentPage*pageLimit)
+                .skip((currentPage-1)*pageLimit)
                 .limit(pageLimit)
                 .collect(Collectors.toList());
     }

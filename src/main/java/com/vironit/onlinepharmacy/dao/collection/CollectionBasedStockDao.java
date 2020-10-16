@@ -62,7 +62,7 @@ public class CollectionBasedStockDao implements StockDao {
     @Override
     public Collection<Position> getPage(int currentPage, int pageLimit) {
         return stock.stream()
-                .skip(currentPage*pageLimit)
+                .skip((currentPage-1)*pageLimit)
                 .limit(pageLimit)
                 .collect(Collectors.toList());
     }

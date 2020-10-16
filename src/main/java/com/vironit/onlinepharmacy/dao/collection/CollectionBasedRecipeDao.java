@@ -37,11 +37,6 @@ public class CollectionBasedRecipeDao implements RecipeDao {
     }
 
     @Override
-    public boolean update(Recipe updatedRecipe) {
-        return remove(updatedRecipe.getId()) && recipeList.add(updatedRecipe);
-    }
-
-    @Override
     public boolean remove(long id) {
         return recipeList.removeIf(recipe -> recipe.getId() == id);
     }

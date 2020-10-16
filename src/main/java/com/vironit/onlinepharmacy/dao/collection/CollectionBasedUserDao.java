@@ -65,7 +65,7 @@ public class CollectionBasedUserDao implements UserDao {
     @Override
     public Collection<User> getPage(int currentPage, int pageLimit) {
         return userList.stream()
-                .skip(currentPage*pageLimit)
+                .skip((currentPage-1)*pageLimit)
                 .limit(pageLimit)
                 .collect(Collectors.toList());
     }

@@ -38,11 +38,6 @@ public class CollectionBasedCreditCardDao implements CreditCardDao {
     }
 
     @Override
-    public boolean update(CreditCard updatedCreditCard) {
-        return remove(updatedCreditCard.getId()) && creditCardList.add(updatedCreditCard);
-    }
-
-    @Override
     public boolean remove(long id) {
         return creditCardList.removeIf(creditCard -> creditCard.getId() == id);
     }

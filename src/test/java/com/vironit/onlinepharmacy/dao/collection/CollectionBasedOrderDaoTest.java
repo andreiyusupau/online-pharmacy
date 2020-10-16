@@ -1,9 +1,6 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
-import com.vironit.onlinepharmacy.model.Order;
-import com.vironit.onlinepharmacy.model.OrderStatus;
-import com.vironit.onlinepharmacy.model.Role;
-import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,20 +19,26 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CollectionBasedOrderDaoTest {
 
-
     @Mock
     private IdGenerator idGenerator;
     @InjectMocks
     private CollectionBasedOrderDao orderDao;
 
     private User user;
+    private User secondUser;
     private Order order;
+    private Order secondOrder;
+    private Order thirdOrder;
 
     @BeforeEach
     void set() {
         user = new User(1, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
+        secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         order = new Order(-1, Instant.now(), user, OrderStatus.PREPARATION);
+        secondOrder = new Order(-1, Instant.now(), secondUser, OrderStatus.PREPARATION);
+        thirdOrder = new Order(-1, Instant.now(), user, OrderStatus.PREPARATION);
     }
 
     @Test
@@ -70,8 +73,6 @@ class CollectionBasedOrderDaoTest {
                 .thenReturn(0L)
                 .thenReturn(1L)
                 .thenReturn(2L);
-        Order secondOrder = new Order(-1, Instant.now(), user, OrderStatus.PREPARATION);
-        Order thirdOrder = new Order(-1, Instant.now(), user, OrderStatus.PREPARATION);
         Collection<Order> orders = new ArrayList<>();
         orders.add(order);
         orders.add(secondOrder);
@@ -113,14 +114,10 @@ class CollectionBasedOrderDaoTest {
 
     @Test
     void getAllByOwnerIdShouldReturnAllOrdersOfUser() {
-        User secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
                 .thenReturn(2L);
-        Order secondOrder = new Order(-1, Instant.now(), secondUser, OrderStatus.PREPARATION);
-        Order thirdOrder = new Order(-1, Instant.now(), user, OrderStatus.PREPARATION);
         orderDao.add(order);
         orderDao.add(secondOrder);
         orderDao.add(thirdOrder);
@@ -135,14 +132,10 @@ class CollectionBasedOrderDaoTest {
 
     @Test
     void removeAllByOwnerIdShouldRemoveAllOrdersOfUser() {
-        User secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
                 .thenReturn(2L);
-        Order secondOrder = new Order(-1, Instant.now(), secondUser, OrderStatus.PREPARATION);
-        Order thirdOrder = new Order(-1, Instant.now(), user, OrderStatus.PREPARATION);
         orderDao.add(order);
         orderDao.add(secondOrder);
         orderDao.add(thirdOrder);
@@ -153,5 +146,55 @@ class CollectionBasedOrderDaoTest {
         Collection<Order> expectedOrders = new ArrayList<>();
         expectedOrders.add(secondOrder);
         Assertions.assertEquals(expectedOrders, actualOrders);
+    }
+
+    @Test
+    void shouldReturnTotalElementsEqualZero() {
+        int totalElements = orderDao.getTotalElements();
+        Assertions.assertEquals(0, totalElements);
+    }
+
+    @Test
+    void shouldReturnTotalElementsEqualTwo() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L);
+        orderDao.add(order);
+        orderDao.add(secondOrder);
+        int totalElements = orderDao.getTotalElements();
+        Assertions.assertEquals(2, totalElements);
+    }
+
+    @Test
+    void shouldReturnASecondPageWithOneElement() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        orderDao.add(order);
+        orderDao.add(secondOrder);
+        orderDao.add(thirdOrder);
+
+        Collection<Order> orderPage = orderDao.getPage(2, 2);
+
+        Collection<Order> expectedOrderPage = new ArrayList<>();
+        expectedOrderPage.add(thirdOrder);
+        Assertions.assertEquals(expectedOrderPage, orderPage);
+    }
+
+    @Test
+    void shouldReturnAThirdPageWithNoElements() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        orderDao.add(order);
+        orderDao.add(secondOrder);
+        orderDao.add(thirdOrder);
+
+        Collection<Order> orderPage = orderDao.getPage(3, 2);
+
+        Collection<Order> expectedOrderPage = new ArrayList<>();
+        Assertions.assertEquals(expectedOrderPage, orderPage);
     }
 }

@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -24,11 +26,17 @@ class CollectionBasedUserDaoTest {
     private CollectionBasedUserDao userDao;
 
     private User user;
+    private User secondUser;
+    private User thirdUser;
 
     @BeforeEach
     void set() {
         user = new User(-1, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
+        secondUser = new User(-1, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test2@email.com", "testpass123", Role.MODERATOR);
+        thirdUser = new User(-1, "testFirstName", "testMiddleName", "testLastName",
+                LocalDate.now(), "test3@email.com", "testpass123", Role.PROCUREMENT_SPECIALIST);
     }
 
     @Test
@@ -82,10 +90,6 @@ class CollectionBasedUserDaoTest {
 
     @Test
     void getAllShouldGetAllUsersFromCollection() {
-        User secondUser = new User(-1, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test2@email.com", "testpass123", Role.MODERATOR);
-        User thirdUser = new User(-1, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test3@email.com", "testpass123", Role.PROCUREMENT_SPECIALIST);
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
@@ -125,5 +129,55 @@ class CollectionBasedUserDaoTest {
         long sizeAfterRemove = userDao.getAll()
                 .size();
         Assertions.assertEquals(0, sizeAfterRemove);
+    }
+
+    @Test
+    void shouldReturnTotalElementsEqualZero() {
+        int totalElements = userDao.getTotalElements();
+        Assertions.assertEquals(0, totalElements);
+    }
+
+    @Test
+    void shouldReturnTotalElementsEqualTwo() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L);
+        userDao.add(user);
+        userDao.add(user);
+        int totalElements = userDao.getTotalElements();
+        Assertions.assertEquals(2, totalElements);
+    }
+
+    @Test
+    void shouldReturnASecondPageWithOneElement() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        userDao.add(user);
+        userDao.add(secondUser);
+        userDao.add(thirdUser);
+
+        Collection<User> userPage = userDao.getPage(2, 2);
+
+        Collection<User> expectedUserPage = new ArrayList<>();
+        expectedUserPage.add(thirdUser);
+        Assertions.assertEquals(expectedUserPage, userPage);
+    }
+
+    @Test
+    void shouldReturnAThirdPageWithNoElements() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        userDao.add(user);
+        userDao.add(secondUser);
+        userDao.add(thirdUser);
+
+        Collection<User> userPage = userDao.getPage(3, 2);
+
+        Collection<User> expectedUserPage = new ArrayList<>();
+        Assertions.assertEquals(expectedUserPage, userPage);
     }
 }

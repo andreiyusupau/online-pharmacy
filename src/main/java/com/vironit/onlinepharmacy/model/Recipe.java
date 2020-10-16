@@ -10,18 +10,18 @@ public class Recipe {
     private int quantity;
     private Product product;
     private Instant validThru;
-    private OperationPosition position;
+    private OperationPosition operationPosition;
 
     public Recipe() {
     }
 
-    public Recipe(long id, String description, int quantity, Product product, Instant validThru, OperationPosition position) {
+    public Recipe(long id, String description, int quantity, Product product, Instant validThru, OperationPosition operationPosition) {
         this.id = id;
         this.description = description;
         this.quantity = quantity;
         this.product = product;
         this.validThru = validThru;
-        this.position = position;
+        this.operationPosition = operationPosition;
     }
 
     public long getId() {
@@ -64,12 +64,12 @@ public class Recipe {
         this.validThru = validThru;
     }
 
-    public OperationPosition getPosition() {
-        return position;
+    public OperationPosition getOperationPosition() {
+        return operationPosition;
     }
 
-    public void setPosition(OperationPosition position) {
-        this.position = position;
+    public void setOperationPosition(OperationPosition operationPosition) {
+        this.operationPosition = operationPosition;
     }
 
     @Override
@@ -82,12 +82,12 @@ public class Recipe {
                 description.equals(recipe.description) &&
                 product.equals(recipe.product) &&
                 validThru.equals(recipe.validThru) &&
-                position.equals(recipe.position);
+                operationPosition.equals(recipe.operationPosition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, quantity, product, validThru, position);
+        return Objects.hash(id, description, quantity, product, validThru, operationPosition);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class Recipe {
                 ", quantity=" + quantity +
                 ", product=" + product +
                 ", validThru=" + validThru +
-                ", position=" + position +
+                ", operationPosition=" + operationPosition +
                 '}';
     }
 }

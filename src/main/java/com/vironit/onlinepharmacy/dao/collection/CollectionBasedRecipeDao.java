@@ -45,7 +45,7 @@ public class CollectionBasedRecipeDao implements RecipeDao {
     @Override
     public Optional<Recipe> getByOperationPositionId(long id) {
         return recipeList.stream()
-                .filter(recipe -> recipe.getPosition().getId() == id)
+                .filter(recipe -> recipe.getOperationPosition().getId() == id)
                 .findFirst();
     }
 }

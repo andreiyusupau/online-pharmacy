@@ -6,7 +6,7 @@ import com.vironit.onlinepharmacy.dto.OperationPositionData;
 import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
 import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
 import com.vironit.onlinepharmacy.model.*;
-import com.vironit.onlinepharmacy.service.procurement.exception.ProcurementException;
+import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 import com.vironit.onlinepharmacy.service.user.UserService;
@@ -116,7 +116,7 @@ public class BasicProcurementServiceTest {
         when(procurementDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(ProcurementException.class,
+        Exception exception = Assertions.assertThrows(ProcurementServiceException.class,
                 () -> procurementService.approveProcurement(1));
 
         String expectedMessage = "Can't approve procurement. Procurement with id " + 1 + " not found.";
@@ -138,7 +138,7 @@ public class BasicProcurementServiceTest {
         when(procurementDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(ProcurementException.class, () -> procurementService.completeProcurement(1));
+        Exception exception = Assertions.assertThrows(ProcurementServiceException.class, () -> procurementService.completeProcurement(1));
 
         String expectedMessage = "Can't complete procurement. Procurement with id " + 1 + " not found.";
         String actualMessage = exception.getMessage();
@@ -156,7 +156,7 @@ public class BasicProcurementServiceTest {
     void cancelProcurementShouldThrowException() {
         when(procurementDao.get(anyLong())).thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(ProcurementException.class, () -> procurementService.cancelProcurement(1));
+        Exception exception = Assertions.assertThrows(ProcurementServiceException.class, () -> procurementService.cancelProcurement(1));
 
         String expectedMessage = "Can't cancel procurement. Procurement with id " + 1 + " not found.";
         String actualMessage = exception.getMessage();
@@ -176,7 +176,7 @@ public class BasicProcurementServiceTest {
     void getShouldThrowException() {
         when(procurementDao.get(anyLong())).thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(ProcurementException.class, () -> procurementService.get(1));
+        Exception exception = Assertions.assertThrows(ProcurementServiceException.class, () -> procurementService.get(1));
 
         String expectedMessage = "Can't get procurement. Procurement with id " + 1 + " not found.";
         String actualMessage = exception.getMessage();

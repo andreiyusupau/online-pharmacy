@@ -8,8 +8,7 @@ import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.authentication.BasicAuthenticationService;
-import com.vironit.onlinepharmacy.service.authentication.exception.LoginException;
-import com.vironit.onlinepharmacy.service.authentication.exception.RegistrationException;
+import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
 import com.vironit.onlinepharmacy.util.Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +75,7 @@ public class BasicAuthenticationServiceTest {
         when(userDao.getByEmail("test@test.com"))
                 .thenReturn(Optional.of(user));
 
-        Exception exception = Assertions.assertThrows(RegistrationException.class,
+        Exception exception = Assertions.assertThrows(AuthenticationServiceException.class,
                 () -> authenticationService.register(userRegisterParameters));
 //TODO:Not working properly
         verify(userRegisterParametersToUserConverter).convert(userRegisterParameters);
@@ -115,7 +114,7 @@ public class BasicAuthenticationServiceTest {
         when(userDao.getByEmail("nonexistentemail@test.com"))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(LoginException.class,
+        Exception exception = Assertions.assertThrows(AuthenticationServiceException.class,
                 () -> authenticationService.login(userLoginParameters));
 
         verify(userToUserPublicParametersConverter, never()).convert(any(User.class));
@@ -135,7 +134,7 @@ public class BasicAuthenticationServiceTest {
         when(passwordHasher.validatePassword("wrongPassword", "testPassword123"))
                 .thenReturn(false);
 
-        Exception exception = Assertions.assertThrows(LoginException.class,
+        Exception exception = Assertions.assertThrows(AuthenticationServiceException.class,
                 () -> authenticationService.login(userLoginParameters));
 
         verify(userToUserPublicParametersConverter, never()).convert(any(User.class));

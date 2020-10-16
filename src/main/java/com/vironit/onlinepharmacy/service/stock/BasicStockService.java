@@ -4,7 +4,7 @@ import com.vironit.onlinepharmacy.dao.ReserveDao;
 import com.vironit.onlinepharmacy.dao.StockDao;
 import com.vironit.onlinepharmacy.model.OperationPosition;
 import com.vironit.onlinepharmacy.model.Position;
-import com.vironit.onlinepharmacy.service.stock.exception.StockException;
+import com.vironit.onlinepharmacy.service.exception.StockServiceException;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +38,8 @@ public class BasicStockService implements StockService {
 
     @Override
     public Position get(long id) {
-        return stockDAO.get(id).orElseThrow(() -> new StockException("Can't get stock position. Position with id " + id + " not found."));
+        return stockDAO.get(id)
+                .orElseThrow(() -> new StockServiceException("Can't get stock position. Position with id " + id + " not found."));
     }
 
     @Override
@@ -68,9 +69,7 @@ public class BasicStockService implements StockService {
             long productId = operationPosition.getProduct()
                     .getId();
             Position stockPosition = stockDAO.getByProductId(productId)
-                    .orElseThrow(()-> new StockException("Can't reserve position "+operationPosition+", because it's not in stock."));
-            System.out.println(operationPosition);
-            System.out.println(stockPosition);
+                    .orElseThrow(()-> new StockServiceException("Can't reserve position "+operationPosition+", because it's not in stock."));
             int reservedPositionQuantity = operationPosition.getQuantity();
                 int stockPositionQuantity = stockPosition.getQuantity();
                 if (stockPositionQuantity >= reservedPositionQuantity) {
@@ -78,7 +77,7 @@ public class BasicStockService implements StockService {
                     stockDAO.update(stockPosition);
                     reserveDao.add(operationPosition);
                 } else {
-                    throw new StockException("Can't reserve position "+operationPosition+". Desired quantity "+
+                    throw new StockServiceException("Can't reserve position "+operationPosition+". Desired quantity "+
                             reservedPositionQuantity+", quantity in stock "+stockPositionQuantity+".");
                 }
         }

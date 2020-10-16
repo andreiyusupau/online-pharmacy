@@ -2,7 +2,7 @@ package com.vironit.onlinepharmacy.service.product;
 
 import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.model.Product;
-import com.vironit.onlinepharmacy.service.product.exception.ProductException;
+import com.vironit.onlinepharmacy.service.exception.ProductServiceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ public class BasicProductServiceTest {
     @BeforeEach
     void set() {
         product = new Product(1, "testProduct", new BigDecimal(1245), null,false);
-        product = new Product(2, "secondTestProduct", new BigDecimal(1632), null,false);
+        secondProduct = new Product(2, "secondTestProduct", new BigDecimal(1632), null,false);
         products = new ArrayList<>();
         products.add(product);
         products.add(secondProduct);
@@ -69,7 +69,7 @@ public class BasicProductServiceTest {
         when(productDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(ProductException.class, () -> productService.get(1));
+        Exception exception = Assertions.assertThrows(ProductServiceException.class, () -> productService.get(1));
 
         verify(productDao).get(1);
         String expectedMessage = "Can't get product. Product with id " + 1 + " not found.";

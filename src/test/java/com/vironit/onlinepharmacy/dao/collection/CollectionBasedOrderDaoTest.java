@@ -149,13 +149,13 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void shouldReturnTotalElementsEqualZero() {
+    void getTotalElementsShouldReturnTotalElementsEqualZero() {
         int totalElements = orderDao.getTotalElements();
         Assertions.assertEquals(0, totalElements);
     }
 
     @Test
-    void shouldReturnTotalElementsEqualTwo() {
+    void getTotalElementsShouldReturnTotalElementsEqualTwo() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L);
@@ -166,7 +166,7 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void shouldReturnASecondPageWithOneElement() {
+    void getPageShouldReturnASecondPageWithOneElement() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
@@ -183,7 +183,7 @@ class CollectionBasedOrderDaoTest {
     }
 
     @Test
-    void shouldReturnAThirdPageWithNoElements() {
+    void getPageShouldReturnAThirdPageWithNoElements() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)

@@ -125,13 +125,13 @@ class CollectionBasedStockDaoTest {
     }
 
     @Test
-    void shouldReturnTotalElementsEqualZero() {
+    void getTotalElementsShouldReturnTotalElementsEqualZero() {
         int totalElements = stockDao.getTotalElements();
         Assertions.assertEquals(0, totalElements);
     }
 
     @Test
-    void shouldReturnTotalElementsEqualTwo() {
+    void getTotalElementsShouldReturnTotalElementsEqualTwo() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L);
@@ -142,7 +142,7 @@ class CollectionBasedStockDaoTest {
     }
 
     @Test
-    void shouldReturnASecondPageWithOneElement() {
+    void getPageShouldReturnASecondPageWithOneElement() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
@@ -159,7 +159,7 @@ class CollectionBasedStockDaoTest {
     }
 
     @Test
-    void shouldReturnAThirdPageWithNoElements() {
+    void getPageShouldReturnAThirdPageWithNoElements() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)

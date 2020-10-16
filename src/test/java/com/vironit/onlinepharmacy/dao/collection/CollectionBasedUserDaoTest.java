@@ -132,13 +132,13 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void shouldReturnTotalElementsEqualZero() {
+    void getTotalElementsShouldReturnTotalElementsEqualZero() {
         int totalElements = userDao.getTotalElements();
         Assertions.assertEquals(0, totalElements);
     }
 
     @Test
-    void shouldReturnTotalElementsEqualTwo() {
+    void getTotalElementsShouldReturnTotalElementsEqualTwo() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L);
@@ -149,7 +149,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void shouldReturnASecondPageWithOneElement() {
+    void getPageShouldReturnASecondPageWithOneElement() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
@@ -166,7 +166,7 @@ class CollectionBasedUserDaoTest {
     }
 
     @Test
-    void shouldReturnAThirdPageWithNoElements() {
+    void getPageShouldReturnAThirdPageWithNoElements() {
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)

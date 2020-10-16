@@ -3,7 +3,6 @@ package com.vironit.onlinepharmacy.model;
 import java.time.Instant;
 import java.util.Objects;
 
-//TODO:add service
 public class Recipe {
 
     private long id;

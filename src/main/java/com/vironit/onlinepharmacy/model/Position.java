@@ -61,11 +61,11 @@ public class Position {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Position{");
-        sb.append("id=").append(id);
-        sb.append(", quantity=").append(quantity);
-        sb.append(", product=").append(product);
-        sb.append('}');
-        return sb.toString();
+        final StringBuilder stringBuilder = new StringBuilder("Position{");
+        stringBuilder.append("id=").append(id);
+        stringBuilder.append(", quantity=").append(quantity);
+        stringBuilder.append(", product=").append(product);
+        stringBuilder.append('}');
+        return stringBuilder.toString();
     }
 }

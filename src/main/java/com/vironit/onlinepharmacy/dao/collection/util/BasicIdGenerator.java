@@ -1,4 +1,4 @@
-package com.vironit.onlinepharmacy.dao.collection;
+package com.vironit.onlinepharmacy.dao.collection.util;
 
 public class BasicIdGenerator implements IdGenerator {
 

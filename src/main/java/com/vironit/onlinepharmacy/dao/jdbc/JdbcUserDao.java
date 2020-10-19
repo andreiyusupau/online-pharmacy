@@ -1,0 +1,145 @@
+package com.vironit.onlinepharmacy.dao.jdbc;
+
+import com.vironit.onlinepharmacy.dao.DaoException;
+import com.vironit.onlinepharmacy.dao.UserDao;
+import com.vironit.onlinepharmacy.model.User;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+
+public class JdbcUserDao implements UserDao {
+
+    private static final String USERS_TABLE = "users";
+    private static final String ROLES_TABLE = "roles";
+
+    private final DataSource dataSource;
+
+    public JdbcUserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public Optional<User> getByEmail(String email) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean update(User user) {
+        String sql = "UPDATE " + USERS_TABLE +
+                " SET(first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
+                "= (?,?,?,?,?,?," +
+                "(SELECT id " +
+                "FROM roles " +
+                "WHERE name=?)) " +
+                "WHERE id=?;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, user.getFirstName()););
+            preparedStatement.setString(2, user.getMiddleName());
+            preparedStatement.setString(3, user.getLastName());
+            preparedStatement.setDate(4, Date.valueOf(user.getDateOfBirth()));
+            preparedStatement.setString(5, user.getEmail());
+            preparedStatement.setString(6, user.getPassword());
+            preparedStatement.setString(7, user.getRole().name());
+            preparedStatement.setLong(8,user.getId());
+
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public long add(User user) {
+        String sql = "INSERT INTO " + USERS_TABLE + "(first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
+                "VALUES(?,?,?,?,?,?," +
+                "(SELECT id " +
+                "FROM roles " +
+                "WHERE name=?)) " +
+                "RETURNING id;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            return preparedStatement.executeUpdate();
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
+    }
+
+    @Override
+    public Optional<User> get(long id) {
+        String sql = "SELECT u.id, u.first_name, u.middle_name, u.last_name, u.date_of_birth, u.email, u.password, r.name " +
+                "FROM " + USERS_TABLE + " AS u " +
+                "INNER JOIN " + ROLES_TABLE + " AS r ON u.role_id=r.id " +
+                "WHERE u.id=?;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next() ? Optional.of(parseUser(resultSet)) : Optional.empty();
+            }
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
+    }
+
+    private User parseUser(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getLong(1));
+        //TODO:
+        return user;
+    }
+
+    @Override
+    public Collection<User> getAll() {
+        String sql = "SELECT u.id, u.first_name, u.middle_name, u.last_name, u.date_of_birth, u.email, u.password, r.name " +
+                "FROM " + USERS_TABLE + " AS u " +
+                "INNER JOIN " + ROLES_TABLE + " AS r ON u.role_id = r.id";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            Collection<User> users = new ArrayList<>();
+            while (resultSet.next()) {
+                User user = parseUser(resultSet);
+                users.add(user);
+            }
+            return users;
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
+    }
+
+    @Override
+    public boolean remove(long id) {
+        //TODO:
+        String sql = "DELETE FROM " + USERS_TABLE +
+                " WHERE (contact_id,filename)=(?,?);";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//
+//            preparedStatement.setLong(1, attachment.getContactId());
+//            preparedStatement.setString(2, attachment.getFileName());
+
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public int getTotalElements() {
+        return 0;
+    }
+
+    @Override
+    public Collection<User> getPage(int currentPage, int pageLimit) {
+        return null;
+    }
+}

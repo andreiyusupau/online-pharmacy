@@ -3,7 +3,6 @@ package com.vironit.onlinepharmacy.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
-//TODO:add service
 public class CreditCard {
 
     private long id;

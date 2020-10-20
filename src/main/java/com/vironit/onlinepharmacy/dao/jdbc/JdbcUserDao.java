@@ -2,6 +2,7 @@ package com.vironit.onlinepharmacy.dao.jdbc;
 
 import com.vironit.onlinepharmacy.dao.DaoException;
 import com.vironit.onlinepharmacy.dao.UserDao;
+import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 
 import javax.sql.DataSource;
@@ -23,7 +24,19 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public Optional<User> getByEmail(String email) {
-        return Optional.empty();
+        String sql = "SELECT u.id, u.first_name, u.middle_name, u.last_name, u.date_of_birth, u.email, u.password, r.name " +
+                "FROM " + USERS_TABLE + " AS u " +
+                "INNER JOIN " + ROLES_TABLE + " AS r ON u.role_id=r.id " +
+                "WHERE u.email=?;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, email);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next() ? Optional.of(parseUser(resultSet)) : Optional.empty();
+            }
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
     }
 
     @Override
@@ -32,27 +45,23 @@ public class JdbcUserDao implements UserDao {
                 " SET(first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
                 "= (?,?,?,?,?,?," +
                 "(SELECT id " +
-                "FROM roles " +
+                "FROM "+ROLES_TABLE+" " +
                 "WHERE name=?)) " +
                 "WHERE id=?;";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, user.getFirstName()););
+            preparedStatement.setString(1, user.getFirstName());
             preparedStatement.setString(2, user.getMiddleName());
             preparedStatement.setString(3, user.getLastName());
             preparedStatement.setDate(4, Date.valueOf(user.getDateOfBirth()));
             preparedStatement.setString(5, user.getEmail());
             preparedStatement.setString(6, user.getPassword());
             preparedStatement.setString(7, user.getRole().name());
-            preparedStatement.setLong(8,user.getId());
-
+            preparedStatement.setLong(8, user.getId());
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            throw new DaoException();
         }
-
-        return false;
     }
 
     @Override
@@ -60,11 +69,18 @@ public class JdbcUserDao implements UserDao {
         String sql = "INSERT INTO " + USERS_TABLE + "(first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
                 "VALUES(?,?,?,?,?,?," +
                 "(SELECT id " +
-                "FROM roles " +
+                "FROM "+ROLES_TABLE+" " +
                 "WHERE name=?)) " +
                 "RETURNING id;";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, user.getFirstName());
+            preparedStatement.setString(2, user.getMiddleName());
+            preparedStatement.setString(3, user.getLastName());
+            preparedStatement.setDate(4, Date.valueOf(user.getDateOfBirth()));
+            preparedStatement.setString(5, user.getEmail());
+            preparedStatement.setString(6, user.getPassword());
+            preparedStatement.setString(7, user.getRole().name());
             return preparedStatement.executeUpdate();
         } catch (SQLException sqle) {
             throw new DaoException();
@@ -88,13 +104,6 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
-    private User parseUser(ResultSet resultSet) throws SQLException {
-        User user = new User();
-        user.setId(resultSet.getLong(1));
-        //TODO:
-        return user;
-    }
-
     @Override
     public Collection<User> getAll() {
         String sql = "SELECT u.id, u.first_name, u.middle_name, u.last_name, u.date_of_birth, u.email, u.password, r.name " +
@@ -116,30 +125,62 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public boolean remove(long id) {
-        //TODO:
         String sql = "DELETE FROM " + USERS_TABLE +
-                " WHERE (contact_id,filename)=(?,?);";
+                " WHERE id=?;";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-//
-//            preparedStatement.setLong(1, attachment.getContactId());
-//            preparedStatement.setString(2, attachment.getFileName());
-
+            preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            throw new DaoException();
         }
-
-        return false;
     }
 
     @Override
     public int getTotalElements() {
-        return 0;
+        String sql = "SELECT COUNT(*) FROM " + USERS_TABLE;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            return resultSet.next() ? resultSet.getInt(1) : -1;
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
     }
 
     @Override
     public Collection<User> getPage(int currentPage, int pageLimit) {
-        return null;
+        String sql = "SELECT u.id, u.first_name, u.middle_name, u.last_name, u.date_of_birth, u.email, u.password, r.name " +
+                "FROM " + USERS_TABLE + " AS u " +
+                "INNER JOIN " + ROLES_TABLE + " AS r ON u.role_id = r.id " +
+                "ORDER BY id LIMIT ? OFFSET ?;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, pageLimit);
+            preparedStatement.setInt(2, (currentPage - 1) * pageLimit);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                Collection<User> users = new ArrayList<>();
+                while (resultSet.next()) {
+                    User user = parseUser(resultSet);
+                    users.add(user);
+                }
+                return users;
+            }
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
+    }
+
+    private User parseUser(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getLong(1));
+        user.setFirstName(resultSet.getString(2));
+        user.setMiddleName(resultSet.getString(3));
+        user.setLastName(resultSet.getString(4));
+        user.setDateOfBirth(resultSet.getDate(5).toLocalDate());
+        user.setEmail(resultSet.getString(6));
+        user.setPassword(resultSet.getString(7));
+        user.setRole(resultSet.getObject(8, Role.class));
+        return user;
     }
 }

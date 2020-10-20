@@ -1,45 +1,161 @@
 package com.vironit.onlinepharmacy.dao.jdbc;
 
 import com.vironit.onlinepharmacy.dao.CreditCardDao;
+import com.vironit.onlinepharmacy.dao.DaoException;
 import com.vironit.onlinepharmacy.model.CreditCard;
+import com.vironit.onlinepharmacy.model.User;
 
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
 public class JdbcCreditCardDao implements CreditCardDao {
 
+    private static final String CREDIT_CARDS_TABLE = "credit_cards";
+
+    private final DataSource dataSource;
+
+    public JdbcCreditCardDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Override
     public long add(CreditCard creditCard) {
-        return 0;
+        String sql = "INSERT INTO " + CREDIT_CARDS_TABLE + "(card_number, owner_name, valid_thru, cvv, user_id) " +
+                "VALUES(?,?,?,?,?) " +
+                "RETURNING id;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, creditCard.getCardNumber());
+            preparedStatement.setString(2, creditCard.getOwnerName());
+            preparedStatement.setDate(3, Date.valueOf(creditCard.getValidThru()));
+            preparedStatement.setInt(4, creditCard.getCvv());
+            preparedStatement.setLong(5, creditCard.getOwner()
+                    .getId());
+            return preparedStatement.executeUpdate();
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
     }
 
     @Override
     public Optional<CreditCard> get(long id) {
-        return Optional.empty();
+        String sql = "SELECT id, card_number, owner_name, valid_thru, cvv, user_id " +
+                "FROM " + CREDIT_CARDS_TABLE + " " +
+                "WHERE id=?;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next() ? Optional.of(parseCreditCard(resultSet)) : Optional.empty();
+            }
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
     }
 
     @Override
     public Collection<CreditCard> getAll() {
-        return null;
+        //TODO:get users
+        String sql = "SELECT id, card_number, owner_name, valid_thru, cvv, user_id " +
+                "FROM " + CREDIT_CARDS_TABLE + ";";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            Collection<CreditCard> creditCards = new ArrayList<>();
+            while (resultSet.next()) {
+                CreditCard creditCard = parseCreditCard(resultSet);
+                creditCards.add(creditCard);
+            }
+            return creditCards;
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
     }
 
     @Override
     public boolean remove(long id) {
-        return false;
+        String sql = "DELETE FROM " + CREDIT_CARDS_TABLE +
+                " WHERE id=?;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
     }
 
     @Override
-    public boolean addAll(Collection<CreditCard> t) {
-        return false;
+    public boolean addAll(Collection<CreditCard> creditCards) {
+        String sql = "INSERT INTO " + CREDIT_CARDS_TABLE + "(card_number, owner_name, valid_thru, cvv, user_id) " +
+                "\nVALUES(?,?,?,?,?)".repeat(creditCards.size()) + ";";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int counter = 0;
+            for (CreditCard creditCard : creditCards) {
+                preparedStatement.setString(counter + 1, creditCard.getCardNumber());
+                preparedStatement.setString(counter + 2, creditCard.getOwnerName());
+                preparedStatement.setDate(counter + 3, Date.valueOf(creditCard.getValidThru()));
+                preparedStatement.setInt(counter + 4, creditCard.getCvv());
+                preparedStatement.setLong(counter + 5, creditCard.getOwner()
+                        .getId());
+                counter++;
+            }
+            return preparedStatement.executeUpdate() == creditCards.size();
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
     }
 
     @Override
     public Collection<CreditCard> getAllByOwnerId(long id) {
-        return null;
+        String sql = "SELECT id, card_number, owner_name, valid_thru, cvv, user_id " +
+                "FROM " + CREDIT_CARDS_TABLE + " " +
+                "WHERE user_id=?;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                Collection<CreditCard> creditCards = new ArrayList<>();
+                while (resultSet.next()) {
+                    CreditCard creditCard = parseCreditCard(resultSet);
+                    creditCards.add(creditCard);
+                }
+                return creditCards;
+            }
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
     }
 
     @Override
     public boolean removeAllByOwnerId(long id) {
-        return false;
+        String sql = "DELETE FROM " + CREDIT_CARDS_TABLE +
+                " WHERE user_id=?;";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException sqle) {
+            throw new DaoException();
+        }
+    }
+
+    private CreditCard parseCreditCard(ResultSet resultSet) throws SQLException {
+        CreditCard creditCard = new CreditCard();
+        creditCard.setId(resultSet.getLong(1));
+        creditCard.setCardNumber(resultSet.getString(2));
+        creditCard.setOwnerName(resultSet.getString(3));
+        creditCard.setValidThru(resultSet.getDate(4)
+                .toLocalDate());
+        creditCard.setCvv(resultSet.getInt(5));
+        //TODO:check
+        User user = new User();
+        user.setId(resultSet.getLong(6));
+        creditCard.setOwner(user);
+        return creditCard;
     }
 }

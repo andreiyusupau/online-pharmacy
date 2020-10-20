@@ -8,6 +8,10 @@ public class ProductCategory {
     private String name;
     private String description;
 
+    public ProductCategory(){
+
+    }
+
     public ProductCategory(long id, String name, String description) {
         this.id = id;
         this.name = name;

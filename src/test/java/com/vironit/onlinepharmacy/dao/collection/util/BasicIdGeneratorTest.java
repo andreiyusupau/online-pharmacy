@@ -1,4 +1,4 @@
-package com.vironit.onlinepharmacy.dao.collection;
+package com.vironit.onlinepharmacy.dao.collection.util;
 
 import com.vironit.onlinepharmacy.dao.collection.util.BasicIdGenerator;
 import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;

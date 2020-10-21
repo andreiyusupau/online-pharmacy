@@ -49,9 +49,7 @@ public class CollectionBasedProcurementDao implements ProcurementDao {
 
     @Override
     public boolean addAll(Collection<Procurement> procurements) {
-        for (Procurement procurement : procurements) {
-            add(procurement);
-        }
+        procurements.forEach(this::add);
         return true;
     }
 
@@ -65,5 +63,18 @@ public class CollectionBasedProcurementDao implements ProcurementDao {
     @Override
     public boolean removeAllByOwnerId(long id) {
         return procurementList.removeIf(procurement -> procurement.getOwner().getId() == id);
+    }
+
+    @Override
+    public int getTotalElements() {
+        return procurementList.size();
+    }
+
+    @Override
+    public Collection<Procurement> getPage(int currentPage, int pageLimit) {
+        return procurementList.stream()
+                .skip((currentPage-1)*pageLimit)
+                .limit(pageLimit)
+                .collect(Collectors.toList());
     }
 }

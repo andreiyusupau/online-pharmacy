@@ -6,8 +6,7 @@ import com.vironit.onlinepharmacy.dto.UserPublicParameters;
 import com.vironit.onlinepharmacy.dto.UserRegisterParameters;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
-import com.vironit.onlinepharmacy.service.authentication.exception.LoginException;
-import com.vironit.onlinepharmacy.service.authentication.exception.RegistrationException;
+import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
 import com.vironit.onlinepharmacy.util.Converter;
 
 
@@ -30,12 +29,12 @@ public class BasicAuthenticationService implements AuthenticationService {
     @Override
     public UserPublicParameters login(UserLoginParameters userLoginParameters) {
         String email = userLoginParameters.getEmail();
-        User user = userDao.getByEmail(email).orElseThrow(() -> new LoginException("User with email " + email + " does not exist."));
+        User user = userDao.getByEmail(email).orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
         String password = userLoginParameters.getPassword();
         if (passwordHasher.validatePassword(password, user.getPassword())) {
             return userToUserPublicParametersConverter.convert(user);
         } else {
-            throw new LoginException("Wrong password for user " + email);
+            throw new AuthenticationServiceException("Wrong password for user " + email);
         }
     }
 
@@ -49,7 +48,7 @@ public class BasicAuthenticationService implements AuthenticationService {
             user.setPassword(hashedPassword);
             return userDao.add(user);
         } else {
-            throw new RegistrationException("User with email " + email + " already exists.");
+            throw new AuthenticationServiceException("User with email " + email + " already exists.");
         }
     }
 }

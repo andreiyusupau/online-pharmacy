@@ -25,12 +25,20 @@ class CollectionBasedStockDaoTest {
     private CollectionBasedStockDao stockDao;
 
     private Product product;
+    private Product secondProduct;
+    private Product thirdProduct;
     private Position position;
+    private Position secondPosition;
+    private Position thirdPosition;
 
     @BeforeEach
     void set() {
         product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
+        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null,false);
+        thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null,false);
         position = new Position(1, 10, product);
+        secondPosition = new Position(2, 11, secondProduct);
+        thirdPosition = new Position(3, 14, thirdProduct);
     }
 
     @Test
@@ -71,11 +79,6 @@ class CollectionBasedStockDaoTest {
 
     @Test
     void getAllShouldGetAllPositionsFromCollection() {
-        Product secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null,false);
-        Product thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null,false);
-        Position secondPosition = new Position(2, 11, secondProduct);
-        Position thirdPosition = new Position(3, 14, thirdProduct);
-
         when(idGenerator.getNextId())
                 .thenReturn(0L)
                 .thenReturn(1L)
@@ -119,5 +122,55 @@ class CollectionBasedStockDaoTest {
         long sizeAfterRemove = stockDao.getAll()
                 .size();
         Assertions.assertEquals(0, sizeAfterRemove);
+    }
+
+    @Test
+    void getTotalElementsShouldReturnTotalElementsEqualZero() {
+        int totalElements = stockDao.getTotalElements();
+        Assertions.assertEquals(0, totalElements);
+    }
+
+    @Test
+    void getTotalElementsShouldReturnTotalElementsEqualTwo() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L);
+        stockDao.add(position);
+        stockDao.add(secondPosition);
+        int totalElements = stockDao.getTotalElements();
+        Assertions.assertEquals(2, totalElements);
+    }
+
+    @Test
+    void getPageShouldReturnASecondPageWithOneElement() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        stockDao.add(position);
+        stockDao.add(secondPosition);
+        stockDao.add(thirdPosition);
+
+        Collection<Position> positionPage = stockDao.getPage(2, 2);
+
+        Collection<Position> expectedPositionPage = new ArrayList<>();
+        expectedPositionPage.add(thirdPosition);
+        Assertions.assertEquals(expectedPositionPage, positionPage);
+    }
+
+    @Test
+    void getPageShouldReturnAThirdPageWithNoElements() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        stockDao.add(position);
+        stockDao.add(secondPosition);
+        stockDao.add(thirdPosition);
+
+        Collection<Position> positionPage = stockDao.getPage(3, 2);
+
+        Collection<Position> expectedPositionPage = new ArrayList<>();
+        Assertions.assertEquals(expectedPositionPage, positionPage);
     }
 }

@@ -1,5 +1,6 @@
 package com.vironit.onlinepharmacy.model;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Recipe {
@@ -8,15 +9,19 @@ public class Recipe {
     private String description;
     private int quantity;
     private Product product;
+    private Instant validThru;
+    private OperationPosition operationPosition;
 
     public Recipe() {
     }
 
-    public Recipe(long id, String description, int quantity, Product product) {
+    public Recipe(long id, String description, int quantity, Product product, Instant validThru, OperationPosition operationPosition) {
         this.id = id;
         this.description = description;
         this.quantity = quantity;
         this.product = product;
+        this.validThru = validThru;
+        this.operationPosition = operationPosition;
     }
 
     public long getId() {
@@ -51,20 +56,38 @@ public class Recipe {
         this.product = product;
     }
 
+    public Instant getValidThru() {
+        return validThru;
+    }
+
+    public void setValidThru(Instant validThru) {
+        this.validThru = validThru;
+    }
+
+    public OperationPosition getOperationPosition() {
+        return operationPosition;
+    }
+
+    public void setOperationPosition(OperationPosition operationPosition) {
+        this.operationPosition = operationPosition;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Recipe)) return false;
         Recipe recipe = (Recipe) o;
         return id == recipe.id &&
                 quantity == recipe.quantity &&
                 description.equals(recipe.description) &&
-                product.equals(recipe.product);
+                product.equals(recipe.product) &&
+                validThru.equals(recipe.validThru) &&
+                operationPosition.equals(recipe.operationPosition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, quantity, product);
+        return Objects.hash(id, description, quantity, product, validThru, operationPosition);
     }
 
     @Override
@@ -74,6 +97,8 @@ public class Recipe {
                 ", description='" + description + '\'' +
                 ", quantity=" + quantity +
                 ", product=" + product +
+                ", validThru=" + validThru +
+                ", operationPosition=" + operationPosition +
                 '}';
     }
 }

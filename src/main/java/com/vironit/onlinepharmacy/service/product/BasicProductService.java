@@ -2,7 +2,7 @@ package com.vironit.onlinepharmacy.service.product;
 
 import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.model.Product;
-import com.vironit.onlinepharmacy.service.product.exception.ProductException;
+import com.vironit.onlinepharmacy.service.exception.ProductServiceException;
 
 import java.util.Collection;
 
@@ -22,7 +22,7 @@ public class BasicProductService implements ProductService {
     @Override
     public Product get(long id) {
         return productDAO.get(id)
-                .orElseThrow(() -> new ProductException("Can't get product. Product with id " + id + " not found."));
+                .orElseThrow(() -> new ProductServiceException("Can't get product. Product with id " + id + " not found."));
     }
 
     @Override

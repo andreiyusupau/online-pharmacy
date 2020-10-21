@@ -3,7 +3,7 @@ package com.vironit.onlinepharmacy.service.stock;
 import com.vironit.onlinepharmacy.dao.ReserveDao;
 import com.vironit.onlinepharmacy.dao.StockDao;
 import com.vironit.onlinepharmacy.model.*;
-import com.vironit.onlinepharmacy.service.stock.exception.StockException;
+import com.vironit.onlinepharmacy.service.exception.StockServiceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,7 +78,7 @@ public class BasicStockServiceTest {
         when(stockDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(StockException.class, () -> stockService.get(1));
+        Exception exception = Assertions.assertThrows(StockServiceException.class, () -> stockService.get(1));
 
         verify(stockDao).get(1);
         String expectedMessage = "Can't get stock position. Position with id " + 1 + " not found.";
@@ -156,7 +156,7 @@ public class BasicStockServiceTest {
         when(stockDao.getByProductId(3))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(StockException.class,
+        Exception exception = Assertions.assertThrows(StockServiceException.class,
                 () -> stockService.reserve(operationPositions));
 
         String expectedMessage = "Can't reserve position " + secondOperationPosition.toString() + ", because it's not in stock.";
@@ -174,7 +174,7 @@ public class BasicStockServiceTest {
         when(stockDao.getByProductId(1))
                 .thenReturn(Optional.of(position));
 
-        Exception exception = Assertions.assertThrows(StockException.class,
+        Exception exception = Assertions.assertThrows(StockServiceException.class,
                 () -> stockService.reserve(operationPositions));
 
         String expectedMessage = "Can't reserve position " + operationPosition.toString()

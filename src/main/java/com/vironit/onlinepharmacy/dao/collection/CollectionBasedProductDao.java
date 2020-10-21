@@ -6,6 +6,7 @@ import com.vironit.onlinepharmacy.model.Product;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CollectionBasedProductDao implements ProductDao {
 
@@ -44,5 +45,18 @@ public class CollectionBasedProductDao implements ProductDao {
     @Override
     public boolean remove(long id) {
         return productList.removeIf(product -> product.getId() == id);
+    }
+
+    @Override
+    public int getTotalElements() {
+        return productList.size();
+    }
+
+    @Override
+    public Collection<Product> getPage(int currentPage, int pageLimit) {
+        return productList.stream()
+                .skip((currentPage-1)*pageLimit)
+                .limit(pageLimit)
+                .collect(Collectors.toList());
     }
 }

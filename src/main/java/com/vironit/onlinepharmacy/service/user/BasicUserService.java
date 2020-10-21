@@ -2,7 +2,7 @@ package com.vironit.onlinepharmacy.service.user;
 
 import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.model.User;
-import com.vironit.onlinepharmacy.service.user.exception.UserServiceException;
+import com.vironit.onlinepharmacy.service.exception.UserServiceException;
 
 import java.util.Collection;
 

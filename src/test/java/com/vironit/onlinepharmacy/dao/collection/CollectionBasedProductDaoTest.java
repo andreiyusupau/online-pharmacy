@@ -24,10 +24,14 @@ class CollectionBasedProductDaoTest {
     private CollectionBasedProductDao productDao;
 
     private Product product;
+    private Product secondProduct;
+    private Product thirdProduct;
 
     @BeforeEach
     void set() {
         product = new Product(-1, "testProduct", new BigDecimal("100"), null,false);
+        secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), null,false);
+        thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), null,false);
     }
 
     @Test
@@ -62,9 +66,6 @@ class CollectionBasedProductDaoTest {
                 .thenReturn(0L)
                 .thenReturn(1L)
                 .thenReturn(2L);
-        Product secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), null,false);
-        Product thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), null,false);
-
         productDao.add(product);
         productDao.add(secondProduct);
         productDao.add(thirdProduct);
@@ -104,5 +105,55 @@ class CollectionBasedProductDaoTest {
                 .size();
 
         Assertions.assertEquals(0, sizeAfterRemove);
+    }
+
+    @Test
+    void getTotalElementsShouldReturnTotalElementsEqualZero() {
+        int totalElements = productDao.getTotalElements();
+        Assertions.assertEquals(0, totalElements);
+    }
+
+    @Test
+    void getTotalElementsShouldReturnTotalElementsEqualTwo() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L);
+        productDao.add(product);
+        productDao.add(secondProduct);
+        int totalElements = productDao.getTotalElements();
+        Assertions.assertEquals(2, totalElements);
+    }
+
+    @Test
+    void getPageShouldReturnASecondPageWithOneElement() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        productDao.add(product);
+        productDao.add(secondProduct);
+        productDao.add(thirdProduct);
+
+        Collection<Product> productPage = productDao.getPage(2, 2);
+
+        Collection<Product> expectedProductPage = new ArrayList<>();
+        expectedProductPage.add(thirdProduct);
+        Assertions.assertEquals(expectedProductPage, productPage);
+    }
+
+    @Test
+    void getPageShouldReturnAThirdPageWithNoElements() {
+        when(idGenerator.getNextId())
+                .thenReturn(0L)
+                .thenReturn(1L)
+                .thenReturn(2L);
+        productDao.add(product);
+        productDao.add(secondProduct);
+        productDao.add(thirdProduct);
+
+        Collection<Product> productPage = productDao.getPage(3, 2);
+
+        Collection<Product> expectedProductPage = new ArrayList<>();
+        Assertions.assertEquals(expectedProductPage, productPage);
     }
 }

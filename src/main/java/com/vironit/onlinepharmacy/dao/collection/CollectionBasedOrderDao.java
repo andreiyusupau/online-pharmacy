@@ -6,6 +6,7 @@ import com.vironit.onlinepharmacy.model.Order;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CollectionBasedOrderDao implements OrderDao {
 
@@ -48,9 +49,7 @@ public class CollectionBasedOrderDao implements OrderDao {
 
     @Override
     public boolean addAll(Collection<Order> orders) {
-        for (Order order : orders) {
-            add(order);
-        }
+        orders.forEach(this::add);
         return true;
     }
 
@@ -70,4 +69,16 @@ public class CollectionBasedOrderDao implements OrderDao {
         return orderList.removeIf(order -> order.getOwner().getId() == id);
     }
 
+    @Override
+    public int getTotalElements() {
+        return orderList.size();
+    }
+
+    @Override
+    public Collection<Order> getPage(int currentPage, int pageLimit) {
+        return orderList.stream()
+                .skip((currentPage-1)*pageLimit)
+                .limit(pageLimit)
+                .collect(Collectors.toList());
+    }
 }

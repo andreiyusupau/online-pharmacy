@@ -6,6 +6,7 @@ import com.vironit.onlinepharmacy.model.Position;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CollectionBasedStockDao implements StockDao {
 
@@ -25,7 +26,6 @@ public class CollectionBasedStockDao implements StockDao {
 
     @Override
     public long add(Position position) {
-        //TODO:rewrite
         long id = idGenerator.getNextId();
         position.setId(id);
         boolean successfulAdd = stock.add(position);
@@ -52,5 +52,18 @@ public class CollectionBasedStockDao implements StockDao {
     @Override
     public boolean remove(long id) {
         return stock.removeIf(position -> position.getId() == id);
+    }
+
+    @Override
+    public int getTotalElements() {
+        return stock.size();
+    }
+
+    @Override
+    public Collection<Position> getPage(int currentPage, int pageLimit) {
+        return stock.stream()
+                .skip((currentPage-1)*pageLimit)
+                .limit(pageLimit)
+                .collect(Collectors.toList());
     }
 }

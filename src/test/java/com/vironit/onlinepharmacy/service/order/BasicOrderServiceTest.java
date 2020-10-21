@@ -6,7 +6,7 @@ import com.vironit.onlinepharmacy.dto.OperationPositionData;
 import com.vironit.onlinepharmacy.dto.OrderCreateData;
 import com.vironit.onlinepharmacy.dto.OrderUpdateData;
 import com.vironit.onlinepharmacy.model.*;
-import com.vironit.onlinepharmacy.service.order.exception.OrderException;
+import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 import com.vironit.onlinepharmacy.service.user.UserService;
@@ -113,7 +113,7 @@ public class BasicOrderServiceTest {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(OrderException.class,
+        Exception exception = Assertions.assertThrows(OrderServiceException.class,
                 () -> orderService.payForOrder(1));
 
         String expectedMessage = "Can't pay for order. Order with id " + 1 + " not found.";
@@ -134,7 +134,7 @@ public class BasicOrderServiceTest {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(OrderException.class, () -> orderService.confirmOrder(1));
+        Exception exception = Assertions.assertThrows(OrderServiceException.class, () -> orderService.confirmOrder(1));
 
         String expectedMessage = "Can't confirm order. Order with id " + 1 + " not found.";
         String actualMessage = exception.getMessage();
@@ -154,7 +154,7 @@ public class BasicOrderServiceTest {
         when(orderDao.get(anyLong()))
                 .thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(OrderException.class, () -> orderService.completeOrder(1));
+        Exception exception = Assertions.assertThrows(OrderServiceException.class, () -> orderService.completeOrder(1));
 
         String expectedMessage = "Can't complete order. Order with id " + 1 + " not found.";
         String actualMessage = exception.getMessage();
@@ -172,7 +172,7 @@ public class BasicOrderServiceTest {
     void cancelOrderShouldThrowException() {
         when(orderDao.get(anyLong())).thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(OrderException.class, () -> orderService.cancelOrder(1));
+        Exception exception = Assertions.assertThrows(OrderServiceException.class, () -> orderService.cancelOrder(1));
 
         String expectedMessage = "Can't cancel order. Order with id " + 1 + " not found.";
         String actualMessage = exception.getMessage();
@@ -192,7 +192,7 @@ public class BasicOrderServiceTest {
     void getShouldThrowException() {
         when(orderDao.get(anyLong())).thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(OrderException.class, () -> orderService.get(1));
+        Exception exception = Assertions.assertThrows(OrderServiceException.class, () -> orderService.get(1));
 
         String expectedMessage = "Can't get order. Order with id " + 1 + " not found.";
         String actualMessage = exception.getMessage();

@@ -1,10 +1,8 @@
 package com.vironit.onlinepharmacy.service.recipe;
 
 import com.vironit.onlinepharmacy.model.Recipe;
-import com.vironit.onlinepharmacy.service.CRUDService;
+import com.vironit.onlinepharmacy.service.ImmutableService;
 
-//TODO:implement service
-public interface RecipeService extends CRUDService<Recipe, Recipe, Recipe> {
+public interface RecipeService extends ImmutableService<Recipe, Recipe> {
 
-    void validateRecipe();
 }

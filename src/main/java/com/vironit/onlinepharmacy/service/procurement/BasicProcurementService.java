@@ -5,7 +5,7 @@ import com.vironit.onlinepharmacy.dao.ProcurementDao;
 import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
 import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
 import com.vironit.onlinepharmacy.model.*;
-import com.vironit.onlinepharmacy.service.procurement.exception.ProcurementException;
+import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 import com.vironit.onlinepharmacy.service.user.UserService;
@@ -46,7 +46,7 @@ public class BasicProcurementService implements ProcurementService {
     @Override
     public Procurement get(long id) {
         return procurementDao.get(id)
-                .orElseThrow(() -> new ProcurementException("Can't get procurement. Procurement with id " + id + " not found."));
+                .orElseThrow(() -> new ProcurementServiceException("Can't get procurement. Procurement with id " + id + " not found."));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class BasicProcurementService implements ProcurementService {
     @Override
     public void approveProcurement(long id) {
         Procurement procurement = procurementDao.get(id)
-                .orElseThrow(() -> new ProcurementException("Can't approve procurement. Procurement with id " + id + " not found."));
+                .orElseThrow(() -> new ProcurementServiceException("Can't approve procurement. Procurement with id " + id + " not found."));
         procurement.setProcurementStatus(ProcurementStatus.APPROVED);
         procurementDao.update(procurement);
     }
@@ -82,7 +82,7 @@ public class BasicProcurementService implements ProcurementService {
     @Override
     public void completeProcurement(long id) {
         Procurement procurement = procurementDao.get(id)
-                .orElseThrow(() -> new ProcurementException("Can't complete procurement. Procurement with id " + id + " not found."));
+                .orElseThrow(() -> new ProcurementServiceException("Can't complete procurement. Procurement with id " + id + " not found."));
         Collection<Position> positions = operationPositionDao.getAllByOwnerId(id)
                 .stream()
                 .map(operationPosition -> new Position(operationPosition.getId(), operationPosition.getQuantity(), operationPosition.getProduct()))
@@ -95,7 +95,7 @@ public class BasicProcurementService implements ProcurementService {
     @Override
     public void cancelProcurement(long id) {
         Procurement procurement = procurementDao.get(id)
-                .orElseThrow(() -> new ProcurementException("Can't cancel procurement. Procurement with id " + id + " not found."));
+                .orElseThrow(() -> new ProcurementServiceException("Can't cancel procurement. Procurement with id " + id + " not found."));
         procurement.setProcurementStatus(ProcurementStatus.CANCELED);
         procurementDao.update(procurement);
     }

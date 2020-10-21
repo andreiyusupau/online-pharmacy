@@ -1,8 +1,8 @@
 package com.vironit.onlinepharmacy.service.user;
 
 import com.vironit.onlinepharmacy.model.User;
-import com.vironit.onlinepharmacy.service.CRUDService;
+import com.vironit.onlinepharmacy.service.CrudService;
 
-public interface UserService extends CRUDService<User, User, User> {
+public interface UserService extends CrudService<User, User, User> {
 
 }

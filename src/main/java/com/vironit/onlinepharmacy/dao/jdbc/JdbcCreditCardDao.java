@@ -58,7 +58,6 @@ public class JdbcCreditCardDao implements CreditCardDao {
 
     @Override
     public Collection<CreditCard> getAll() {
-        //TODO:get users
         String sql = "SELECT id, card_number, owner_name, valid_thru, cvv, user_id " +
                 "FROM " + CREDIT_CARDS_TABLE + ";";
         try (Connection connection = dataSource.getConnection();
@@ -152,7 +151,6 @@ public class JdbcCreditCardDao implements CreditCardDao {
         creditCard.setValidThru(resultSet.getDate(4)
                 .toLocalDate());
         creditCard.setCvv(resultSet.getInt(5));
-        //TODO:check
         User user = new User();
         user.setId(resultSet.getLong(6));
         creditCard.setOwner(user);

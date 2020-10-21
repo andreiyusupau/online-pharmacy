@@ -16,15 +16,12 @@ CREATE TABLE order_positions
     order_id   bigint  NOT NULL
 );
 
-
 CREATE TABLE orders
 (
     id      bigint                   NOT NULL,
     date    timestamp with time zone NOT NULL,
     user_id bigint                   NOT NULL
 );
-
-
 
 CREATE TABLE procurement_positions
 (
@@ -34,7 +31,6 @@ CREATE TABLE procurement_positions
     procurement_id bigint  NOT NULL
 );
 
-
 CREATE TABLE procurements
 (
     id      bigint                   NOT NULL,
@@ -42,16 +38,12 @@ CREATE TABLE procurements
     user_id bigint                   NOT NULL
 );
 
-
-
 CREATE TABLE product_categories
 (
     id          bigint                 NOT NULL,
     name        character varying(50)  NOT NULL,
     description character varying(500) NOT NULL
 );
-
-
 
 CREATE TABLE products
 (
@@ -61,7 +53,6 @@ CREATE TABLE products
     recipe_required     boolean                NOT NULL,
     product_category_id bigint                 NOT NULL
 );
-
 
 CREATE TABLE recipes
 (
@@ -73,7 +64,6 @@ CREATE TABLE recipes
     order_position_id bigint                   NOT NULL
 );
 
-
 CREATE TABLE reserve_positions
 (
     id         bigint  NOT NULL,
@@ -82,14 +72,11 @@ CREATE TABLE reserve_positions
     order_id   bigint  NOT NULL
 );
 
-
 CREATE TABLE roles
 (
     id   bigint                NOT NULL,
     name character varying(50) NOT NULL
 );
-
-
 
 CREATE TABLE stock_positions
 (
@@ -97,8 +84,6 @@ CREATE TABLE stock_positions
     quantity   integer NOT NULL,
     product_id bigint  NOT NULL
 );
-
-
 
 CREATE TABLE users
 (

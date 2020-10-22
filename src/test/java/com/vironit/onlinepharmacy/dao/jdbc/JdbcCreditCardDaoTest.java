@@ -13,10 +13,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 class JdbcCreditCardDaoTest {
@@ -31,7 +35,6 @@ class JdbcCreditCardDaoTest {
     private DataSource dataSource;
 
     private JdbcCreditCardDao creditCardDao;
-//
     private User user;
     private User secondUser;
     private CreditCard creditCard;
@@ -39,75 +42,97 @@ class JdbcCreditCardDaoTest {
     private CreditCard thirdCreditCard;
 
     @BeforeEach
-    void before() {
+    void before() throws SQLException {
         dataSource = getDataSource(postgreSqlContainer);
         creditCardDao =new JdbcCreditCardDao(dataSource);
         user = new User(1, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
-        secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
-        creditCard = new CreditCard(-1,"8274473847284729","TEST USER",LocalDate.of(2000,12,1),123,user);
-        secondCreditCard = new CreditCard(-1,"8574574457534729","TEST USER",LocalDate.of(2000,12,1),241,secondUser);
-        thirdCreditCard = new CreditCard(-1,"8274093922949375","INSTANT ISSUE",LocalDate.of(2000,12,1),124,user);
+                LocalDate.of(2000,12,12), "test@email.com", "testpass123", Role.CONSUMER);
+        secondUser = new User(2, "testFirstName2", "testMiddleName2", "testLastName2",
+                LocalDate.of(2000,11,12), "test@email.com", "testpass123", Role.CONSUMER);
+        creditCard = new CreditCard(1,"8274473847284729","TEST USER",LocalDate.of(2000,12,1),123,user);
+        secondCreditCard = new CreditCard(2,"8574574457534729","TEST USER",LocalDate.of(2000,12,1),241,secondUser);
+        thirdCreditCard = new CreditCard(3,"8274093922949375","INSTANT ISSUE",LocalDate.of(2000,12,1),124,user);
+        String sql="INSERT INTO roles (name) " +
+                "VALUES('"+Role.CONSUMER.toString()+"');\n" +
+                "INSERT INTO users (first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
+                "VALUES('testFirstName','testMiddleName','testLastName','2000-12-12','test@email.com','testpass123',1),"+
+                "('testFirstName2','testMiddleName2','testLastName2','2000-11-12','test@email.com','testpass123',1);\n"+
+                "INSERT INTO credit_cards (card_number, owner_name, valid_thru, cvv, user_id) " +
+                "VALUES('8274473847284729','TEST USER','2000-12-12',123,1);";
+        executeUpdate(dataSource,sql);
     }
 
 
     @Test
-    void test() throws SQLException {
-        System.out.println(postgreSqlContainer.isRunning());
+    void addShouldAddCreditCardToDatabase() {
+        long id = creditCardDao.add(secondCreditCard);
 
-//        String sql="CREATE TABLE credit_cards\n" +
-//                "(\n" +
-//                "    id          bigint                NOT NULL,\n" +
-//                "    card_number character varying(19) NOT NULL,\n" +
-//                "    owner_name  character varying(50) NOT NULL,\n" +
-//                "    valid_thru  date                  NOT NULL,\n" +
-//                "    cvv         integer               NOT NULL,\n" +
-//                "    user_id     bigint                NOT NULL\n" +
-//                ");";
-//        try( Statement statement = dataSource.getConnection()
-//                .createStatement()) {
-//            statement.executeUpdate(sql);
-//        }
-        String sql2="INSERT INTO credit_cards (id, card_number, owner_name, valid_thru, cvv, user_id) " +
-                "VALUES(12,'2512','jack','2000-12-12',123,12);";
-        try( Statement statement = dataSource.getConnection()
-                .createStatement()) {
-          statement.executeUpdate(sql2);
-        }
-        String sql3="SELECT card_number FROM credit_cards";
-        try(Statement statement = dataSource.getConnection()
-                .createStatement()) {
-            try(ResultSet resultSet=statement.executeQuery(sql3);) {
-               resultSet.next();
-                System.out.println(resultSet.getString(1));
-            }
-        }
+        assertEquals(2, id);
     }
 
-//    @Test
-//    void addShouldAddCreditCardToCollection(){
-//
-//        long id = creditCardDao.add(creditCard);
-//
-//        long sizeAfterAdd = creditCardDao.getAll()
-//                .size();
-//        Assertions.assertEquals(1, sizeAfterAdd);
-//        Assertions.assertEquals(0, id);
-//    }
+    @Test
+    void getShouldReturnCreditCardFromDatabase() {
+        CreditCard acquiredCreditCard = creditCardDao.get(1)
+                .get();
 
-//    @Test
-//    public void testSimple() throws SQLException {
-//        try (PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgresql:latest")) {
-//            postgres.start();
-//
-//          //  ResultSet resultSet = performQuery(postgres, "SELECT 1");
-//          //  int resultSetInt = resultSet.getInt(1);
-//        }
-//
-//    }
-//
+        assertEquals(creditCard.getCardNumber(), acquiredCreditCard.getCardNumber());
+    }
 
+    @Test
+    void addAllShouldAddAllCreditCardsToDatabase() {
+        Collection<CreditCard> creditCards = List.of(secondCreditCard,thirdCreditCard);
+
+        boolean addAllResult=creditCardDao.addAll(creditCards);
+
+        assertTrue(addAllResult);
+    }
+
+    @Test
+    void getAllShouldGetAllCreditCardsFromDatabase() {
+        Collection<CreditCard> creditCards = creditCardDao.getAll();
+        int acquiredSize=creditCards.size();
+
+        assertEquals(1,acquiredSize);
+    }
+
+    @Test
+    void removeShouldRemoveCreditCardFromDatabase() {
+       boolean successfulRemove= creditCardDao.remove(1);
+
+        assertTrue(successfulRemove);
+    }
+
+    @Test
+    void getAllByOwnerIdShouldReturnAllCreditCardsOfUser() {
+        creditCardDao.add(secondCreditCard);
+        creditCardDao.add(thirdCreditCard);
+
+        Collection<CreditCard> actualCreditCards = creditCardDao.getAllByOwnerId(1);
+
+        int actualSize=actualCreditCards.size();
+        assertEquals(2,actualSize);
+    }
+
+    @Test
+    void removeAllByOwnerIdShouldRemoveAllCreditCardsOfUser() {
+        creditCardDao.add(secondCreditCard);
+        creditCardDao.add(thirdCreditCard);
+
+        creditCardDao.removeAllByOwnerId(1);
+
+        Collection<CreditCard> actualCreditCards = creditCardDao.getAll();
+        int actualSize=actualCreditCards.size();
+
+        assertEquals(1, actualSize);
+    }
+
+
+private int executeUpdate(DataSource dataSource, String sql) throws SQLException {
+    try(Statement statement = dataSource.getConnection()
+            .createStatement()) {
+       return statement.executeUpdate(sql);
+    }
+}
 
     private DataSource getDataSource(JdbcDatabaseContainer<?> container) {
         HikariConfig hikariConfig = new HikariConfig();

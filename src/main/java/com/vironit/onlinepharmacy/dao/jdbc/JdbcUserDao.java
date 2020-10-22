@@ -35,7 +35,7 @@ public class JdbcUserDao implements UserDao {
                 return resultSet.next() ? Optional.of(parseUser(resultSet)) : Optional.empty();
             }
         } catch (SQLException sqle) {
-            throw new DaoException();
+            throw new DaoException("Error getting user by email from database",sqle);
         }
     }
 
@@ -60,7 +60,7 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setLong(8, user.getId());
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException sqle) {
-            throw new DaoException();
+            throw new DaoException("Error updating user in database",sqle);
         }
     }
 
@@ -81,9 +81,11 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setString(5, user.getEmail());
             preparedStatement.setString(6, user.getPassword());
             preparedStatement.setString(7, user.getRole().name());
-            return preparedStatement.executeUpdate();
+            try(ResultSet resultSet=preparedStatement.executeQuery()){
+                return resultSet.next()? resultSet.getLong(1):-1;
+            }
         } catch (SQLException sqle) {
-            throw new DaoException();
+            throw new DaoException("Error adding user to database",sqle);
         }
     }
 
@@ -100,7 +102,7 @@ public class JdbcUserDao implements UserDao {
                 return resultSet.next() ? Optional.of(parseUser(resultSet)) : Optional.empty();
             }
         } catch (SQLException sqle) {
-            throw new DaoException();
+            throw new DaoException("Error getting user from database",sqle);
         }
     }
 
@@ -119,7 +121,7 @@ public class JdbcUserDao implements UserDao {
             }
             return users;
         } catch (SQLException sqle) {
-            throw new DaoException();
+            throw new DaoException("Error getting all users from database",sqle);
         }
     }
 
@@ -132,7 +134,7 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException sqle) {
-            throw new DaoException();
+            throw new DaoException("Error removing user from database",sqle);
         }
     }
 
@@ -144,7 +146,7 @@ public class JdbcUserDao implements UserDao {
              ResultSet resultSet = preparedStatement.executeQuery()) {
             return resultSet.next() ? resultSet.getInt(1) : -1;
         } catch (SQLException sqle) {
-            throw new DaoException();
+            throw new DaoException("Error getting total users from database",sqle);
         }
     }
 
@@ -167,7 +169,7 @@ public class JdbcUserDao implements UserDao {
                 return users;
             }
         } catch (SQLException sqle) {
-            throw new DaoException();
+            throw new DaoException("Error getting user page from database",sqle);
         }
     }
 
@@ -180,7 +182,7 @@ public class JdbcUserDao implements UserDao {
         user.setDateOfBirth(resultSet.getDate(5).toLocalDate());
         user.setEmail(resultSet.getString(6));
         user.setPassword(resultSet.getString(7));
-        user.setRole(resultSet.getObject(8, Role.class));
+        user.setRole(Role.valueOf(resultSet.getString(8)));
         return user;
     }
 }

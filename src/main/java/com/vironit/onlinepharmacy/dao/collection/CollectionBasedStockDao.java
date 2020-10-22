@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.dao.StockDao;
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.Position;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class CollectionBasedStockDao implements StockDao {
     @Override
     public Collection<Position> getPage(int currentPage, int pageLimit) {
         return stock.stream()
-                .skip((currentPage-1)*pageLimit)
+                .skip((currentPage - 1) * pageLimit)
                 .limit(pageLimit)
                 .collect(Collectors.toList());
     }

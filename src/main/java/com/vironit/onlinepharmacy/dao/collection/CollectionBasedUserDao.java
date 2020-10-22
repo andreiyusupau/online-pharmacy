@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.dao.UserDao;
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.User;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class CollectionBasedUserDao implements UserDao {
     @Override
     public Collection<User> getPage(int currentPage, int pageLimit) {
         return userList.stream()
-                .skip((currentPage-1)*pageLimit)
+                .skip((currentPage - 1) * pageLimit)
                 .limit(pageLimit)
                 .collect(Collectors.toList());
     }

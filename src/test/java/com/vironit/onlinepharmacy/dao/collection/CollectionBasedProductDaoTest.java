@@ -1,5 +1,6 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.Product;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,9 +30,9 @@ class CollectionBasedProductDaoTest {
 
     @BeforeEach
     void set() {
-        product = new Product(-1, "testProduct", new BigDecimal("100"), null,false);
-        secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), null,false);
-        thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), null,false);
+        product = new Product(-1, "testProduct", new BigDecimal("100"), null, false);
+        secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), null, false);
+        thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), null, false);
     }
 
     @Test
@@ -84,7 +85,7 @@ class CollectionBasedProductDaoTest {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         productDao.add(product);
-        Product productForUpdate = new Product(0, "updatedTestProduct", new BigDecimal("180"), null,false);
+        Product productForUpdate = new Product(0, "updatedTestProduct", new BigDecimal("180"), null, false);
 
         productDao.update(productForUpdate);
 

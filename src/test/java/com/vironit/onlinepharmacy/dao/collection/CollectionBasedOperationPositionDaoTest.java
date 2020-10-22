@@ -1,5 +1,6 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,7 @@ class CollectionBasedOperationPositionDaoTest {
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
+        product = new Product(1, "testProduct", new BigDecimal("100"), null, false);
         operation = new Procurement(1, Instant.now(), null,
                 ProcurementStatus.PREPARATION);
         operationPosition = new OperationPosition(-1, 10, product, operation);

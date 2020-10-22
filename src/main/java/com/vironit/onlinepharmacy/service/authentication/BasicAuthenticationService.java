@@ -14,12 +14,12 @@ public class BasicAuthenticationService implements AuthenticationService {
 
     private final UserDao userDao;
     private final PasswordHasher passwordHasher;
-    private final Converter<UserPublicParameters,User> userToUserPublicParametersConverter;
-    private final Converter<User,UserRegisterParameters> userRegisterParametersToUserConverter;
+    private final Converter<UserPublicParameters, User> userToUserPublicParametersConverter;
+    private final Converter<User, UserRegisterParameters> userRegisterParametersToUserConverter;
 
     public BasicAuthenticationService(UserDao userDao, PasswordHasher passwordHasher,
-    Converter<UserPublicParameters, User> userToUserPublicParametersConverter,
-    Converter<User, UserRegisterParameters> userRegisterParametersToUserConverter) {
+                                      Converter<UserPublicParameters, User> userToUserPublicParametersConverter,
+                                      Converter<User, UserRegisterParameters> userRegisterParametersToUserConverter) {
         this.userDao = userDao;
         this.passwordHasher = passwordHasher;
         this.userToUserPublicParametersConverter = userToUserPublicParametersConverter;

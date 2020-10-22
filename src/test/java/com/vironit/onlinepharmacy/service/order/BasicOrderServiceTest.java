@@ -66,9 +66,9 @@ public class BasicOrderServiceTest {
         user = new User(1, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
-        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null,false);
-        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null,false);
-        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null,false);
+        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null, false);
+        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null, false);
+        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
         order = new Order(1, Instant.now(), user, OrderStatus.PREPARATION);
         firstOperationPosition = new OperationPosition(1, 7, firstProduct, order);
         secondOperationPosition = new OperationPosition(2, 64, secondProduct, order);

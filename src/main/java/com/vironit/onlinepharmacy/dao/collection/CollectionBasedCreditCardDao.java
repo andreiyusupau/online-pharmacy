@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.dao.CreditCardDao;
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.CreditCard;
 
 import java.util.ArrayList;

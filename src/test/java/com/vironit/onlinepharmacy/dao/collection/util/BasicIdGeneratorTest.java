@@ -1,4 +1,4 @@
-package com.vironit.onlinepharmacy.dao.collection;
+package com.vironit.onlinepharmacy.dao.collection.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

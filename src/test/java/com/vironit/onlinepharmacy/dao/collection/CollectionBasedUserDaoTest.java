@@ -1,5 +1,6 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import org.junit.jupiter.api.Assertions;

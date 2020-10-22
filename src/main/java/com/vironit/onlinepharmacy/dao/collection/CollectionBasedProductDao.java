@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.dao.ProductDao;
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.Product;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class CollectionBasedProductDao implements ProductDao {
     @Override
     public Collection<Product> getPage(int currentPage, int pageLimit) {
         return productList.stream()
-                .skip((currentPage-1)*pageLimit)
+                .skip((currentPage - 1) * pageLimit)
                 .limit(pageLimit)
                 .collect(Collectors.toList());
     }

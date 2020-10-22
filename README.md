@@ -23,35 +23,85 @@ Procurement *-- ProcurementStatus
 Order *-- OrderStatus
 
   class User{
-
+   long id;
+    String firstName;
+    String middleName;
+    String lastName;
+    LocalDate dateOfBirth;
+   String email;
+     String password;
+     Role role;
   }
   class CreditCard{
+   long id;
+     String cardNumber;
+     String ownerName;
+     LocalDate validThru;
+     int cvv;
+     User owner;
   }
   class Role{
     <<enumeration>>
+       CONSUMER,
+    MODERATOR,
+    PROCUREMENT_SPECIALIST,
+    ADMINISTRATOR
   }
   class Operation{
   <<abstract>>
+   long id;
+     Instant date;
+     User owner;
   }
   class Order{
+   OrderStatus status;
   }
   class OrderStatus{
       <<enumeration>>
+      PREPARATION,
+    PAID,
+    IN_PROGRESS,
+    COMPLETE,
+    CANCELED
   }
   class Procurement{
+   ProcurementStatus procurementStatus;
   }
    class ProcurementStatus{
       <<enumeration>>
+       PREPARATION,
+    APPROVED,
+    PAID,
+    COMPLETE,
+    CANCELED
   }
   class Position{
+   long id;
+     int quantity;
+     Product product;
   }
   class OperationPosition{
+   Operation operation;
   }
   class Recipe{
+   long id;
+     String description;
+     int quantity;
+     Product product;
+     Instant validThru;
+     OperationPosition operationPosition;
   }
   class Product{
+   long id;
+     String name;
+     BigDecimal price;
+     ProductCategory productCategory;
+     boolean recipeRequired;
   }
   class ProductCategory{
+       long id;
+     String name;
+     String description;
   }
 
             

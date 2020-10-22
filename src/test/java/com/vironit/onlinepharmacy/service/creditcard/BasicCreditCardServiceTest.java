@@ -26,80 +26,80 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class BasicCreditCardServiceTest {
 
-        @Mock
-        private CreditCardDao creditCardDao;
-        @InjectMocks
-        private BasicCreditCardService creditCardService;
+    @Mock
+    private CreditCardDao creditCardDao;
+    @InjectMocks
+    private BasicCreditCardService creditCardService;
 
-        private User user;
-        private CreditCard creditCard;
-        private CreditCard secondCreditCard;
-        private Collection<CreditCard> creditCards;
+    private User user;
+    private CreditCard creditCard;
+    private CreditCard secondCreditCard;
+    private Collection<CreditCard> creditCards;
 
-        @BeforeEach
-        void set() {
-            user=new User(0, "testFirstName",
-                    "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
-                    "test@test.com", "testPassword123", Role.CONSUMER);
-            creditCard = new CreditCard(1,"0000000000000000","INSTANT ISSUE", LocalDate.now(),938,user);
-            secondCreditCard = new CreditCard(2,"0000000000000001","INSTANT ISSUE", LocalDate.now(),542,user);
-            creditCards = new ArrayList<>();
-            creditCards.add(creditCard);
-            creditCards.add(secondCreditCard);
-        }
+    @BeforeEach
+    void set() {
+        user = new User(0, "testFirstName",
+                "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
+                "test@test.com", "testPassword123", Role.CONSUMER);
+        creditCard = new CreditCard(1, "0000000000000000", "INSTANT ISSUE", LocalDate.now(), 938, user);
+        secondCreditCard = new CreditCard(2, "0000000000000001", "INSTANT ISSUE", LocalDate.now(), 542, user);
+        creditCards = new ArrayList<>();
+        creditCards.add(creditCard);
+        creditCards.add(secondCreditCard);
+    }
 
-        @Test
-        void addShouldUseDao() {
-            when(creditCardDao.add(any()))
-                    .thenReturn(0L);
+    @Test
+    void addShouldUseDao() {
+        when(creditCardDao.add(any()))
+                .thenReturn(0L);
 
-            long id = creditCardService.add(creditCard);
+        long id = creditCardService.add(creditCard);
 
-            verify(creditCardDao).add(creditCard);
-            Assertions.assertEquals(0, id);
-        }
+        verify(creditCardDao).add(creditCard);
+        Assertions.assertEquals(0, id);
+    }
 
-        @Test
-        void getShouldNotThrowException() {
-            when(creditCardDao.get(anyLong()))
-                    .thenReturn(Optional.of(creditCard));
+    @Test
+    void getShouldNotThrowException() {
+        when(creditCardDao.get(anyLong()))
+                .thenReturn(Optional.of(creditCard));
 
-            CreditCard actualCreditCard = creditCardService.get(1);
+        CreditCard actualCreditCard = creditCardService.get(1);
 
-            verify(creditCardDao).get(1);
-            Assertions.assertEquals(creditCard, actualCreditCard);
-        }
+        verify(creditCardDao).get(1);
+        Assertions.assertEquals(creditCard, actualCreditCard);
+    }
 
-        @Test
-        void getShouldThrowException() {
-            when(creditCardDao.get(anyLong()))
-                    .thenReturn(Optional.empty());
+    @Test
+    void getShouldThrowException() {
+        when(creditCardDao.get(anyLong()))
+                .thenReturn(Optional.empty());
 
-            Exception exception = Assertions.assertThrows(CreditCardServiceException.class, () -> creditCardService.get(1));
+        Exception exception = Assertions.assertThrows(CreditCardServiceException.class, () -> creditCardService.get(1));
 
-            verify(creditCardDao).get(1);
-            String expectedMessage = "Can't get credit card. Credit card with id " + 1 + " not found.";
-            String actualMessage = exception.getMessage();
-            Assertions.assertEquals(expectedMessage, actualMessage);
-        }
+        verify(creditCardDao).get(1);
+        String expectedMessage = "Can't get credit card. Credit card with id " + 1 + " not found.";
+        String actualMessage = exception.getMessage();
+        Assertions.assertEquals(expectedMessage, actualMessage);
+    }
 
-        @Test
-        void getAllShouldNotThrowException() {
-            when(creditCardDao.getAll())
-                    .thenReturn(creditCards);
+    @Test
+    void getAllShouldNotThrowException() {
+        when(creditCardDao.getAll())
+                .thenReturn(creditCards);
 
-            Collection<CreditCard> actualCreditCard = creditCardService.getAll();
+        Collection<CreditCard> actualCreditCard = creditCardService.getAll();
 
-            Assertions.assertEquals(creditCards, actualCreditCard);
-        }
+        Assertions.assertEquals(creditCards, actualCreditCard);
+    }
 
-        @Test
-        void removeShouldUseDao() {
-            when(creditCardDao.remove(anyLong()))
-                    .thenReturn(true);
+    @Test
+    void removeShouldUseDao() {
+        when(creditCardDao.remove(anyLong()))
+                .thenReturn(true);
 
-            creditCardService.remove(1);
+        creditCardService.remove(1);
 
-            verify(creditCardDao).remove(1);
-        }
+        verify(creditCardDao).remove(1);
+    }
 }

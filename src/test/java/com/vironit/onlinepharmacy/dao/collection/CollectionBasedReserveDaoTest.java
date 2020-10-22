@@ -20,7 +20,7 @@ class CollectionBasedReserveDaoTest {
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
+        product = new Product(1, "testProduct", new BigDecimal("100"), null, false);
         operation = new Order(1, Instant.now(), null,
                 OrderStatus.PREPARATION);
         reserveDao = new CollectionBasedReserveDao();
@@ -48,8 +48,8 @@ class CollectionBasedReserveDaoTest {
 
     @Test
     void addAllGetAllShouldAddAndGetAllOperationPositionsFromReserve() {
-        Product secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null,false);
-        Product thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null,false);
+        Product secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null, false);
+        Product thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null, false);
         OperationPosition secondOperationPosition = new OperationPosition(2, 11, secondProduct, operation);
         OperationPosition thirdOperationPosition = new OperationPosition(3, 14, thirdProduct, operation);
         Collection<OperationPosition> operationPositions = new ArrayList<>();

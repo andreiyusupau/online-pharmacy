@@ -43,8 +43,8 @@ public class JdbcProductDao implements ProductDao {
                     .getId());
             preparedStatement.setLong(5, product.getId());
             return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqle) {
-            throw new DaoException("Error updating product in database",sqle);
+        } catch (SQLException sqlException) {
+            throw new DaoException("Error updating product in database", sqlException);
         }
     }
 
@@ -62,11 +62,15 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setBoolean(3, product.isRecipeRequired());
             preparedStatement.setLong(4, product.getProductCategory()
                     .getId());
-            try(ResultSet resultSet=preparedStatement.executeQuery()){
-                return resultSet.next()? resultSet.getLong(1):-1;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getLong(1);
+                } else {
+                    throw new DaoException("Error adding product to database");
+                }
             }
-        } catch (SQLException sqle) {
-            throw new DaoException("Error adding product to database",sqle);
+        } catch (SQLException sqlException) {
+            throw new DaoException("Error adding product to database", sqlException);
         }
     }
 
@@ -74,7 +78,7 @@ public class JdbcProductDao implements ProductDao {
     public Optional<Product> get(long id) {
         String sql = "SELECT pr.id, pr.name, pr.price, pr.recipe_required, pc.id, pc.name, pc.description " +
                 "FROM " + PRODUCTS_TABLE + " AS pr " +
-                "INNER JOIN "+PRODUCT_CATEGORIES_TABLE+" AS pc ON pr.product_category_id = pc.id "+
+                "INNER JOIN " + PRODUCT_CATEGORIES_TABLE + " AS pc ON pr.product_category_id = pc.id " +
                 "WHERE pr.id=?;";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -82,8 +86,8 @@ public class JdbcProductDao implements ProductDao {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 return resultSet.next() ? Optional.of(parseProduct(resultSet)) : Optional.empty();
             }
-        } catch (SQLException sqle) {
-            throw new DaoException("Error getting product from database",sqle);
+        } catch (SQLException sqlException) {
+            throw new DaoException("Error getting product from database", sqlException);
         }
     }
 
@@ -91,7 +95,7 @@ public class JdbcProductDao implements ProductDao {
     public Collection<Product> getAll() {
         String sql = "SELECT pr.id, pr.name, pr.price, pr.recipe_required, pc.id, pc.name, pc.description " +
                 "FROM " + PRODUCTS_TABLE + " AS pr " +
-                "INNER JOIN "+PRODUCT_CATEGORIES_TABLE+" AS pc ON pr.product_category_id = pc.id;";
+                "INNER JOIN " + PRODUCT_CATEGORIES_TABLE + " AS pc ON pr.product_category_id = pc.id;";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -101,8 +105,8 @@ public class JdbcProductDao implements ProductDao {
                 products.add(product);
             }
             return products;
-        } catch (SQLException sqle) {
-            throw new DaoException("Error getting all products from database",sqle);
+        } catch (SQLException sqlException) {
+            throw new DaoException("Error getting all products from database", sqlException);
         }
     }
 
@@ -114,8 +118,8 @@ public class JdbcProductDao implements ProductDao {
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqle) {
-            throw new DaoException("Error removing product from database",sqle);
+        } catch (SQLException sqlException) {
+            throw new DaoException("Error removing product from database", sqlException);
         }
     }
 
@@ -126,8 +130,8 @@ public class JdbcProductDao implements ProductDao {
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             return resultSet.next() ? resultSet.getInt(1) : -1;
-        } catch (SQLException sqle) {
-            throw new DaoException("Error getting total product elements from database",sqle);
+        } catch (SQLException sqlException) {
+            throw new DaoException("Error getting total product elements from database", sqlException);
         }
     }
 
@@ -135,7 +139,7 @@ public class JdbcProductDao implements ProductDao {
     public Collection<Product> getPage(int currentPage, int pageLimit) {
         String sql = "SELECT pr.id, pr.name, pr.price, pr.recipe_required, pc.id, pc.name, pc.description " +
                 "FROM " + PRODUCTS_TABLE + " AS pr " +
-                "INNER JOIN "+PRODUCT_CATEGORIES_TABLE+" AS pc ON pr.product_category_id = pc.id "+
+                "INNER JOIN " + PRODUCT_CATEGORIES_TABLE + " AS pc ON pr.product_category_id = pc.id " +
                 "ORDER BY pr.id LIMIT ? OFFSET ?;";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -149,19 +153,19 @@ public class JdbcProductDao implements ProductDao {
                 }
                 return products;
             }
-        } catch (SQLException sqle) {
-            throw new DaoException("Error getting product page from database",sqle);
+        } catch (SQLException sqlException) {
+            throw new DaoException("Error getting product page from database", sqlException);
         }
     }
 
     private Product parseProduct(ResultSet resultSet) throws SQLException {
-        Product product=new Product();
+        Product product = new Product();
         product.setId(resultSet.getLong(1));
         product.setName(resultSet.getString(2));
         product.setPrice(BigDecimal.valueOf(resultSet.getLong(3))
                 .movePointLeft(2));
         product.setRecipeRequired(resultSet.getBoolean(4));
-        ProductCategory productCategory=new ProductCategory();
+        ProductCategory productCategory = new ProductCategory();
         productCategory.setId(resultSet.getLong(5));
         productCategory.setName(resultSet.getString(6));
         productCategory.setDescription(resultSet.getString(7));

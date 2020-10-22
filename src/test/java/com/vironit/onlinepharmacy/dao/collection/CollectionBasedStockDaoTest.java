@@ -34,9 +34,9 @@ class CollectionBasedStockDaoTest {
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
-        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null,false);
-        thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null,false);
+        product = new Product(1, "testProduct", new BigDecimal("100"), null, false);
+        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null, false);
+        thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null, false);
         position = new Position(1, 10, product);
         secondPosition = new Position(2, 11, secondProduct);
         thirdPosition = new Position(3, 14, thirdProduct);

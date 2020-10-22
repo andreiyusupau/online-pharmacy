@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JdbcUserDaoTest {
 
     @Container
-    private PostgreSQLContainer<?> postgreSqlContainer=new PostgreSQLContainer<>()
+    private PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>()
             .withDatabaseName("online_pharmacy")
             .withUsername("test")
             .withPassword("test")
@@ -40,18 +40,18 @@ class JdbcUserDaoTest {
     @BeforeEach
     void set() throws SQLException {
         dataSource = getDataSource(postgreSqlContainer);
-        userDao =new JdbcUserDao(dataSource);
+        userDao = new JdbcUserDao(dataSource);
         user = new User(1, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.of(2000,12,12), "test@email.com", "testpass123", Role.CONSUMER);
+                LocalDate.of(2000, 12, 12), "test@email.com", "testpass123", Role.CONSUMER);
         secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test2@email.com", "testpass123", Role.MODERATOR);
         thirdUser = new User(3, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test3@email.com", "testpass123", Role.PROCUREMENT_SPECIALIST);
-        String sql="INSERT INTO roles (name) " +
-                "VALUES('"+Role.CONSUMER.toString()+"'),('"+Role.MODERATOR.toString()+"'),('"+Role.PROCUREMENT_SPECIALIST.toString()+"');\n" +
+        String sql = "INSERT INTO roles (name) " +
+                "VALUES('" + Role.CONSUMER.toString() + "'),('" + Role.MODERATOR.toString() + "'),('" + Role.PROCUREMENT_SPECIALIST.toString() + "');\n" +
                 "INSERT INTO users (first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
                 "VALUES('testFirstName','testMiddleName','testLastName','2000-12-12','test@email.com','testpass123',1);";
-        executeUpdate(dataSource,sql);
+        executeUpdate(dataSource, sql);
     }
 
     @Test
@@ -64,7 +64,7 @@ class JdbcUserDaoTest {
 
     @Test
     void addShouldAddUserToDatabase() {
-long id=userDao.add(secondUser);
+        long id = userDao.add(secondUser);
 
         assertEquals(2, id);
     }
@@ -143,7 +143,7 @@ long id=userDao.add(secondUser);
 
         Collection<User> userPage = userDao.getPage(2, 2);
 
-        int pageSize=userPage.size();
+        int pageSize = userPage.size();
         assertEquals(1, pageSize);
     }
 
@@ -154,12 +154,12 @@ long id=userDao.add(secondUser);
 
         Collection<User> userPage = userDao.getPage(3, 2);
 
-        int pageSize=userPage.size();
+        int pageSize = userPage.size();
         assertEquals(0, pageSize);
     }
 
     private int executeUpdate(DataSource dataSource, String sql) throws SQLException {
-        try(Statement statement = dataSource.getConnection()
+        try (Statement statement = dataSource.getConnection()
                 .createStatement()) {
             return statement.executeUpdate(sql);
         }

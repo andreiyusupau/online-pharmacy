@@ -41,10 +41,10 @@ public class BasicRecipeServiceTest {
 
     @BeforeEach
     void set() {
-        product = new Product(3, "thirdProduct", new BigDecimal("67"), null,false);
+        product = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
         operationPosition = new OperationPosition(1, 7, product, null);
-        recipe = new Recipe(1,"description",2,product, Instant.now(),operationPosition);
-        secondRecipe = new Recipe(2,"second description",6, product, Instant.now(),secondOperationPosition);
+        recipe = new Recipe(1, "description", 2, product, Instant.now(), operationPosition);
+        secondRecipe = new Recipe(2, "second description", 6, product, Instant.now(), secondOperationPosition);
         recipes = new ArrayList<>();
         recipes.add(recipe);
         recipes.add(secondRecipe);

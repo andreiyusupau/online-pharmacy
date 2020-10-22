@@ -8,7 +8,7 @@ public class ProductCategory {
     private String name;
     private String description;
 
-    public ProductCategory(){
+    public ProductCategory() {
 
     }
 

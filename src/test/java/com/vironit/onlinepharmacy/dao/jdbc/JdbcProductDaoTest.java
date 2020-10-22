@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Testcontainers
 class JdbcProductDaoTest {
 
-@Container
-    private PostgreSQLContainer<?> postgreSqlContainer=new PostgreSQLContainer<>()
+    @Container
+    private PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>()
             .withDatabaseName("online_pharmacy")
             .withUsername("test")
             .withPassword("test")
@@ -40,16 +40,16 @@ class JdbcProductDaoTest {
     @BeforeEach
     void set() throws SQLException {
         dataSource = getDataSource(postgreSqlContainer);
-        productDao =new JdbcProductDao(dataSource);
-        productCategory=new ProductCategory(1,"medicine","any medicine");
-        product = new Product(-1, "testProduct", new BigDecimal("100"), productCategory,false);
-        secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), productCategory,false);
-        thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), productCategory,false);
-        String sql="INSERT INTO product_categories (name, description) " +
+        productDao = new JdbcProductDao(dataSource);
+        productCategory = new ProductCategory(1, "medicine", "any medicine");
+        product = new Product(-1, "testProduct", new BigDecimal("100"), productCategory, false);
+        secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), productCategory, false);
+        thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), productCategory, false);
+        String sql = "INSERT INTO product_categories (name, description) " +
                 "VALUES('medicine','any medicine');\n" +
                 "INSERT INTO products (name, price, recipe_required, product_category_id) " +
                 "VALUES('testProduct','10000','true',1);";
-        executeUpdate(dataSource,sql);
+        executeUpdate(dataSource, sql);
     }
 
     @Test
@@ -73,14 +73,14 @@ class JdbcProductDaoTest {
         productDao.add(thirdProduct);
 
         Collection<Product> acquiredProducts = productDao.getAll();
-        int actualSize=acquiredProducts.size();
-        assertEquals(3,actualSize);
+        int actualSize = acquiredProducts.size();
+        assertEquals(3, actualSize);
     }
 
     @Test
     void updateShouldUpdateProductInDatabase() {
         productDao.add(product);
-        Product productForUpdate = new Product(1, "updatedTestProduct", new BigDecimal("180.00"), productCategory,false);
+        Product productForUpdate = new Product(1, "updatedTestProduct", new BigDecimal("180.00"), productCategory, false);
 
         productDao.update(productForUpdate);
 
@@ -105,7 +105,7 @@ class JdbcProductDaoTest {
         productDao.add(secondProduct);
         productDao.add(thirdProduct);
         int totalElements = productDao.getTotalElements();
-       assertEquals(3, totalElements);
+        assertEquals(3, totalElements);
     }
 
     @Test
@@ -121,8 +121,8 @@ class JdbcProductDaoTest {
 
         Collection<Product> productPage = productDao.getPage(2, 2);
 
-        int pageSize=productPage.size();
-        assertEquals(1,pageSize);
+        int pageSize = productPage.size();
+        assertEquals(1, pageSize);
     }
 
     @Test
@@ -132,12 +132,12 @@ class JdbcProductDaoTest {
 
         Collection<Product> productPage = productDao.getPage(3, 2);
 
-        int pageSize=productPage.size();
-        assertEquals(0,pageSize);
+        int pageSize = productPage.size();
+        assertEquals(0, pageSize);
     }
 
     private int executeUpdate(DataSource dataSource, String sql) throws SQLException {
-        try(Statement statement = dataSource.getConnection()
+        try (Statement statement = dataSource.getConnection()
                 .createStatement()) {
             return statement.executeUpdate(sql);
         }

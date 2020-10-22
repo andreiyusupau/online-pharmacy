@@ -41,9 +41,9 @@ public class BasicStockServiceTest {
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal("1421"), null,false);
+        product = new Product(1, "testProduct", new BigDecimal("1421"), null, false);
         position = new Position(1, 2, product);
-        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("152"), null,false);
+        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("152"), null, false);
         secondPosition = new Position(2, 51, secondProduct);
         positions = new ArrayList<>();
         positions.add(position);
@@ -145,7 +145,7 @@ public class BasicStockServiceTest {
 
     @Test
     void reserveShouldThrowExceptionNotInStock() {
-        Product unknownProduct = new Product(3, "unknownProduct", new BigDecimal("124"), null,false);
+        Product unknownProduct = new Product(3, "unknownProduct", new BigDecimal("124"), null, false);
         OperationPosition operationPosition = new OperationPosition(1, 2, product, order);
         OperationPosition secondOperationPosition = new OperationPosition(2, 5, unknownProduct, order);
         Collection<OperationPosition> operationPositions = new ArrayList<>();

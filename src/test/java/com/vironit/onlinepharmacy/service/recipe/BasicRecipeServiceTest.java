@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.service.recipe;
 
 import com.vironit.onlinepharmacy.dao.RecipeDao;
+import com.vironit.onlinepharmacy.dto.RecipeData;
 import com.vironit.onlinepharmacy.model.OrderPosition;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.Recipe;
@@ -37,6 +38,7 @@ public class BasicRecipeServiceTest {
     private Product product;
     private Recipe recipe;
     private Recipe secondRecipe;
+    private RecipeData recipeData;
     private Collection<Recipe> recipes;
 
     @BeforeEach
@@ -46,6 +48,7 @@ public class BasicRecipeServiceTest {
         secondOrderPosition = new OrderPosition(2, 6, product, null);
         recipe = new Recipe(1, "description", 2, product, Instant.now(), orderPosition);
         secondRecipe = new Recipe(2, "second description", 6, product, Instant.now(), secondOrderPosition);
+        recipeData=new RecipeData("testdescr",2,1,Instant.now(),1);
         recipes = new ArrayList<>();
         recipes.add(recipe);
         recipes.add(secondRecipe);
@@ -56,7 +59,7 @@ public class BasicRecipeServiceTest {
         when(recipeDao.add(any()))
                 .thenReturn(0L);
 
-        long id = recipeService.add(recipe);
+        long id = recipeService.add(recipeData);
 
         verify(recipeDao).add(recipe);
         Assertions.assertEquals(0, id);

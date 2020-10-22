@@ -1,11 +1,15 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.Entity;
 import java.time.Instant;
 import java.util.Objects;
-
+@Entity
 public class Order extends Operation {
 
     private OrderStatus status;
+
+    public Order() {
+    }
 
     public Order(long id, Instant date, User owner, OrderStatus status) {
         super(id, date, owner);

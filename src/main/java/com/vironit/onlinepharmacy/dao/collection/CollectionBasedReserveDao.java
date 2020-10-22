@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class CollectionBasedReserveDao implements ReserveDao {
 
     private final Collection<OperationPosition> reserved = new ArrayList<>();

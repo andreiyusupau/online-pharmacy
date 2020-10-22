@@ -4,9 +4,9 @@ import java.util.List;
 
 public class OrderCreateData {
     private final long ownerId;
-    private final List<OperationPositionData> operationPositionDataList;
+    private final List<PositionData> operationPositionDataList;
 
-    public OrderCreateData(long ownerId, List<OperationPositionData> operationPositionDataList) {
+    public OrderCreateData(long ownerId, List<PositionData> operationPositionDataList) {
         this.ownerId = ownerId;
         this.operationPositionDataList = operationPositionDataList;
     }
@@ -15,7 +15,7 @@ public class OrderCreateData {
         return ownerId;
     }
 
-    public List<OperationPositionData> getOperationPositionDataList() {
+    public List<PositionData> getOperationPositionDataList() {
         return operationPositionDataList;
     }
 }

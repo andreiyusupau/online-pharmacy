@@ -3,7 +3,7 @@ package com.vironit.onlinepharmacy.dao.collection;
 import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.model.Product;
-import org.junit.jupiter.api.Assertions;
+import com.vironit.onlinepharmacy.model.StockPosition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,18 +29,18 @@ class CollectionBasedStockDaoTest {
     private Product product;
     private Product secondProduct;
     private Product thirdProduct;
-    private Position position;
-    private Position secondPosition;
-    private Position thirdPosition;
+    private StockPosition position;
+    private StockPosition secondPosition;
+    private StockPosition thirdPosition;
 
     @BeforeEach
     void set() {
         product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
         secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null,false);
         thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null,false);
-        position = new Position(1, 10, product);
-        secondPosition = new Position(2, 11, secondProduct);
-        thirdPosition = new Position(3, 14, thirdProduct);
+        position = new StockPosition(1, 10, product,0);
+        secondPosition = new StockPosition(2, 11, secondProduct,0);
+        thirdPosition = new StockPosition(3, 14, thirdProduct,0);
     }
 
     @Test
@@ -51,7 +52,7 @@ class CollectionBasedStockDaoTest {
         Position acquiredPosition = stockDao.getByProductId(1)
                 .get();
 
-        Assertions.assertEquals(position, acquiredPosition);
+        assertEquals(position, acquiredPosition);
     }
 
     @Test
@@ -62,8 +63,8 @@ class CollectionBasedStockDaoTest {
 
         long sizeAfterAdd = stockDao.getAll()
                 .size();
-        Assertions.assertEquals(1, sizeAfterAdd);
-        Assertions.assertEquals(0, id);
+        assertEquals(1, sizeAfterAdd);
+        assertEquals(0, id);
     }
 
     @Test
@@ -75,7 +76,7 @@ class CollectionBasedStockDaoTest {
         Position acquiredPosition = stockDao.get(id)
                 .get();
 
-        Assertions.assertEquals(position, acquiredPosition);
+        assertEquals(position, acquiredPosition);
     }
 
     @Test
@@ -88,13 +89,13 @@ class CollectionBasedStockDaoTest {
         stockDao.add(secondPosition);
         stockDao.add(thirdPosition);
 
-        Collection<Position> acquiredPositions = stockDao.getAll();
+        Collection<StockPosition> acquiredPositions = stockDao.getAll();
 
-        Collection<Position> expectedPositions = new ArrayList<>();
+        Collection<StockPosition> expectedPositions = new ArrayList<>();
         expectedPositions.add(position);
         expectedPositions.add(secondPosition);
         expectedPositions.add(thirdPosition);
-        Assertions.assertEquals(expectedPositions, acquiredPositions);
+        assertEquals(expectedPositions, acquiredPositions);
     }
 
     @Test
@@ -102,14 +103,14 @@ class CollectionBasedStockDaoTest {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         stockDao.add(position);
-        Position positionForUpdate = new Position(0, 15, product);
+        StockPosition positionForUpdate = new StockPosition(0, 15, product,0);
 
         stockDao.update(positionForUpdate);
 
-        Position updatedPosition = stockDao.get(0)
+        StockPosition updatedPosition = stockDao.get(0)
                 .get();
 
-        Assertions.assertEquals(positionForUpdate, updatedPosition);
+        assertEquals(positionForUpdate, updatedPosition);
     }
 
     @Test
@@ -122,13 +123,13 @@ class CollectionBasedStockDaoTest {
 
         long sizeAfterRemove = stockDao.getAll()
                 .size();
-        Assertions.assertEquals(0, sizeAfterRemove);
+        assertEquals(0, sizeAfterRemove);
     }
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualZero() {
         int totalElements = stockDao.getTotalElements();
-        Assertions.assertEquals(0, totalElements);
+        assertEquals(0, totalElements);
     }
 
     @Test
@@ -139,7 +140,7 @@ class CollectionBasedStockDaoTest {
         stockDao.add(position);
         stockDao.add(secondPosition);
         int totalElements = stockDao.getTotalElements();
-        Assertions.assertEquals(2, totalElements);
+        assertEquals(2, totalElements);
     }
 
     @Test
@@ -152,11 +153,11 @@ class CollectionBasedStockDaoTest {
         stockDao.add(secondPosition);
         stockDao.add(thirdPosition);
 
-        Collection<Position> positionPage = stockDao.getPage(2, 2);
+        Collection<StockPosition> positionPage = stockDao.getPage(2, 2);
 
-        Collection<Position> expectedPositionPage = new ArrayList<>();
+        Collection<StockPosition> expectedPositionPage = new ArrayList<>();
         expectedPositionPage.add(thirdPosition);
-        Assertions.assertEquals(expectedPositionPage, positionPage);
+        assertEquals(expectedPositionPage, positionPage);
     }
 
     @Test
@@ -169,9 +170,9 @@ class CollectionBasedStockDaoTest {
         stockDao.add(secondPosition);
         stockDao.add(thirdPosition);
 
-        Collection<Position> positionPage = stockDao.getPage(3, 2);
+        Collection<StockPosition> positionPage = stockDao.getPage(3, 2);
 
-        Collection<Position> expectedPositionPage = new ArrayList<>();
-        Assertions.assertEquals(expectedPositionPage, positionPage);
+        Collection<StockPosition> expectedPositionPage = new ArrayList<>();
+        assertEquals(expectedPositionPage, positionPage);
     }
 }

@@ -1,10 +1,15 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.time.Instant;
 import java.util.Objects;
 
+@MappedSuperclass
 public abstract class Operation {
-
+@Id
+@GeneratedValue
     private long id;
     private Instant date;
     private User owner;

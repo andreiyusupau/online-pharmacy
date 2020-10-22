@@ -1,10 +1,16 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Objects;
-
+@Entity
+@Table(name = "recipes")
 public class Recipe {
-
+    @Id
+    @GeneratedValue
     private long id;
     private String description;
     private int quantity;

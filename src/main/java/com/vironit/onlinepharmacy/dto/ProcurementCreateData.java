@@ -5,9 +5,9 @@ import java.util.List;
 public class ProcurementCreateData {
 
     private final long ownerId;
-    private final List<OperationPositionData> operationPositionDataList;
+    private final List<PositionData> operationPositionDataList;
 
-    public ProcurementCreateData(long ownerId, List<OperationPositionData> operationPositionDataList) {
+    public ProcurementCreateData(long ownerId, List<PositionData> operationPositionDataList) {
         this.ownerId = ownerId;
         this.operationPositionDataList = operationPositionDataList;
     }
@@ -16,7 +16,7 @@ public class ProcurementCreateData {
         return ownerId;
     }
 
-    public List<OperationPositionData> getOperationPositionDataList() {
+    public List<PositionData> getOperationPositionDataList() {
         return operationPositionDataList;
     }
 }

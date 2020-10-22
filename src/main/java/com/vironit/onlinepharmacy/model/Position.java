@@ -1,6 +1,6 @@
 package com.vironit.onlinepharmacy.model;
 
-public class Position {
+public abstract class Position {
 
     private long id;
     private int quantity;

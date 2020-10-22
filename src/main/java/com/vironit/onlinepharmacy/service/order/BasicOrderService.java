@@ -60,7 +60,7 @@ public class BasicOrderService implements OrderService {
                 .orElseThrow(() -> new OrderServiceException("Can't confirm order. Order with id " + id + " not found."));
         order.setStatus(OrderStatus.IN_PROGRESS);
         Collection<OperationPosition> positions = operationPositionDao.getAllByOwnerId(id);
-        stockService.reserve(positions);
+        stockService.reserveInStock(positions);
         orderDao.update(order);
     }
 
@@ -69,8 +69,9 @@ public class BasicOrderService implements OrderService {
         Order order = orderDao.get(id)
                 .orElseThrow(() -> new OrderServiceException("Can't complete order. Order with id " + id + " not found."));
         order.setStatus(OrderStatus.COMPLETE);
-        stockService.take(id);
         orderDao.update(order);
+        Collection<OperationPosition> orderPositions=operationPositionDao.getAllByOwnerId(order.getId());
+        stockService.takeFromStock(orderPositions);
     }
 
     @Override
@@ -78,8 +79,9 @@ public class BasicOrderService implements OrderService {
         Order order = orderDao.get(id)
                 .orElseThrow(() -> new OrderServiceException("Can't cancel order. Order with id " + id + " not found."));
         order.setStatus(OrderStatus.CANCELED);
-        stockService.annul(id);
         orderDao.update(order);
+        Collection<OperationPosition> orderPositions=operationPositionDao.getAllByOwnerId(order.getId());
+        stockService.annulReservationInStock(orderPositions);
     }
 
     @Override

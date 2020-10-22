@@ -1,10 +1,17 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "users")
 public class User {
-
+@Id
+@GeneratedValue
     private long id;
     private String firstName;
     private String middleName;

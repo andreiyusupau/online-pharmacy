@@ -1,10 +1,16 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Objects;
-
+@Entity
+@Table(name="products")
 public class Product {
-
+    @Id
+    @GeneratedValue
     private long id;
     private String name;
     private BigDecimal price;

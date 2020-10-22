@@ -2,7 +2,7 @@ package com.vironit.onlinepharmacy.service.procurement;
 
 import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
-import com.vironit.onlinepharmacy.dto.OperationPositionData;
+import com.vironit.onlinepharmacy.dto.PositionData;
 import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
 import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
 import com.vironit.onlinepharmacy.model.*;
@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -55,10 +54,10 @@ public class BasicProcurementServiceTest {
     private OperationPosition firstOperationPosition;
     private OperationPosition secondOperationPosition;
     private OperationPosition thirdOperationPosition;
-    private OperationPositionData firstOperationPositionData;
-    private OperationPositionData secondOperationPositionData;
-    private OperationPositionData thirdOperationPositionData;
-    private List<OperationPositionData> operationPositionDataList;
+    private PositionData firstOperationPositionData;
+    private PositionData secondOperationPositionData;
+    private PositionData thirdOperationPositionData;
+    private List<PositionData> operationPositionDataList;
     private Procurement secondProcurement;
     private Procurement thirdProcurement;
     private Collection<Procurement> procurements;
@@ -76,19 +75,13 @@ public class BasicProcurementServiceTest {
         firstOperationPosition = new OperationPosition(1, 7, firstProduct, procurement);
         secondOperationPosition = new OperationPosition(2, 64, secondProduct, procurement);
         thirdOperationPosition = new OperationPosition(3, 124, thirdProduct, procurement);
-        firstOperationPositionData = new OperationPositionData(1, 10);
-        secondOperationPositionData = new OperationPositionData(2, 15);
-        thirdOperationPositionData = new OperationPositionData(3, 25);
-        operationPositionDataList = new ArrayList<>();
-        operationPositionDataList.add(firstOperationPositionData);
-        operationPositionDataList.add(secondOperationPositionData);
-        operationPositionDataList.add(thirdOperationPositionData);
+        firstOperationPositionData = new PositionData(1,  10);
+        secondOperationPositionData = new PositionData(2,  15);
+        thirdOperationPositionData = new PositionData(3, 25);
+        operationPositionDataList = List.of(firstOperationPositionData,secondOperationPositionData,thirdOperationPositionData);
         secondProcurement = new Procurement(2, Instant.now(), user, ProcurementStatus.APPROVED);
         thirdProcurement = new Procurement(3, Instant.now(), user, ProcurementStatus.PREPARATION);
-        procurements = new ArrayList<>();
-        procurements.add(procurement);
-        procurements.add(secondProcurement);
-        procurements.add(thirdProcurement);
+        procurements = List.of(procurement,secondProcurement,thirdProcurement);
     }
 
     @Test

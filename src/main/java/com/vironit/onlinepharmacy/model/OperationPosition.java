@@ -7,7 +7,6 @@ public class OperationPosition extends Position {
     private Operation operation;
 
     public OperationPosition() {
-
     }
 
     public OperationPosition(long id, int quantity, Product product, Operation operation) {

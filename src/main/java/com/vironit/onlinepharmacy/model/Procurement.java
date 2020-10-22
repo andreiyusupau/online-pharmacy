@@ -1,14 +1,15 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.Entity;
 import java.time.Instant;
 import java.util.Objects;
 
+@Entity
 public class Procurement extends Operation {
 
     private ProcurementStatus procurementStatus;
 
     public Procurement() {
-        super();
     }
 
     public Procurement(long id, Instant date, User owner, ProcurementStatus procurementStatus) {

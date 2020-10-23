@@ -1,10 +1,10 @@
 package com.vironit.onlinepharmacy.service.order;
 
-import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.dao.OrderDao;
-import com.vironit.onlinepharmacy.dto.PositionData;
+import com.vironit.onlinepharmacy.dao.OrderPositionDao;
 import com.vironit.onlinepharmacy.dto.OrderCreateData;
 import com.vironit.onlinepharmacy.dto.OrderUpdateData;
+import com.vironit.onlinepharmacy.dto.PositionData;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
@@ -34,7 +34,7 @@ public class BasicOrderServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private OperationPositionDao operationPositionDao;
+    private OrderPositionDao orderPositionDao;
     @Mock
     private StockService stockService;
     @Mock
@@ -49,9 +49,9 @@ public class BasicOrderServiceTest {
     private Product secondProduct;
     private Product thirdProduct;
     private Order order;
-    private OperationPosition firstOperationPosition;
-    private OperationPosition secondOperationPosition;
-    private OperationPosition thirdOperationPosition;
+    private OrderPosition firstOrderPosition;
+    private OrderPosition secondOrderPosition;
+    private OrderPosition thirdOrderPosition;
     private PositionData firstOperationPositionData;
     private PositionData secondOperationPositionData;
     private PositionData thirdOperationPositionData;
@@ -66,14 +66,14 @@ public class BasicOrderServiceTest {
         user = new User(1, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
-        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null,false);
-        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null,false);
-        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null,false);
+        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null, false);
+        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null, false);
+        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
         order = new Order(1, Instant.now(), user, OrderStatus.PREPARATION);
-        firstOperationPosition = new OperationPosition(1, 7, firstProduct, order);
-        secondOperationPosition = new OperationPosition(2, 64, secondProduct, order);
-        thirdOperationPosition = new OperationPosition(3, 124, thirdProduct, order);
-        firstOperationPositionData = new PositionData(1,  10);
+        firstOrderPosition = new OrderPosition(1, 7, firstProduct, order);
+        secondOrderPosition = new OrderPosition(2, 64, secondProduct, order);
+        thirdOrderPosition = new OrderPosition(3, 124, thirdProduct, order);
+        firstOperationPositionData = new PositionData(1, 10);
         secondOperationPositionData = new PositionData(2, 15);
         thirdOperationPositionData = new PositionData(3, 25);
         operationPositionDataList = new ArrayList<>();
@@ -218,8 +218,8 @@ public class BasicOrderServiceTest {
 
         orderService.update(orderUpdateData);
 
-        verify(operationPositionDao).removeAllByOwnerId(1);
-        verify(operationPositionDao).addAll(any());
+        verify(orderPositionDao).removeAllByOwnerId(1);
+        verify(orderPositionDao).addAll(any());
     }
 
     @Test
@@ -237,12 +237,12 @@ public class BasicOrderServiceTest {
     void removeShouldUseDao() {
         when(orderDao.remove(anyLong()))
                 .thenReturn(true);
-        when(operationPositionDao.removeAllByOwnerId(anyLong()))
+        when(orderPositionDao.removeAllByOwnerId(anyLong()))
                 .thenReturn(true);
 
         orderService.remove(1);
 
-        verify(operationPositionDao).removeAllByOwnerId(1);
+        verify(orderPositionDao).removeAllByOwnerId(1);
         verify(orderDao).remove(1);
     }
 }

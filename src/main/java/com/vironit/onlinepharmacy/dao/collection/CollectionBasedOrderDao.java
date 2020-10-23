@@ -78,7 +78,7 @@ public class CollectionBasedOrderDao implements OrderDao {
     @Override
     public Collection<Order> getPage(int currentPage, int pageLimit) {
         return orderList.stream()
-                .skip((currentPage-1)*pageLimit)
+                .skip((currentPage - 1) * pageLimit)
                 .limit(pageLimit)
                 .collect(Collectors.toList());
     }

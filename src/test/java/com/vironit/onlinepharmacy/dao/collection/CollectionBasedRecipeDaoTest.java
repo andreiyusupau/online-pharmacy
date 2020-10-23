@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
 import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
-import com.vironit.onlinepharmacy.model.OperationPosition;
+import com.vironit.onlinepharmacy.model.OrderPosition;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.Recipe;
 import org.junit.jupiter.api.Assertions;
@@ -27,9 +27,9 @@ class CollectionBasedRecipeDaoTest {
     @InjectMocks
     private CollectionBasedRecipeDao recipeDao;
 
-    private OperationPosition operationPosition;
-    private OperationPosition secondOperationPosition;
-    private OperationPosition thirdOperationPosition;
+    private OrderPosition orderPosition;
+    private OrderPosition secondOrderPosition;
+    private OrderPosition thirdOrderPosition;
     private Recipe recipe;
     private Recipe secondRecipe;
     private Recipe thirdRecipe;
@@ -38,12 +38,12 @@ class CollectionBasedRecipeDaoTest {
     @BeforeEach
     void set() {
         product = new Product(1, "product", new BigDecimal(123), null, true);
-        operationPosition = new OperationPosition(1, 2, product, null);
-        secondOperationPosition = new OperationPosition(2, 5, product, null);
-        thirdOperationPosition = new OperationPosition(3, 7, product, null);
-        recipe = new Recipe(-1, "recipe", 2, product, Instant.now(), operationPosition);
-        secondRecipe = new Recipe(-1, "recipe", 5, product, Instant.now(), secondOperationPosition);
-        thirdRecipe = new Recipe(-1, "recipe", 6, product, Instant.now(), thirdOperationPosition);
+        orderPosition = new OrderPosition(1, 2, product, null);
+        secondOrderPosition = new OrderPosition(2, 5, product, null);
+        thirdOrderPosition = new OrderPosition(3, 7, product, null);
+        recipe = new Recipe(-1, "recipe", 2, product, Instant.now(), orderPosition);
+        secondRecipe = new Recipe(-1, "recipe", 5, product, Instant.now(), secondOrderPosition);
+        thirdRecipe = new Recipe(-1, "recipe", 6, product, Instant.now(), thirdOrderPosition);
     }
 
     @Test

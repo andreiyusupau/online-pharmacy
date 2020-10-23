@@ -1,12 +1,11 @@
 package com.vironit.onlinepharmacy.service.procurement;
 
-import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
 import com.vironit.onlinepharmacy.dto.PositionData;
 import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
 import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
-import com.vironit.onlinepharmacy.model.OperationPosition;
 import com.vironit.onlinepharmacy.model.Procurement;
+import com.vironit.onlinepharmacy.model.ProcurementPosition;
 import com.vironit.onlinepharmacy.model.ProcurementStatus;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
@@ -23,31 +22,33 @@ import java.util.stream.Collectors;
 public class BasicProcurementService implements ProcurementService {
 
     private final ProcurementDao procurementDao;
-    private final OperationPositionDao operationPositionDao;
+    private final ProcurementPositionService procurementPositionService;
     private final StockService stockService;
     private final ProductService productService;
     private final UserService userService;
-    private final Converter<PositionData,OperationPosition> operationPositionToPositionDataConverter;
+    private final Converter<PositionData, ProcurementPosition> procurementPositionToPositionDataConverter;
 
-    public BasicProcurementService(ProcurementDao procurementDao, OperationPositionDao operationPositionDao, StockService stockService, ProductService productService, UserService userService, Converter<PositionData, OperationPosition> operationPositionToPositionDataConverter) {
+    public BasicProcurementService(ProcurementDao procurementDao, ProcurementPositionService procurementPositionService, StockService stockService, ProductService productService, UserService userService, Converter<PositionData, ProcurementPosition> procurementPositionToPositionDataConverter) {
         this.procurementDao = procurementDao;
-        this.operationPositionDao = operationPositionDao;
+        this.procurementPositionService = procurementPositionService;
         this.stockService = stockService;
         this.productService = productService;
         this.userService = userService;
-        this.operationPositionToPositionDataConverter = operationPositionToPositionDataConverter;
+        this.procurementPositionToPositionDataConverter = procurementPositionToPositionDataConverter;
     }
 
     @Override
     public long add(ProcurementCreateData procurementCreateData) {
         User owner = userService.get(procurementCreateData.getOwnerId());
         Procurement procurement = new Procurement(-1, Instant.now(), owner, ProcurementStatus.PREPARATION);
-        List<OperationPosition> operationPositions = procurementCreateData.getOperationPositionDataList()
+        long id=procurementDao.add(procurement);
+        procurement.setId(id);
+        List<ProcurementPosition> procurementPositions = procurementCreateData.getPositionDataList()
                 .stream()
-                .map(positionData -> new OperationPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), procurement))
+                .map(positionData -> new ProcurementPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), procurement))
                 .collect(Collectors.toList());
-        operationPositionDao.addAll(operationPositions);
-        return procurementDao.add(procurement);
+        procurementPositionService.addAll(procurementPositions);
+        return id;
     }
 
     @Override
@@ -63,19 +64,21 @@ public class BasicProcurementService implements ProcurementService {
 
     @Override
     public void update(ProcurementUpdateData procurementUpdateData) {
+        User owner = userService.get(procurementUpdateData.getOwnerId());
         Procurement procurement = get(procurementUpdateData.getId());
-        List<OperationPosition> operationPositions = procurementUpdateData.getOperationPositionDataList()
+        procurement.setOwner(owner);
+        List<ProcurementPosition> procurementPositions = procurementUpdateData.getPositionDataList()
                 .stream()
-                .map(positionData -> new OperationPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), procurement))
+                .map(positionData -> new ProcurementPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), procurement))
                 .collect(Collectors.toList());
-        operationPositionDao.removeAllByOwnerId(procurementUpdateData.getOwnerId());
-        operationPositionDao.addAll(operationPositions);
+        procurementPositionService.removeAllByOwnerId(procurementUpdateData.getOwnerId());
+        procurementPositionService.addAll(procurementPositions);
     }
 
     @Override
     public void remove(long id) {
         procurementDao.remove(id);
-        operationPositionDao.removeAllByOwnerId(id);
+        procurementPositionService.removeAllByOwnerId(id);
     }
 
     @Override
@@ -90,9 +93,9 @@ public class BasicProcurementService implements ProcurementService {
     public void completeProcurement(long id) {
         Procurement procurement = procurementDao.get(id)
                 .orElseThrow(() -> new ProcurementServiceException("Can't complete procurement. Procurement with id " + id + " not found."));
-        Collection<PositionData> positionData = operationPositionDao.getAllByOwnerId(id)
+        Collection<PositionData> positionData = procurementPositionService.getAllByOwnerId(id)
                 .stream()
-                .map(operationPositionToPositionDataConverter::convert)
+                .map(procurementPositionToPositionDataConverter::convert)
                 .collect(Collectors.toList());
         stockService.addAll(positionData);
         procurement.setProcurementStatus(ProcurementStatus.COMPLETE);

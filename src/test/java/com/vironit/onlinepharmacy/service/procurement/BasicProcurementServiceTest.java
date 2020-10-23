@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.service.procurement;
 
-import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
+import com.vironit.onlinepharmacy.dao.ProcurementPositionDao;
 import com.vironit.onlinepharmacy.dto.PositionData;
 import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
 import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
@@ -36,7 +36,7 @@ public class BasicProcurementServiceTest {
     @Mock
     private ProcurementDao procurementDao;
     @Mock
-    private OperationPositionDao operationPositionDao;
+    private ProcurementPositionDao procurementPositionDao;
     @Mock
     private StockService stockService;
     @Mock
@@ -51,9 +51,9 @@ public class BasicProcurementServiceTest {
     private Product secondProduct;
     private Product thirdProduct;
     private Procurement procurement;
-    private OperationPosition firstOperationPosition;
-    private OperationPosition secondOperationPosition;
-    private OperationPosition thirdOperationPosition;
+    private ProcurementPosition firstProcurementPosition;
+    private ProcurementPosition secondProcurementPosition;
+    private ProcurementPosition thirdProcurementPosition;
     private PositionData firstOperationPositionData;
     private PositionData secondOperationPositionData;
     private PositionData thirdOperationPositionData;
@@ -68,20 +68,20 @@ public class BasicProcurementServiceTest {
         user = new User(1, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
-        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null,false);
-        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null,false);
-        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null,false);
+        firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null, false);
+        secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null, false);
+        thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
         procurement = new Procurement(1, Instant.now(), user, ProcurementStatus.PREPARATION);
-        firstOperationPosition = new OperationPosition(1, 7, firstProduct, procurement);
-        secondOperationPosition = new OperationPosition(2, 64, secondProduct, procurement);
-        thirdOperationPosition = new OperationPosition(3, 124, thirdProduct, procurement);
-        firstOperationPositionData = new PositionData(1,  10);
-        secondOperationPositionData = new PositionData(2,  15);
+        firstProcurementPosition = new ProcurementPosition(1, 7, firstProduct, procurement);
+        secondProcurementPosition = new ProcurementPosition(2, 64, secondProduct, procurement);
+        thirdProcurementPosition = new ProcurementPosition(3, 124, thirdProduct, procurement);
+        firstOperationPositionData = new PositionData(1, 10);
+        secondOperationPositionData = new PositionData(2, 15);
         thirdOperationPositionData = new PositionData(3, 25);
-        operationPositionDataList = List.of(firstOperationPositionData,secondOperationPositionData,thirdOperationPositionData);
+        operationPositionDataList = List.of(firstOperationPositionData, secondOperationPositionData, thirdOperationPositionData);
         secondProcurement = new Procurement(2, Instant.now(), user, ProcurementStatus.APPROVED);
         thirdProcurement = new Procurement(3, Instant.now(), user, ProcurementStatus.PREPARATION);
-        procurements = List.of(procurement,secondProcurement,thirdProcurement);
+        procurements = List.of(procurement, secondProcurement, thirdProcurement);
     }
 
     @Test
@@ -194,20 +194,20 @@ public class BasicProcurementServiceTest {
 
         procurementService.update(procurementUpdateData);
 
-        verify(operationPositionDao).removeAllByOwnerId(1);
-        verify(operationPositionDao).addAll(any());
+        verify(procurementPositionDao).removeAllByOwnerId(1);
+        verify(procurementPositionDao).addAll(any());
     }
 
     @Test
     void removeShouldUseDao() {
         when(procurementDao.remove(anyLong()))
                 .thenReturn(true);
-        when(operationPositionDao.removeAllByOwnerId(anyLong()))
+        when(procurementPositionDao.removeAllByOwnerId(anyLong()))
                 .thenReturn(true);
 
         procurementService.remove(1);
 
-        verify(operationPositionDao).removeAllByOwnerId(1);
+        verify(procurementPositionDao).removeAllByOwnerId(1);
         verify(procurementDao).remove(1);
     }
 }

@@ -74,7 +74,7 @@ public class CollectionBasedProcurementDao implements ProcurementDao {
     @Override
     public Collection<Procurement> getPage(int currentPage, int pageLimit) {
         return procurementList.stream()
-                .skip((currentPage-1)*pageLimit)
+                .skip((currentPage - 1) * pageLimit)
                 .limit(pageLimit)
                 .collect(Collectors.toList());
     }

@@ -1,11 +1,9 @@
 package com.vironit.onlinepharmacy.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
+
 @Entity
 @Table(name = "recipes")
 public class Recipe {
@@ -14,20 +12,22 @@ public class Recipe {
     private long id;
     private String description;
     private int quantity;
+    @ManyToOne
     private Product product;
     private Instant validThru;
-    private OperationPosition operationPosition;
+    @OneToOne
+    private OrderPosition orderPosition;
 
     public Recipe() {
     }
 
-    public Recipe(long id, String description, int quantity, Product product, Instant validThru, OperationPosition operationPosition) {
+    public Recipe(long id, String description, int quantity, Product product, Instant validThru, OrderPosition orderPosition) {
         this.id = id;
         this.description = description;
         this.quantity = quantity;
         this.product = product;
         this.validThru = validThru;
-        this.operationPosition = operationPosition;
+        this.orderPosition = orderPosition;
     }
 
     public long getId() {
@@ -70,12 +70,12 @@ public class Recipe {
         this.validThru = validThru;
     }
 
-    public OperationPosition getOperationPosition() {
-        return operationPosition;
+    public OrderPosition getOrderPosition() {
+        return orderPosition;
     }
 
-    public void setOperationPosition(OperationPosition operationPosition) {
-        this.operationPosition = operationPosition;
+    public void setOrderPosition(OrderPosition orderPosition) {
+        this.orderPosition = orderPosition;
     }
 
     @Override
@@ -88,12 +88,12 @@ public class Recipe {
                 description.equals(recipe.description) &&
                 product.equals(recipe.product) &&
                 validThru.equals(recipe.validThru) &&
-                operationPosition.equals(recipe.operationPosition);
+                orderPosition.equals(recipe.orderPosition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, quantity, product, validThru, operationPosition);
+        return Objects.hash(id, description, quantity, product, validThru, orderPosition);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class Recipe {
                 ", quantity=" + quantity +
                 ", product=" + product +
                 ", validThru=" + validThru +
-                ", operationPosition=" + operationPosition +
+                ", orderPosition=" + orderPosition +
                 '}';
     }
 }

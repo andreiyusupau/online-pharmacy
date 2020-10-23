@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -41,19 +40,25 @@ public class BasicStockServiceTest {
     private StockPosition secondStockPosition;
     private Collection<StockPosition> stockPositions;
     private Order order;
+    private OrderPosition orderPosition;
+    private OrderPosition secondOrderPosition;
+    private Collection<OrderPosition> orderPositions;
+
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal("1421"), null,false);
+        product = new Product(1, "testProduct", new BigDecimal("1421"), null, false);
         positionData = new PositionData(1, 2);
-        stockPosition=new StockPosition(1,2,product,0);
-        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("152"), null,false);
+        stockPosition = new StockPosition(1, 2, product, 0);
+        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("152"), null, false);
         secondPositionData = new PositionData(2, 51);
-        secondStockPosition=new StockPosition(2,51,secondProduct,0);
-        stockPositions = List.of(stockPosition,secondStockPosition);
-        positionDataCollection=List.of(positionData,secondPositionData);
-
+        secondStockPosition = new StockPosition(2, 51, secondProduct, 0);
+        stockPositions = List.of(stockPosition, secondStockPosition);
+        positionDataCollection = List.of(positionData, secondPositionData);
         order = new Order(1, Instant.now(), null, OrderStatus.PAID);
+        orderPosition = new OrderPosition(1, 6, product, order);
+        secondOrderPosition = new OrderPosition(2, 5, secondProduct, order);
+        orderPositions = List.of(orderPosition, secondOrderPosition);
     }
 
     @Test
@@ -63,8 +68,8 @@ public class BasicStockServiceTest {
 
         long id = stockService.add(positionData);
 
-        verify(stockDao,times(1)).add(any(StockPosition.class));
-       assertEquals(0, id);
+        verify(stockDao, times(1)).add(any(StockPosition.class));
+        assertEquals(0, id);
     }
 
     @Test
@@ -103,7 +108,7 @@ public class BasicStockServiceTest {
 
     @Test
     void updateShouldUseDao() {
-        StockPosition positionForUpdate = new StockPosition(1,5,product,2);
+        StockPosition positionForUpdate = new StockPosition(1, 5, product, 2);
         when(stockDao.update(any()))
                 .thenReturn(true);
 
@@ -133,55 +138,45 @@ public class BasicStockServiceTest {
 
     @Test
     void reserveShouldPutDesiredPositionQuantitiesFromStockToReserve() {
-        OperationPosition operationPosition = new OperationPosition(1, 2, product, order);
-        OperationPosition secondOperationPosition = new OperationPosition(2, 5, secondProduct, order);
-        Collection<OperationPosition> operationPositions = new ArrayList<>();
-        operationPositions.add(operationPosition);
-        operationPositions.add(secondOperationPosition);
         when(stockDao.getByProductId(1))
                 .thenReturn(Optional.of(stockPosition));
         when(stockDao.getByProductId(2))
                 .thenReturn(Optional.of(secondStockPosition));
-        stockService.reserveInStock(operationPositions);
+
+        stockService.reserveInStock(orderPositions);
+
         verify(stockDao, times(2)).getByProductId(anyLong());
         verify(stockDao, times(2)).update(any());
     }
 
     @Test
     void reserveShouldThrowExceptionNotInStock() {
-        Product unknownProduct = new Product(3, "unknownProduct", new BigDecimal("124"), null,false);
-        OperationPosition operationPosition = new OperationPosition(1, 2, product, order);
-        OperationPosition secondOperationPosition = new OperationPosition(2, 5, unknownProduct, order);
-        Collection<OperationPosition> operationPositions = new ArrayList<>();
-        operationPositions.add(operationPosition);
-        operationPositions.add(secondOperationPosition);
+        Product unknownProduct = new Product(3, "unknownProduct", new BigDecimal("124"), null, false);
+
+        OrderPosition secondOrderPosition = new OrderPosition(2, 5, unknownProduct, order);
+        Collection<OrderPosition> orderPositions = List.of(orderPosition, secondOrderPosition);
         when(stockDao.getByProductId(1))
                 .thenReturn(Optional.of(stockPosition));
         when(stockDao.getByProductId(3))
                 .thenReturn(Optional.empty());
 
         Exception exception = Assertions.assertThrows(StockServiceException.class,
-                () -> stockService.reserveInStock(operationPositions));
+                () -> stockService.reserveInStock(orderPositions));
 
-        String expectedMessage = "Can't reserveInStock position " + secondOperationPosition.toString() + ", because it's not in stock.";
+        String expectedMessage = "Can't reserveInStock position " + secondOrderPosition.toString() + ", because it's not in stock.";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
     void reserveShouldThrowExceptionNotEnough() {
-        OperationPosition operationPosition = new OperationPosition(1, 6, product, order);
-        OperationPosition secondOperationPosition = new OperationPosition(2, 5, secondProduct, order);
-        Collection<OperationPosition> operationPositions = new ArrayList<>();
-        operationPositions.add(operationPosition);
-        operationPositions.add(secondOperationPosition);
         when(stockDao.getByProductId(1))
                 .thenReturn(Optional.of(stockPosition));
 
         Exception exception = Assertions.assertThrows(StockServiceException.class,
-                () -> stockService.reserveInStock(operationPositions));
+                () -> stockService.reserveInStock(orderPositions));
 
-        String expectedMessage = "Can't reserveInStock position " + operationPosition.toString()
+        String expectedMessage = "Can't reserveInStock position " + orderPosition.toString()
                 + ". Desired quantity " + 6 + ", quantity in stock " + 2 + ".";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
@@ -189,21 +184,11 @@ public class BasicStockServiceTest {
 
     @Test
     void takeShouldRemoveOrderPositionsFromReserve() {
-        OperationPosition operationPosition = new OperationPosition(1, 6, product, order);
-        OperationPosition secondOperationPosition = new OperationPosition(2, 5, secondProduct, order);
-        Collection<OperationPosition> operationPositions = new ArrayList<>();
-        operationPositions.add(operationPosition);
-        operationPositions.add(secondOperationPosition);
-        stockService.takeFromStock(operationPositions);
+        stockService.takeFromStock(orderPositions);
     }
 
     @Test
     void annulShouldMovePositionsFromReserveToStock() {
-        OperationPosition operationPosition = new OperationPosition(1, 6, product, order);
-        OperationPosition secondOperationPosition = new OperationPosition(2, 5, secondProduct, order);
-        Collection<OperationPosition> operationPositions = new ArrayList<>();
-        operationPositions.add(operationPosition);
-        operationPositions.add(secondOperationPosition);
-        stockService.annulReservationInStock(operationPositions);
+        stockService.annulReservationInStock(orderPositions);
     }
 }

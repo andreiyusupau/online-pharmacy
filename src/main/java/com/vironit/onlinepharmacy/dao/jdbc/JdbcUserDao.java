@@ -35,7 +35,7 @@ public class JdbcUserDao implements UserDao {
                 return resultSet.next() ? Optional.of(parseUser(resultSet)) : Optional.empty();
             }
         } catch (SQLException sqle) {
-            throw new DaoException("Error getting user by email from database",sqle);
+            throw new DaoException("Error getting user by email from database", sqle);
         }
     }
 
@@ -45,7 +45,7 @@ public class JdbcUserDao implements UserDao {
                 " SET(first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
                 "= (?,?,?,?,?,?," +
                 "(SELECT id " +
-                "FROM "+ROLES_TABLE+" " +
+                "FROM " + ROLES_TABLE + " " +
                 "WHERE name=?)) " +
                 "WHERE id=?;";
         try (Connection connection = dataSource.getConnection();
@@ -60,7 +60,7 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setLong(8, user.getId());
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException sqle) {
-            throw new DaoException("Error updating user in database",sqle);
+            throw new DaoException("Error updating user in database", sqle);
         }
     }
 
@@ -69,7 +69,7 @@ public class JdbcUserDao implements UserDao {
         String sql = "INSERT INTO " + USERS_TABLE + "(first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
                 "VALUES(?,?,?,?,?,?," +
                 "(SELECT id " +
-                "FROM "+ROLES_TABLE+" " +
+                "FROM " + ROLES_TABLE + " " +
                 "WHERE name=?)) " +
                 "RETURNING id;";
         try (Connection connection = dataSource.getConnection();
@@ -81,11 +81,11 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setString(5, user.getEmail());
             preparedStatement.setString(6, user.getPassword());
             preparedStatement.setString(7, user.getRole().name());
-            try(ResultSet resultSet=preparedStatement.executeQuery()){
-                return resultSet.next()? resultSet.getLong(1):-1;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next() ? resultSet.getLong(1) : -1;
             }
         } catch (SQLException sqle) {
-            throw new DaoException("Error adding user to database",sqle);
+            throw new DaoException("Error adding user to database", sqle);
         }
     }
 
@@ -102,7 +102,7 @@ public class JdbcUserDao implements UserDao {
                 return resultSet.next() ? Optional.of(parseUser(resultSet)) : Optional.empty();
             }
         } catch (SQLException sqle) {
-            throw new DaoException("Error getting user from database",sqle);
+            throw new DaoException("Error getting user from database", sqle);
         }
     }
 
@@ -121,7 +121,7 @@ public class JdbcUserDao implements UserDao {
             }
             return users;
         } catch (SQLException sqle) {
-            throw new DaoException("Error getting all users from database",sqle);
+            throw new DaoException("Error getting all users from database", sqle);
         }
     }
 
@@ -134,7 +134,7 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException sqle) {
-            throw new DaoException("Error removing user from database",sqle);
+            throw new DaoException("Error removing user from database", sqle);
         }
     }
 
@@ -146,7 +146,7 @@ public class JdbcUserDao implements UserDao {
              ResultSet resultSet = preparedStatement.executeQuery()) {
             return resultSet.next() ? resultSet.getInt(1) : -1;
         } catch (SQLException sqle) {
-            throw new DaoException("Error getting total users from database",sqle);
+            throw new DaoException("Error getting total users from database", sqle);
         }
     }
 
@@ -169,7 +169,7 @@ public class JdbcUserDao implements UserDao {
                 return users;
             }
         } catch (SQLException sqle) {
-            throw new DaoException("Error getting user page from database",sqle);
+            throw new DaoException("Error getting user page from database", sqle);
         }
     }
 

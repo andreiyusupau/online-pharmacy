@@ -2,7 +2,8 @@ package com.vironit.onlinepharmacy.service.stock;
 
 import com.vironit.onlinepharmacy.dao.StockDao;
 import com.vironit.onlinepharmacy.dto.PositionData;
-import com.vironit.onlinepharmacy.model.OperationPosition;
+import com.vironit.onlinepharmacy.model.OrderPosition;
+import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.StockPosition;
 import com.vironit.onlinepharmacy.service.exception.StockServiceException;
@@ -16,7 +17,7 @@ public class BasicStockService implements StockService {
 
     private final StockDao stockDAO;
     private final ProductService productService;
-    private final Converter<StockPosition,PositionData> positionDataToStockPositionConverter;
+    private final Converter<StockPosition, PositionData> positionDataToStockPositionConverter;
 
     public BasicStockService(StockDao stockDAO, ProductService productService, Converter<StockPosition, PositionData> positionDataToStockPositionConverter) {
         this.stockDAO = stockDAO;
@@ -34,9 +35,9 @@ public class BasicStockService implements StockService {
             stockDAO.update(updatedPosition);
             return updatedPosition.getId();
         } else {
-           StockPosition stockPosition= positionDataToStockPositionConverter.convert(positionData);
-           Product product=new Product();
-           product.setId(productId);
+            StockPosition stockPosition = positionDataToStockPositionConverter.convert(positionData);
+            Product product = new Product();
+            product.setId(productId);
             return stockDAO.add(stockPosition);
         }
     }
@@ -69,67 +70,67 @@ public class BasicStockService implements StockService {
     }
 
     @Override
-    public boolean reserveInStock(Collection<OperationPosition> operationPositions) {
-        for (OperationPosition operationPosition : operationPositions) {
-            long productId = operationPosition.getProduct()
+    public boolean reserveInStock(Collection<OrderPosition> positions) {
+        for (Position position : positions) {
+            long productId = position.getProduct()
                     .getId();
             StockPosition stockPosition = stockDAO.getByProductId(productId)
-                    .orElseThrow(()-> new StockServiceException("Can't reserveInStock position "+operationPosition+", because it's not in stock."));
-            int desiredPositionQuantity = operationPosition.getQuantity();
-            int reservedStockPositionQuantity=stockPosition.getReservedQuantity();
-            int totalStockQuantity=stockPosition.getQuantity();
-            int availableStockPositionQuantity=totalStockQuantity-reservedStockPositionQuantity;
-                if (availableStockPositionQuantity >= desiredPositionQuantity) {
-                    stockPosition.setReservedQuantity(reservedStockPositionQuantity + desiredPositionQuantity);
-                    stockDAO.update(stockPosition);
-                } else {
-                    throw new StockServiceException("Can't reserveInStock position "+operationPosition+". Desired quantity "+
-                            desiredPositionQuantity +", quantity in stock "+ availableStockPositionQuantity +".");
-                }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean takeFromStock(Collection<OperationPosition> operationPositions) {
-        for (OperationPosition operationPosition : operationPositions) {
-            long productId = operationPosition.getProduct()
-                    .getId();
-            StockPosition stockPosition = stockDAO.getByProductId(productId)
-                    .orElseThrow(()-> new StockServiceException("Can't takeFromStock position "+operationPosition+", because it's not in stock."));
-            int desiredPositionQuantity = operationPosition.getQuantity();
-            int reservedStockPositionQuantity=stockPosition.getReservedQuantity();
-            int totalStockQuantity=stockPosition.getQuantity();
-            if (totalStockQuantity >= desiredPositionQuantity
-                    &&reservedStockPositionQuantity>=desiredPositionQuantity) {
-                stockPosition.setQuantity(totalStockQuantity-desiredPositionQuantity);
-                stockPosition.setReservedQuantity(reservedStockPositionQuantity - desiredPositionQuantity);
+                    .orElseThrow(() -> new StockServiceException("Can't reserveInStock position " + position + ", because it's not in stock."));
+            int desiredPositionQuantity = position.getQuantity();
+            int reservedStockPositionQuantity = stockPosition.getReservedQuantity();
+            int totalStockQuantity = stockPosition.getQuantity();
+            int availableStockPositionQuantity = totalStockQuantity - reservedStockPositionQuantity;
+            if (availableStockPositionQuantity >= desiredPositionQuantity) {
+                stockPosition.setReservedQuantity(reservedStockPositionQuantity + desiredPositionQuantity);
                 stockDAO.update(stockPosition);
             } else {
-                throw new StockServiceException("Can't takeFromStock position "+operationPosition+" from stock. Desired quantity "+
-                        desiredPositionQuantity +", quantity in stock "+ totalStockQuantity +", total reserved quantity"
-                        + reservedStockPositionQuantity+".");
+                throw new StockServiceException("Can't reserveInStock position " + position + ". Desired quantity " +
+                        desiredPositionQuantity + ", quantity in stock " + availableStockPositionQuantity + ".");
             }
         }
         return true;
     }
 
     @Override
-    public boolean annulReservationInStock(Collection<OperationPosition> operationPositions) {
-        for (OperationPosition operationPosition : operationPositions) {
-            long productId = operationPosition.getProduct()
+    public boolean takeFromStock(Collection<OrderPosition> positions) {
+        for (Position position : positions) {
+            long productId = position.getProduct()
                     .getId();
             StockPosition stockPosition = stockDAO.getByProductId(productId)
-                    .orElseThrow(()-> new StockServiceException("Can't annulReservationInStock position "+operationPosition+" reservation, because it's not in stock."));
-            int desiredPositionQuantity = operationPosition.getQuantity();
-            int reservedStockPositionQuantity=stockPosition.getReservedQuantity();
+                    .orElseThrow(() -> new StockServiceException("Can't takeFromStock position " + position + ", because it's not in stock."));
+            int desiredPositionQuantity = position.getQuantity();
+            int reservedStockPositionQuantity = stockPosition.getReservedQuantity();
+            int totalStockQuantity = stockPosition.getQuantity();
+            if (totalStockQuantity >= desiredPositionQuantity
+                    && reservedStockPositionQuantity >= desiredPositionQuantity) {
+                stockPosition.setQuantity(totalStockQuantity - desiredPositionQuantity);
+                stockPosition.setReservedQuantity(reservedStockPositionQuantity - desiredPositionQuantity);
+                stockDAO.update(stockPosition);
+            } else {
+                throw new StockServiceException("Can't takeFromStock position " + position + " from stock. Desired quantity " +
+                        desiredPositionQuantity + ", quantity in stock " + totalStockQuantity + ", total reserved quantity"
+                        + reservedStockPositionQuantity + ".");
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean annulReservationInStock(Collection<OrderPosition> positions) {
+        for (Position position : positions) {
+            long productId = position.getProduct()
+                    .getId();
+            StockPosition stockPosition = stockDAO.getByProductId(productId)
+                    .orElseThrow(() -> new StockServiceException("Can't annulReservationInStock position " + position + " reservation, because it's not in stock."));
+            int desiredPositionQuantity = position.getQuantity();
+            int reservedStockPositionQuantity = stockPosition.getReservedQuantity();
             if (reservedStockPositionQuantity >= desiredPositionQuantity) {
                 stockPosition.setReservedQuantity(reservedStockPositionQuantity - desiredPositionQuantity);
                 stockDAO.update(stockPosition);
             } else {
-                throw new StockServiceException("Can't takeFromStock position "+operationPosition+" from stock. Desired quantity "+
-                        desiredPositionQuantity +", total reserved quantity"
-                        + reservedStockPositionQuantity+".");
+                throw new StockServiceException("Can't takeFromStock position " + position + " from stock. Desired quantity " +
+                        desiredPositionQuantity + ", total reserved quantity"
+                        + reservedStockPositionQuantity + ".");
             }
         }
         return true;

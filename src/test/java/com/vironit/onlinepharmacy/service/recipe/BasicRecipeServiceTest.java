@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.service.recipe;
 
 import com.vironit.onlinepharmacy.dao.RecipeDao;
-import com.vironit.onlinepharmacy.model.OperationPosition;
+import com.vironit.onlinepharmacy.model.OrderPosition;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.Recipe;
 import com.vironit.onlinepharmacy.service.exception.RecipeServiceException;
@@ -32,8 +32,8 @@ public class BasicRecipeServiceTest {
     @InjectMocks
     private BasicRecipeService recipeService;
 
-    private OperationPosition operationPosition;
-    private OperationPosition secondOperationPosition;
+    private OrderPosition orderPosition;
+    private OrderPosition secondOrderPosition;
     private Product product;
     private Recipe recipe;
     private Recipe secondRecipe;
@@ -41,10 +41,11 @@ public class BasicRecipeServiceTest {
 
     @BeforeEach
     void set() {
-        product = new Product(3, "thirdProduct", new BigDecimal("67"), null,false);
-        operationPosition = new OperationPosition(1, 7, product, null);
-        recipe = new Recipe(1,"description",2,product, Instant.now(),operationPosition);
-        secondRecipe = new Recipe(2,"second description",6, product, Instant.now(),secondOperationPosition);
+        product = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
+        orderPosition = new OrderPosition(1, 7, product, null);
+        secondOrderPosition = new OrderPosition(2, 6, product, null);
+        recipe = new Recipe(1, "description", 2, product, Instant.now(), orderPosition);
+        secondRecipe = new Recipe(2, "second description", 6, product, Instant.now(), secondOrderPosition);
         recipes = new ArrayList<>();
         recipes.add(recipe);
         recipes.add(secondRecipe);

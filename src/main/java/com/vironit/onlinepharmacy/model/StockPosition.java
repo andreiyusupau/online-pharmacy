@@ -1,12 +1,16 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Objects;
 
+@Entity
+@Table(name = "stock_positions")
 public class StockPosition extends Position {
 
     private int reservedQuantity;
 
-    public StockPosition(){
+    public StockPosition() {
     }
 
     public StockPosition(long id, int quantity, Product product, int reservedQuantity) {

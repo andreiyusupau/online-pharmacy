@@ -35,12 +35,12 @@ class CollectionBasedStockDaoTest {
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal("100"), null,false);
-        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null,false);
-        thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null,false);
-        position = new StockPosition(1, 10, product,0);
-        secondPosition = new StockPosition(2, 11, secondProduct,0);
-        thirdPosition = new StockPosition(3, 14, thirdProduct,0);
+        product = new Product(1, "testProduct", new BigDecimal("100"), null, false);
+        secondProduct = new Product(2, "secondTestProduct", new BigDecimal("120"), null, false);
+        thirdProduct = new Product(3, "thirdTestProduct", new BigDecimal("180"), null, false);
+        position = new StockPosition(1, 10, product, 0);
+        secondPosition = new StockPosition(2, 11, secondProduct, 0);
+        thirdPosition = new StockPosition(3, 14, thirdProduct, 0);
     }
 
     @Test
@@ -103,7 +103,7 @@ class CollectionBasedStockDaoTest {
         when(idGenerator.getNextId())
                 .thenReturn(0L);
         stockDao.add(position);
-        StockPosition positionForUpdate = new StockPosition(0, 15, product,0);
+        StockPosition positionForUpdate = new StockPosition(0, 15, product, 0);
 
         stockDao.update(positionForUpdate);
 

@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Objects;
+
 @Entity
 @Table(name = "product_categories")
 public class ProductCategory {
@@ -14,8 +15,7 @@ public class ProductCategory {
     private String name;
     private String description;
 
-    public ProductCategory(){
-
+    public ProductCategory() {
     }
 
     public ProductCategory(long id, String name, String description) {

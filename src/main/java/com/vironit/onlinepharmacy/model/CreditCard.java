@@ -11,7 +11,6 @@ public class CreditCard {
     @Id
     @GeneratedValue
     private long id;
-
     private String cardNumber;
     private String ownerName;
     private LocalDate validThru;
@@ -22,10 +21,10 @@ public class CreditCard {
     public CreditCard() {
     }
 
-    public CreditCard(long id, String cardNumber,String ownerName, LocalDate validThru, int cvv, User owner) {
+    public CreditCard(long id, String cardNumber, String ownerName, LocalDate validThru, int cvv, User owner) {
         this.id = id;
         this.cardNumber = cardNumber;
-        this.ownerName=ownerName;
+        this.ownerName = ownerName;
         this.validThru = validThru;
         this.cvv = cvv;
         this.owner = owner;

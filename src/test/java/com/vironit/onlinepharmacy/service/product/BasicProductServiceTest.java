@@ -35,8 +35,8 @@ public class BasicProductServiceTest {
 
     @BeforeEach
     void set() {
-        product = new Product(1, "testProduct", new BigDecimal(1245), null,false);
-        secondProduct = new Product(2, "secondTestProduct", new BigDecimal(1632), null,false);
+        product = new Product(1, "testProduct", new BigDecimal(1245), null, false);
+        secondProduct = new Product(2, "secondTestProduct", new BigDecimal(1632), null, false);
         products = new ArrayList<>();
         products.add(product);
         products.add(secondProduct);
@@ -89,7 +89,7 @@ public class BasicProductServiceTest {
 
     @Test
     void updateShouldUseDao() {
-        Product productForUpdate = new Product(1, "updatedName", new BigDecimal("1245"), null,false);
+        Product productForUpdate = new Product(1, "updatedName", new BigDecimal("1245"), null, false);
         when(productDao.update(any()))
                 .thenReturn(true);
 

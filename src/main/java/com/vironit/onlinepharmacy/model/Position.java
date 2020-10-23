@@ -1,9 +1,16 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.*;
+
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Position {
 
+    @Id
+    @GeneratedValue
     private long id;
     private int quantity;
+    @ManyToOne
     private Product product;
 
     public Position() {

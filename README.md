@@ -13,10 +13,13 @@ User "1" <-- "1" Role
 User "1" <-- "many" Operation
 Operation <|-- Order
 Operation <|-- Procurement
-Position <|-- OperationPosition
-Operation "1" *-- "many" OperationPosition
+Position <|-- OrderPosition
+Position <|-- ProcurementPosition
+Position <|-- StockPosition
+Procurement "1" *-- "many" ProcurementPosition
+Order "1" *-- "many" OrderPosition
 Product "1" *-- "1" Position
-OperationPosition "1" o-- "1" Recipe
+OrderPosition "1" o-- "1" Recipe
 Product "1" *-- "1" Recipe
 ProductCategory "1" o-- "many" Product
 Procurement *-- ProcurementStatus
@@ -80,8 +83,14 @@ Order *-- OrderStatus
      int quantity;
      Product product;
   }
-  class OperationPosition{
-   Operation operation;
+  class OrderPosition{
+   Order order;
+  }
+    class ProcurementPosition{
+   Procurement procurement;
+  }
+    class StockPosition{
+   int reservedQuantity;
   }
   class Recipe{
    long id;

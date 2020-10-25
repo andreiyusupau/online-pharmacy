@@ -2,7 +2,7 @@ package com.vironit.onlinepharmacy.service.order;
 
 import com.vironit.onlinepharmacy.dao.OrderDao;
 import com.vironit.onlinepharmacy.dao.OrderPositionDao;
-import com.vironit.onlinepharmacy.dto.OrderCreateData;
+import com.vironit.onlinepharmacy.dto.OrderData;
 import com.vironit.onlinepharmacy.dto.OrderUpdateData;
 import com.vironit.onlinepharmacy.dto.PositionData;
 import com.vironit.onlinepharmacy.model.*;
@@ -73,9 +73,9 @@ public class BasicOrderServiceTest {
         firstOrderPosition = new OrderPosition(1, 7, firstProduct, order);
         secondOrderPosition = new OrderPosition(2, 64, secondProduct, order);
         thirdOrderPosition = new OrderPosition(3, 124, thirdProduct, order);
-        firstOperationPositionData = new PositionData(1, 10);
-        secondOperationPositionData = new PositionData(2, 15);
-        thirdOperationPositionData = new PositionData(3, 25);
+        firstOperationPositionData = new PositionData(id, 1, 10);
+        secondOperationPositionData = new PositionData(id, 2, 15);
+        thirdOperationPositionData = new PositionData(id, 3, 25);
         operationPositionDataList = new ArrayList<>();
         operationPositionDataList.add(firstOperationPositionData);
         operationPositionDataList.add(secondOperationPositionData);
@@ -93,9 +93,9 @@ public class BasicOrderServiceTest {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
-        OrderCreateData orderCreateData = new OrderCreateData(1, operationPositionDataList);
+        OrderData orderData = new OrderData(id, 1, operationPositionDataList);
 
-        long id = orderService.add(orderCreateData);
+        long id = orderService.add(orderData);
 
         Assertions.assertEquals(0, id);
     }

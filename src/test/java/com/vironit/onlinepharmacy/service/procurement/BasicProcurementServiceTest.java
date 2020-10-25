@@ -3,7 +3,7 @@ package com.vironit.onlinepharmacy.service.procurement;
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
 import com.vironit.onlinepharmacy.dao.ProcurementPositionDao;
 import com.vironit.onlinepharmacy.dto.PositionData;
-import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
+import com.vironit.onlinepharmacy.dto.ProcurementData;
 import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
@@ -75,9 +75,9 @@ public class BasicProcurementServiceTest {
         firstProcurementPosition = new ProcurementPosition(1, 7, firstProduct, procurement);
         secondProcurementPosition = new ProcurementPosition(2, 64, secondProduct, procurement);
         thirdProcurementPosition = new ProcurementPosition(3, 124, thirdProduct, procurement);
-        firstOperationPositionData = new PositionData(1, 10);
-        secondOperationPositionData = new PositionData(2, 15);
-        thirdOperationPositionData = new PositionData(3, 25);
+        firstOperationPositionData = new PositionData(id, 1, 10);
+        secondOperationPositionData = new PositionData(id, 2, 15);
+        thirdOperationPositionData = new PositionData(id, 3, 25);
         operationPositionDataList = List.of(firstOperationPositionData, secondOperationPositionData, thirdOperationPositionData);
         secondProcurement = new Procurement(2, Instant.now(), user, ProcurementStatus.APPROVED);
         thirdProcurement = new Procurement(3, Instant.now(), user, ProcurementStatus.PREPARATION);
@@ -89,9 +89,9 @@ public class BasicProcurementServiceTest {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
-        ProcurementCreateData procurementCreateData = new ProcurementCreateData(1, operationPositionDataList);
+        ProcurementData procurementData = new ProcurementData(id, 1, operationPositionDataList);
 
-        long id = procurementService.add(procurementCreateData);
+        long id = procurementService.add(procurementData);
 
         Assertions.assertEquals(0, id);
     }

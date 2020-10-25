@@ -1,11 +1,11 @@
 package com.vironit.onlinepharmacy.util;
 
-import com.vironit.onlinepharmacy.dto.ProductCreateData;
+import com.vironit.onlinepharmacy.dto.ProductData;
 import com.vironit.onlinepharmacy.model.Product;
 
-public class ProductCreateDataToProductConverter implements Converter<Product, ProductCreateData> {
+public class ProductCreateDataToProductConverter implements Converter<Product, ProductData> {
     @Override
-    public Product convert(ProductCreateData productCreateData) {
-        return new Product(0,productCreateData.getName(),productCreateData.getPrice(),null,productCreateData.isRecipeRequired());
+    public Product convert(ProductData productData) {
+        return new Product(0, productData.getName(), productData.getPrice(),null, productData.isRecipeRequired());
     }
 }

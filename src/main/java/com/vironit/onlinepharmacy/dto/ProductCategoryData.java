@@ -1,10 +1,10 @@
 package com.vironit.onlinepharmacy.dto;
 
-public class ProductCategoryCreateData {
+public class ProductCategoryData {
     private final String name;
     private final String description;
 
-    public ProductCategoryCreateData(String name, String description) {
+    public ProductCategoryData(String name, String description) {
         this.name = name;
         this.description = description;
     }

@@ -1,26 +1,32 @@
 package com.vironit.onlinepharmacy.dto;
 
+import com.vironit.onlinepharmacy.model.Role;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class UserRegisterParameters {
+public class UserPublicData {
 
+    private final long id;
     private final String firstName;
     private final String middleName;
     private final String lastName;
     private final LocalDate dateOfBirth;
     private final String email;
-    private final String password;
-    private final String confirmPassword;
+    private final Role role;
 
-    public UserRegisterParameters(String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, String password, String confirmPassword) {
+    public UserPublicData(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, Role role) {
+        this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
+        this.role = role;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -43,44 +49,39 @@ public class UserRegisterParameters {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
+    public Role getRole() {
+        return role;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserRegisterParameters)) return false;
-        UserRegisterParameters that = (UserRegisterParameters) o;
-        return firstName.equals(that.firstName) &&
+        if (o == null || getClass() != o.getClass()) return false;
+        UserPublicData that = (UserPublicData) o;
+        return id == that.id &&
+                firstName.equals(that.firstName) &&
                 middleName.equals(that.middleName) &&
                 lastName.equals(that.lastName) &&
                 dateOfBirth.equals(that.dateOfBirth) &&
                 email.equals(that.email) &&
-                password.equals(that.password) &&
-                confirmPassword.equals(that.confirmPassword);
+                role == that.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, middleName, lastName, dateOfBirth, email, password, confirmPassword);
+        return Objects.hash(id, firstName, middleName, lastName, dateOfBirth, email, role);
     }
 
     @Override
     public String toString() {
-        return "UserRegisterParameters{" +
-                "firstName='" + firstName + '\'' +
+        return "UserPublicParameters{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", confirmPassword='" + confirmPassword + '\'' +
+                ", role=" + role +
                 '}';
     }
 }
-

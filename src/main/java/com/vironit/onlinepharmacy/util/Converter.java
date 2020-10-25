@@ -10,7 +10,6 @@ package com.vironit.onlinepharmacy.util;
 public interface Converter<T, S> {
     /**
      * Converts source object to target object.
-     *
      * @param source function argument
      * @return target object
      */

@@ -1,12 +1,6 @@
 package com.vironit.onlinepharmacy.service.authentication;
 
-import com.vironit.onlinepharmacy.dto.UserLoginParameters;
-import com.vironit.onlinepharmacy.dto.UserPublicParameters;
-import com.vironit.onlinepharmacy.dto.UserRegisterParameters;
-
-public interface AuthenticationService {
-
-    UserPublicParameters login(UserLoginParameters userLoginParameters);
-
-    long register(UserRegisterParameters userRegisterParameters);
+public interface AuthenticationService<T,S,U> {
+    long register(T t);
+    S login(U u);
 }

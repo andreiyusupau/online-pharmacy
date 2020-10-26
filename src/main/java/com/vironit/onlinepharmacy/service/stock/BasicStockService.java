@@ -54,8 +54,8 @@ public class BasicStockService implements StockService {
     }
 
     @Override
-    public void update(StockPosition stockPosition) {
-        stockDAO.update(stockPosition);
+    public void update(PositionData positionData) {
+        stockDAO.update(positionDataToStockPositionConverter.convert(positionData));
     }
 
     @Override
@@ -107,7 +107,7 @@ public class BasicStockService implements StockService {
                 stockPosition.setReservedQuantity(reservedStockPositionQuantity - desiredPositionQuantity);
                 stockDAO.update(stockPosition);
             } else {
-                throw new StockServiceException("Can't takeFromStock position " + position + " from stock. Desired quantity " +
+                throw new StockServiceException("Can't take position " + position + " from stock. Desired quantity " +
                         desiredPositionQuantity + ", quantity in stock " + totalStockQuantity + ", total reserved quantity"
                         + reservedStockPositionQuantity + ".");
             }

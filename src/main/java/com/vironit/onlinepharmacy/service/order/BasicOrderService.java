@@ -1,12 +1,8 @@
 package com.vironit.onlinepharmacy.service.order;
 
 import com.vironit.onlinepharmacy.dao.OrderDao;
-import com.vironit.onlinepharmacy.dto.OrderCreateData;
-import com.vironit.onlinepharmacy.dto.OrderUpdateData;
-import com.vironit.onlinepharmacy.model.Order;
-import com.vironit.onlinepharmacy.model.OrderPosition;
-import com.vironit.onlinepharmacy.model.OrderStatus;
-import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.dto.OrderData;
+import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
@@ -34,14 +30,19 @@ public class BasicOrderService implements OrderService {
     }
 
     @Override
-    public long add(OrderCreateData orderCreateData) {
-        User owner = userService.get(orderCreateData.getOwnerId());
+    public long add(OrderData orderData) {
+        User owner = new User();
+        owner.setId(orderData.getOwnerId());
         Order order = new Order(-1, Instant.now(), owner, OrderStatus.PREPARATION);
         long id=orderDao.add(order);
                 order.setId(id);
-        List<OrderPosition> orderPositions = orderCreateData.getPositionDataList()
+        List<OrderPosition> orderPositions = orderData.getPositionDataList()
                 .stream()
-                .map(positionData -> new OrderPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), order))
+                .map(positionData -> {
+                    Product product=new Product();
+                    product.setId(positionData.getProductId());
+                    return new OrderPosition(-1, positionData.getQuantity(), product, order);
+                })
                 .collect(Collectors.toList());
         orderPositionService.addAll(orderPositions);
         return id;
@@ -97,15 +98,20 @@ public class BasicOrderService implements OrderService {
     }
 
     @Override
-    public void update(OrderUpdateData orderUpdateData) {
-        User owner = userService.get(orderUpdateData.getOwnerId());
-        Order order = get(orderUpdateData.getId());
+    public void update(OrderData orderData) {
+        User owner = new User();
+        owner.setId(orderData.getOwnerId());
+        Order order = get(orderData.getId());
         order.setOwner(owner);
-        List<OrderPosition> operationPositions = orderUpdateData.getPositionDataList()
+        List<OrderPosition> operationPositions = orderData.getPositionDataList()
                 .stream()
-                .map(positionData -> new OrderPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), order))
+                .map(positionData -> {
+                    Product product=new Product();
+                    product.setId(positionData.getProductId());
+                    return new OrderPosition(-1, positionData.getQuantity(), product, order);
+                })
                 .collect(Collectors.toList());
-        orderPositionService.removeAllByOwnerId(orderUpdateData.getOwnerId());
+        orderPositionService.removeAllByOwnerId(orderData.getOwnerId());
         orderPositionService.addAll(operationPositions);
     }
 

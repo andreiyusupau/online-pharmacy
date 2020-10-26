@@ -24,7 +24,8 @@ public class BasicCreditCardService implements CreditCardService {
 
     @Override
     public long add(CreditCardData creditCardData) {
-        User user=userService.get(creditCardData.getOwnerId());
+        User user=new User();
+        user.setId(creditCardData.getOwnerId());
         CreditCard creditCard=creditCardDataToCreditCardConverter.convert(creditCardData);
         creditCard.setOwner(user);
         return creditCardDao.add(creditCard);

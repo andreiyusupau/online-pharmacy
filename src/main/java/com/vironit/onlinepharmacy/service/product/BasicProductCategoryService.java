@@ -1,28 +1,32 @@
 package com.vironit.onlinepharmacy.service.product;
 
 import com.vironit.onlinepharmacy.dao.ProductCategoryDao;
-import com.vironit.onlinepharmacy.dto.ProductCategoryCreateData;
+import com.vironit.onlinepharmacy.dto.ProductCategoryData;
 import com.vironit.onlinepharmacy.model.ProductCategory;
 import com.vironit.onlinepharmacy.service.exception.ProductServiceException;
+import com.vironit.onlinepharmacy.util.Converter;
 
 import java.util.Collection;
 
 public class BasicProductCategoryService implements ProductCategoryService {
 
     private final ProductCategoryDao productCategoryDao;
+private final Converter<ProductCategory,ProductCategoryData> productCategoryDataToProductCategoryConverter;
 
-    public BasicProductCategoryService(ProductCategoryDao productCategoryDao) {
+
+    public BasicProductCategoryService(ProductCategoryDao productCategoryDao, Converter<ProductCategory, ProductCategoryData> productCategoryDataToProductCategoryConverter) {
         this.productCategoryDao = productCategoryDao;
+        this.productCategoryDataToProductCategoryConverter = productCategoryDataToProductCategoryConverter;
     }
 
     @Override
-    public void update(ProductCategory productCategory) {
-        productCategoryDao.update(productCategory);
+    public void update(ProductCategoryData productCategoryData) {
+        productCategoryDao.update(productCategoryDataToProductCategoryConverter.convert(productCategoryData));
     }
 
     @Override
-    public long add(ProductCategoryCreateData productCategoryCreateData) {
-        return productCategoryDao.add(new ProductCategory(0,productCategoryCreateData.getName(),productCategoryCreateData.getDescription()));
+    public long add(ProductCategoryData productCategoryData) {
+        return productCategoryDao.add(productCategoryDataToProductCategoryConverter.convert(productCategoryData));
     }
 
     @Override

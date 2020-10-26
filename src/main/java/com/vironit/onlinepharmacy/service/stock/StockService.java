@@ -7,7 +7,7 @@ import com.vironit.onlinepharmacy.service.CrudService;
 
 import java.util.Collection;
 
-public interface StockService extends CrudService<PositionData, StockPosition, StockPosition> {
+public interface StockService extends CrudService<PositionData, StockPosition> {
 
     boolean addAll(Collection<PositionData> positionData);
 

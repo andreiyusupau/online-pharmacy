@@ -15,8 +15,8 @@ public class BasicOrderPositionService implements OrderPositionService {
     }
 
     @Override
-    public boolean addAll(Collection<OrderPosition> positionData) {
-        return orderPositionDao.addAll(positionData);
+    public boolean addAll(Collection<OrderPosition> orderPositions) {
+        return orderPositionDao.addAll(orderPositions);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class BasicOrderPositionService implements OrderPositionService {
 
     @Override
     public void update(OrderPosition orderPosition) {
-orderPositionDao.update(orderPosition);
+        orderPositionDao.update(orderPosition);
     }
 
     @Override
@@ -52,6 +52,6 @@ orderPositionDao.update(orderPosition);
 
     @Override
     public void remove(long id) {
-orderPositionDao.remove(id);
+        orderPositionDao.remove(id);
     }
 }

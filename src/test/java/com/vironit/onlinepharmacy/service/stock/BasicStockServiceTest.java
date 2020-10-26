@@ -48,10 +48,10 @@ public class BasicStockServiceTest {
     @BeforeEach
     void set() {
         product = new Product(1, "testProduct", new BigDecimal("1421"), null, false);
-        positionData = new PositionData(1, 2);
+        positionData = new PositionData(id, 1, 2);
         stockPosition = new StockPosition(1, 2, product, 0);
         secondProduct = new Product(2, "secondTestProduct", new BigDecimal("152"), null, false);
-        secondPositionData = new PositionData(2, 51);
+        secondPositionData = new PositionData(id, 2, 51);
         secondStockPosition = new StockPosition(2, 51, secondProduct, 0);
         stockPositions = List.of(stockPosition, secondStockPosition);
         positionDataCollection = List.of(positionData, secondPositionData);

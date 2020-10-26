@@ -2,18 +2,24 @@ package com.vironit.onlinepharmacy.dto;
 
 import java.math.BigDecimal;
 
-public class ProductCreateData {
+public class ProductData {
 
+    private final long id;
     private final String name;
     private final BigDecimal price;
     private final long productCategoryId;
     private final boolean recipeRequired;
 
-    public ProductCreateData(String name, BigDecimal price, long productCategoryId, boolean recipeRequired) {
+    public ProductData(long id, String name, BigDecimal price, long productCategoryId, boolean recipeRequired) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.productCategoryId = productCategoryId;
         this.recipeRequired = recipeRequired;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {

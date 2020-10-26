@@ -2,12 +2,8 @@ package com.vironit.onlinepharmacy.service.procurement;
 
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
 import com.vironit.onlinepharmacy.dto.PositionData;
-import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
-import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
-import com.vironit.onlinepharmacy.model.Procurement;
-import com.vironit.onlinepharmacy.model.ProcurementPosition;
-import com.vironit.onlinepharmacy.model.ProcurementStatus;
-import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.dto.ProcurementData;
+import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
@@ -38,14 +34,19 @@ public class BasicProcurementService implements ProcurementService {
     }
 
     @Override
-    public long add(ProcurementCreateData procurementCreateData) {
-        User owner = userService.get(procurementCreateData.getOwnerId());
+    public long add(ProcurementData procurementData) {
+        User owner = new User();
+        owner.setId(procurementData.getOwnerId());
         Procurement procurement = new Procurement(-1, Instant.now(), owner, ProcurementStatus.PREPARATION);
         long id=procurementDao.add(procurement);
         procurement.setId(id);
-        List<ProcurementPosition> procurementPositions = procurementCreateData.getPositionDataList()
+        List<ProcurementPosition> procurementPositions = procurementData.getPositionDataList()
                 .stream()
-                .map(positionData -> new ProcurementPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), procurement))
+                .map(positionData -> {
+                    Product product=new Product();
+                    product.setId(positionData.getProductId());
+                    return new ProcurementPosition(-1, positionData.getQuantity(), product, procurement);
+                })
                 .collect(Collectors.toList());
         procurementPositionService.addAll(procurementPositions);
         return id;
@@ -63,15 +64,20 @@ public class BasicProcurementService implements ProcurementService {
     }
 
     @Override
-    public void update(ProcurementUpdateData procurementUpdateData) {
-        User owner = userService.get(procurementUpdateData.getOwnerId());
-        Procurement procurement = get(procurementUpdateData.getId());
+    public void update(ProcurementData procurementData) {
+        User owner = new User();
+        owner.setId(procurementData.getOwnerId());
+        Procurement procurement = get(procurementData.getId());
         procurement.setOwner(owner);
-        List<ProcurementPosition> procurementPositions = procurementUpdateData.getPositionDataList()
+        List<ProcurementPosition> procurementPositions = procurementData.getPositionDataList()
                 .stream()
-                .map(positionData -> new ProcurementPosition(-1, positionData.getQuantity(), productService.get(positionData.getProductId()), procurement))
+                .map(positionData -> {
+                    Product product=new Product();
+                    product.setId(positionData.getProductId());
+                    return new ProcurementPosition(-1, positionData.getQuantity(), product, procurement);
+                })
                 .collect(Collectors.toList());
-        procurementPositionService.removeAllByOwnerId(procurementUpdateData.getOwnerId());
+        procurementPositionService.removeAllByOwnerId(procurementData.getOwnerId());
         procurementPositionService.addAll(procurementPositions);
     }
 

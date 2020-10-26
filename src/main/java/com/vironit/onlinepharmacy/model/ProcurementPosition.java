@@ -13,7 +13,6 @@ public class ProcurementPosition extends Position {
     private Procurement procurement;
 
     public ProcurementPosition() {
-
     }
 
     public ProcurementPosition(long id, int quantity, Product product, Procurement procurement) {

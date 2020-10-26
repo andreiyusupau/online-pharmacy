@@ -1,10 +1,10 @@
 package com.vironit.onlinepharmacy.service.order;
 
-import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.dao.OrderDao;
-import com.vironit.onlinepharmacy.dto.OperationPositionData;
-import com.vironit.onlinepharmacy.dto.OrderCreateData;
+import com.vironit.onlinepharmacy.dao.OrderPositionDao;
+import com.vironit.onlinepharmacy.dto.OrderData;
 import com.vironit.onlinepharmacy.dto.OrderUpdateData;
+import com.vironit.onlinepharmacy.dto.PositionData;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
@@ -34,7 +34,7 @@ public class BasicOrderServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private OperationPositionDao operationPositionDao;
+    private OrderPositionDao orderPositionDao;
     @Mock
     private StockService stockService;
     @Mock
@@ -49,13 +49,13 @@ public class BasicOrderServiceTest {
     private Product secondProduct;
     private Product thirdProduct;
     private Order order;
-    private OperationPosition firstOperationPosition;
-    private OperationPosition secondOperationPosition;
-    private OperationPosition thirdOperationPosition;
-    private OperationPositionData firstOperationPositionData;
-    private OperationPositionData secondOperationPositionData;
-    private OperationPositionData thirdOperationPositionData;
-    private List<OperationPositionData> operationPositionDataList;
+    private OrderPosition firstOrderPosition;
+    private OrderPosition secondOrderPosition;
+    private OrderPosition thirdOrderPosition;
+    private PositionData firstOperationPositionData;
+    private PositionData secondOperationPositionData;
+    private PositionData thirdOperationPositionData;
+    private List<PositionData> operationPositionDataList;
     private Order secondOrder;
     private Order thirdOrder;
     private Collection<Order> orders;
@@ -70,12 +70,12 @@ public class BasicOrderServiceTest {
         secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null, false);
         thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
         order = new Order(1, Instant.now(), user, OrderStatus.PREPARATION);
-        firstOperationPosition = new OperationPosition(1, 7, firstProduct, order);
-        secondOperationPosition = new OperationPosition(2, 64, secondProduct, order);
-        thirdOperationPosition = new OperationPosition(3, 124, thirdProduct, order);
-        firstOperationPositionData = new OperationPositionData(1, 10);
-        secondOperationPositionData = new OperationPositionData(2, 15);
-        thirdOperationPositionData = new OperationPositionData(3, 25);
+        firstOrderPosition = new OrderPosition(1, 7, firstProduct, order);
+        secondOrderPosition = new OrderPosition(2, 64, secondProduct, order);
+        thirdOrderPosition = new OrderPosition(3, 124, thirdProduct, order);
+        firstOperationPositionData = new PositionData(id, 1, 10);
+        secondOperationPositionData = new PositionData(id, 2, 15);
+        thirdOperationPositionData = new PositionData(id, 3, 25);
         operationPositionDataList = new ArrayList<>();
         operationPositionDataList.add(firstOperationPositionData);
         operationPositionDataList.add(secondOperationPositionData);
@@ -93,9 +93,9 @@ public class BasicOrderServiceTest {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
-        OrderCreateData orderCreateData = new OrderCreateData(1, operationPositionDataList);
+        OrderData orderData = new OrderData(id, 1, operationPositionDataList);
 
-        long id = orderService.add(orderCreateData);
+        long id = orderService.add(orderData);
 
         Assertions.assertEquals(0, id);
     }
@@ -218,8 +218,8 @@ public class BasicOrderServiceTest {
 
         orderService.update(orderUpdateData);
 
-        verify(operationPositionDao).removeAllByOwnerId(1);
-        verify(operationPositionDao).addAll(any());
+        verify(orderPositionDao).removeAllByOwnerId(1);
+        verify(orderPositionDao).addAll(any());
     }
 
     @Test
@@ -237,12 +237,12 @@ public class BasicOrderServiceTest {
     void removeShouldUseDao() {
         when(orderDao.remove(anyLong()))
                 .thenReturn(true);
-        when(operationPositionDao.removeAllByOwnerId(anyLong()))
+        when(orderPositionDao.removeAllByOwnerId(anyLong()))
                 .thenReturn(true);
 
         orderService.remove(1);
 
-        verify(operationPositionDao).removeAllByOwnerId(1);
+        verify(orderPositionDao).removeAllByOwnerId(1);
         verify(orderDao).remove(1);
     }
 }

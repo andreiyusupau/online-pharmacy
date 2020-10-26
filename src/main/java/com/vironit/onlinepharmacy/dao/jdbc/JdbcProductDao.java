@@ -43,8 +43,8 @@ public class JdbcProductDao implements ProductDao {
                     .getId());
             preparedStatement.setLong(5, product.getId());
             return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error updating product in database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error updating product in database", sqle);
         }
     }
 
@@ -63,14 +63,10 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setLong(4, product.getProductCategory()
                     .getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getLong(1);
-                } else {
-                    throw new DaoException("Error adding product to database");
-                }
+                return resultSet.next() ? resultSet.getLong(1) : -1;
             }
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error adding product to database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error adding product to database", sqle);
         }
     }
 
@@ -86,8 +82,8 @@ public class JdbcProductDao implements ProductDao {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 return resultSet.next() ? Optional.of(parseProduct(resultSet)) : Optional.empty();
             }
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error getting product from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error getting product from database", sqle);
         }
     }
 
@@ -105,8 +101,8 @@ public class JdbcProductDao implements ProductDao {
                 products.add(product);
             }
             return products;
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error getting all products from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error getting all products from database", sqle);
         }
     }
 
@@ -118,8 +114,8 @@ public class JdbcProductDao implements ProductDao {
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error removing product from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error removing product from database", sqle);
         }
     }
 
@@ -130,8 +126,8 @@ public class JdbcProductDao implements ProductDao {
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             return resultSet.next() ? resultSet.getInt(1) : -1;
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error getting total product elements from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error getting total product elements from database", sqle);
         }
     }
 
@@ -153,8 +149,8 @@ public class JdbcProductDao implements ProductDao {
                 }
                 return products;
             }
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error getting product page from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error getting product page from database", sqle);
         }
     }
 

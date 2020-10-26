@@ -1,10 +1,9 @@
 package com.vironit.onlinepharmacy.service.procurement;
 
-import com.vironit.onlinepharmacy.dao.OperationPositionDao;
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
-import com.vironit.onlinepharmacy.dto.OperationPositionData;
-import com.vironit.onlinepharmacy.dto.ProcurementCreateData;
-import com.vironit.onlinepharmacy.dto.ProcurementUpdateData;
+import com.vironit.onlinepharmacy.dao.ProcurementPositionDao;
+import com.vironit.onlinepharmacy.dto.PositionData;
+import com.vironit.onlinepharmacy.dto.ProcurementData;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
@@ -21,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +35,7 @@ public class BasicProcurementServiceTest {
     @Mock
     private ProcurementDao procurementDao;
     @Mock
-    private OperationPositionDao operationPositionDao;
+    private ProcurementPositionDao procurementPositionDao;
     @Mock
     private StockService stockService;
     @Mock
@@ -52,13 +50,13 @@ public class BasicProcurementServiceTest {
     private Product secondProduct;
     private Product thirdProduct;
     private Procurement procurement;
-    private OperationPosition firstOperationPosition;
-    private OperationPosition secondOperationPosition;
-    private OperationPosition thirdOperationPosition;
-    private OperationPositionData firstOperationPositionData;
-    private OperationPositionData secondOperationPositionData;
-    private OperationPositionData thirdOperationPositionData;
-    private List<OperationPositionData> operationPositionDataList;
+    private ProcurementPosition firstProcurementPosition;
+    private ProcurementPosition secondProcurementPosition;
+    private ProcurementPosition thirdProcurementPosition;
+    private PositionData firstOperationPositionData;
+    private PositionData secondOperationPositionData;
+    private PositionData thirdOperationPositionData;
+    private List<PositionData> operationPositionDataList;
     private Procurement secondProcurement;
     private Procurement thirdProcurement;
     private Collection<Procurement> procurements;
@@ -73,22 +71,16 @@ public class BasicProcurementServiceTest {
         secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null, false);
         thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
         procurement = new Procurement(1, Instant.now(), user, ProcurementStatus.PREPARATION);
-        firstOperationPosition = new OperationPosition(1, 7, firstProduct, procurement);
-        secondOperationPosition = new OperationPosition(2, 64, secondProduct, procurement);
-        thirdOperationPosition = new OperationPosition(3, 124, thirdProduct, procurement);
-        firstOperationPositionData = new OperationPositionData(1, 10);
-        secondOperationPositionData = new OperationPositionData(2, 15);
-        thirdOperationPositionData = new OperationPositionData(3, 25);
-        operationPositionDataList = new ArrayList<>();
-        operationPositionDataList.add(firstOperationPositionData);
-        operationPositionDataList.add(secondOperationPositionData);
-        operationPositionDataList.add(thirdOperationPositionData);
+        firstProcurementPosition = new ProcurementPosition(1, 7, firstProduct, procurement);
+        secondProcurementPosition = new ProcurementPosition(2, 64, secondProduct, procurement);
+        thirdProcurementPosition = new ProcurementPosition(3, 124, thirdProduct, procurement);
+        firstOperationPositionData = new PositionData(0, 1, 10);
+        secondOperationPositionData = new PositionData(0, 2, 15);
+        thirdOperationPositionData = new PositionData(0, 3, 25);
+        operationPositionDataList = List.of(firstOperationPositionData, secondOperationPositionData, thirdOperationPositionData);
         secondProcurement = new Procurement(2, Instant.now(), user, ProcurementStatus.APPROVED);
         thirdProcurement = new Procurement(3, Instant.now(), user, ProcurementStatus.PREPARATION);
-        procurements = new ArrayList<>();
-        procurements.add(procurement);
-        procurements.add(secondProcurement);
-        procurements.add(thirdProcurement);
+        procurements = List.of(procurement, secondProcurement, thirdProcurement);
     }
 
     @Test
@@ -96,9 +88,9 @@ public class BasicProcurementServiceTest {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
-        ProcurementCreateData procurementCreateData = new ProcurementCreateData(1, operationPositionDataList);
+        ProcurementData procurementData = new ProcurementData(0, 1, operationPositionDataList);
 
-        long id = procurementService.add(procurementCreateData);
+        long id = procurementService.add(procurementData);
 
         Assertions.assertEquals(0, id);
     }
@@ -195,26 +187,26 @@ public class BasicProcurementServiceTest {
 
     @Test
     void updateShouldUseDao() {
-        ProcurementUpdateData procurementUpdateData = new ProcurementUpdateData(1, 1, operationPositionDataList);
+        ProcurementData procurementUpdateData = new ProcurementData(1, 1, operationPositionDataList);
         when(procurementDao.get(1))
                 .thenReturn(Optional.of(procurement));
 
         procurementService.update(procurementUpdateData);
 
-        verify(operationPositionDao).removeAllByOwnerId(1);
-        verify(operationPositionDao).addAll(any());
+        verify(procurementPositionDao).removeAllByOwnerId(1);
+        verify(procurementPositionDao).addAll(any());
     }
 
     @Test
     void removeShouldUseDao() {
         when(procurementDao.remove(anyLong()))
                 .thenReturn(true);
-        when(operationPositionDao.removeAllByOwnerId(anyLong()))
+        when(procurementPositionDao.removeAllByOwnerId(anyLong()))
                 .thenReturn(true);
 
         procurementService.remove(1);
 
-        verify(operationPositionDao).removeAllByOwnerId(1);
+        verify(procurementPositionDao).removeAllByOwnerId(1);
         verify(procurementDao).remove(1);
     }
 }

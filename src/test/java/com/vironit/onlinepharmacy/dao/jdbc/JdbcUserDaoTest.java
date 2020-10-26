@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JdbcUserDaoTest {
 
     @Container
-    private PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>()
+    private PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:13.0-alpine")
             .withDatabaseName("online_pharmacy")
             .withUsername("test")
             .withPassword("test")

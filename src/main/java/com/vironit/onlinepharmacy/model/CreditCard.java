@@ -1,15 +1,21 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "credit_cards")
 public class CreditCard {
 
+    @Id
+    @GeneratedValue
     private long id;
     private String cardNumber;
     private String ownerName;
     private LocalDate validThru;
     private int cvv;
+    @ManyToOne
     private User owner;
 
     public CreditCard() {

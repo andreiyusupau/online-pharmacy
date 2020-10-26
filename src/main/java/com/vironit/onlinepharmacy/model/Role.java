@@ -1,5 +1,6 @@
 package com.vironit.onlinepharmacy.model;
 
+
 public enum Role {
     CONSUMER,
     MODERATOR,

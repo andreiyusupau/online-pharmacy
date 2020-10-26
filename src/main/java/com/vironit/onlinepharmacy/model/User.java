@@ -1,10 +1,14 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "users")
 public class User {
-
+    @Id
+    @GeneratedValue
     private long id;
     private String firstName;
     private String middleName;
@@ -12,6 +16,7 @@ public class User {
     private LocalDate dateOfBirth;
     private String email;
     private String password;
+    @Enumerated(value = EnumType.STRING)
     private Role role;
 
     public User() {

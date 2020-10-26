@@ -1,14 +1,20 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.util.Objects;
 
+@Entity
+@Table(name = "procurements")
 public class Procurement extends Operation {
 
+    @Enumerated(value = EnumType.STRING)
     private ProcurementStatus procurementStatus;
 
     public Procurement() {
-        super();
     }
 
     public Procurement(long id, Instant date, User owner, ProcurementStatus procurementStatus) {

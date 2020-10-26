@@ -2,12 +2,12 @@ package com.vironit.onlinepharmacy.dto;
 
 import java.util.Objects;
 
-public class UserLoginParameters {
+public class UserLoginData {
 
     private final String email;
     private final String password;
 
-    public UserLoginParameters(String email, String password) {
+    public UserLoginData(String email, String password) {
         this.email = email;
         this.password = password;
     }
@@ -24,7 +24,7 @@ public class UserLoginParameters {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserLoginParameters that = (UserLoginParameters) o;
+        UserLoginData that = (UserLoginData) o;
         return email.equals(that.email) &&
                 password.equals(that.password);
     }

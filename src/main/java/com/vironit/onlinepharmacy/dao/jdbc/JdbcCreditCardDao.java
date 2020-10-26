@@ -35,15 +35,11 @@ public class JdbcCreditCardDao implements CreditCardDao {
             preparedStatement.setLong(5, creditCard.getOwner()
                     .getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getLong(1);
-                } else {
-                    throw new DaoException("Error adding credit card to database");
-                }
+                return resultSet.next() ? resultSet.getLong(1) : -1;
             }
 
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error adding credit card to database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error adding credit card to database", sqle);
         }
     }
 
@@ -58,8 +54,8 @@ public class JdbcCreditCardDao implements CreditCardDao {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 return resultSet.next() ? Optional.of(parseCreditCard(resultSet)) : Optional.empty();
             }
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error getting credit card from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error getting credit card from database", sqle);
         }
     }
 
@@ -76,8 +72,8 @@ public class JdbcCreditCardDao implements CreditCardDao {
                 creditCards.add(creditCard);
             }
             return creditCards;
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error getting all credit cards from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error getting all credit cards from database", sqle);
         }
     }
 
@@ -89,8 +85,8 @@ public class JdbcCreditCardDao implements CreditCardDao {
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error removing credit card from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error removing credit card from database", sqle);
         }
     }
 
@@ -113,8 +109,8 @@ public class JdbcCreditCardDao implements CreditCardDao {
                 counter += 5;
             }
             return preparedStatement.executeUpdate() == creditCards.size();
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error adding all credit cards to database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error adding all credit cards to database", sqle);
         }
     }
 
@@ -134,8 +130,8 @@ public class JdbcCreditCardDao implements CreditCardDao {
                 }
                 return creditCards;
             }
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error getting all credit cards by owner id from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error getting all credit cards by owner id from database", sqle);
         }
     }
 
@@ -147,8 +143,8 @@ public class JdbcCreditCardDao implements CreditCardDao {
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException sqlException) {
-            throw new DaoException("Error removing all credit cards by owner id from database", sqlException);
+        } catch (SQLException sqle) {
+            throw new DaoException("Error removing all credit cards by owner id from database", sqle);
         }
     }
 

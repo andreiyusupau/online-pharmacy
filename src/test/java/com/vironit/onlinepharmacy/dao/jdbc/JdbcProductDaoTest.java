@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JdbcProductDaoTest {
 
     @Container
-    private PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>()
+    private PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:13.0-alpine")
             .withDatabaseName("online_pharmacy")
             .withUsername("test")
             .withPassword("test")

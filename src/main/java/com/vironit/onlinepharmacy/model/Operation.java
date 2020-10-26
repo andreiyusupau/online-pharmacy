@@ -1,12 +1,17 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Operation {
-
+    @Id
+    @GeneratedValue
     private long id;
     private Instant date;
+    @ManyToOne
     private User owner;
 
     public Operation() {

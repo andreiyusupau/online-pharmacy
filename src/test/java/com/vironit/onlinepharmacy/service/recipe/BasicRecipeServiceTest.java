@@ -1,7 +1,8 @@
 package com.vironit.onlinepharmacy.service.recipe;
 
 import com.vironit.onlinepharmacy.dao.RecipeDao;
-import com.vironit.onlinepharmacy.model.OperationPosition;
+import com.vironit.onlinepharmacy.dto.RecipeData;
+import com.vironit.onlinepharmacy.model.OrderPosition;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.Recipe;
 import com.vironit.onlinepharmacy.service.exception.RecipeServiceException;
@@ -32,19 +33,22 @@ public class BasicRecipeServiceTest {
     @InjectMocks
     private BasicRecipeService recipeService;
 
-    private OperationPosition operationPosition;
-    private OperationPosition secondOperationPosition;
+    private OrderPosition orderPosition;
+    private OrderPosition secondOrderPosition;
     private Product product;
     private Recipe recipe;
     private Recipe secondRecipe;
+    private RecipeData recipeData;
     private Collection<Recipe> recipes;
 
     @BeforeEach
     void set() {
         product = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
-        operationPosition = new OperationPosition(1, 7, product, null);
-        recipe = new Recipe(1, "description", 2, product, Instant.now(), operationPosition);
-        secondRecipe = new Recipe(2, "second description", 6, product, Instant.now(), secondOperationPosition);
+        orderPosition = new OrderPosition(1, 7, product, null);
+        secondOrderPosition = new OrderPosition(2, 6, product, null);
+        recipe = new Recipe(1, "description", 2, product, Instant.now(), orderPosition);
+        secondRecipe = new Recipe(2, "second description", 6, product, Instant.now(), secondOrderPosition);
+        recipeData=new RecipeData("testdescr",2,1,Instant.now(),1);
         recipes = new ArrayList<>();
         recipes.add(recipe);
         recipes.add(secondRecipe);
@@ -55,7 +59,7 @@ public class BasicRecipeServiceTest {
         when(recipeDao.add(any()))
                 .thenReturn(0L);
 
-        long id = recipeService.add(recipe);
+        long id = recipeService.add(recipeData);
 
         verify(recipeDao).add(recipe);
         Assertions.assertEquals(0, id);

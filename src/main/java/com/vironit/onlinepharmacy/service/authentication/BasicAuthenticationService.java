@@ -14,21 +14,21 @@ public class BasicAuthenticationService implements AuthenticationService<UserDat
 
     private final UserDao userDao;
     private final PasswordHasher passwordHasher;
-    private final Converter<UserPublicData, User> userToUserPublicParametersConverter;
-    private final Converter<User, UserData> userRegisterParametersToUserConverter;
+    private final Converter<UserPublicData, User> userToUserPublicDataConverter;
+    private final Converter<User, UserData> userDataToUserConverter;
 
     public BasicAuthenticationService(UserDao userDao, PasswordHasher passwordHasher,
-                                      Converter<UserPublicData, User> userToUserPublicParametersConverter,
-                                      Converter<User, UserData> userRegisterParametersToUserConverter) {
+                                      Converter<UserPublicData, User> userToUserPublicDataConverter,
+                                      Converter<User, UserData> userDataToUserConverter) {
         this.userDao = userDao;
         this.passwordHasher = passwordHasher;
-        this.userToUserPublicParametersConverter = userToUserPublicParametersConverter;
-        this.userRegisterParametersToUserConverter = userRegisterParametersToUserConverter;
+        this.userToUserPublicDataConverter = userToUserPublicDataConverter;
+        this.userDataToUserConverter = userDataToUserConverter;
     }
 
     @Override
     public long register(UserData userData) {
-        User user = userRegisterParametersToUserConverter.convert(userData);
+        User user = userDataToUserConverter.convert(userData);
         String email = userData.getEmail();
         if (userDao.getByEmail(email).isEmpty()) {
             String password = userData.getPassword();
@@ -45,7 +45,7 @@ public class BasicAuthenticationService implements AuthenticationService<UserDat
         User user = userDao.getByEmail(email).orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
         String password = userLoginData.getPassword();
         if (passwordHasher.validatePassword(password, user.getPassword())) {
-            return userToUserPublicParametersConverter.convert(user);
+            return userToUserPublicDataConverter.convert(user);
         } else {
             throw new AuthenticationServiceException("Wrong password for user " + email);
         }

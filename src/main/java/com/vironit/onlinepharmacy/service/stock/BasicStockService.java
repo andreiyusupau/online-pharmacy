@@ -107,7 +107,7 @@ public class BasicStockService implements StockService {
                 stockPosition.setReservedQuantity(reservedStockPositionQuantity - desiredPositionQuantity);
                 stockDAO.update(stockPosition);
             } else {
-                throw new StockServiceException("Can't takeFromStock position " + position + " from stock. Desired quantity " +
+                throw new StockServiceException("Can't take position " + position + " from stock. Desired quantity " +
                         desiredPositionQuantity + ", quantity in stock " + totalStockQuantity + ", total reserved quantity"
                         + reservedStockPositionQuantity + ".");
             }

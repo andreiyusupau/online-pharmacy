@@ -13,11 +13,11 @@ import java.util.Collection;
 public class BasicRecipeService implements RecipeService {
 
     private final RecipeDao recipeDao;
-    private final Converter<Recipe, RecipeData> recipeCreateDataToRecipeConverter;
+    private final Converter<Recipe, RecipeData> recipeDataToRecipeConverter;
 
     public BasicRecipeService(RecipeDao recipeDao, Converter<Recipe, RecipeData> recipeDataToRecipeConverter) {
         this.recipeDao = recipeDao;
-        this.recipeCreateDataToRecipeConverter = recipeDataToRecipeConverter;
+        this.recipeDataToRecipeConverter = recipeDataToRecipeConverter;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class BasicRecipeService implements RecipeService {
         product.setId(recipeData.getProductId());
         OrderPosition orderPosition=new OrderPosition();
         orderPosition.setId(recipeData.getOrderPositionId());
-        Recipe recipe=recipeCreateDataToRecipeConverter.convert(recipeData);
+        Recipe recipe= recipeDataToRecipeConverter.convert(recipeData);
         recipe.setOrderPosition(orderPosition);
         recipe.setProduct(product);
         return recipeDao.add(recipe);

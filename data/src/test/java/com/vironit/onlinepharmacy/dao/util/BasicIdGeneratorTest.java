@@ -1,5 +1,7 @@
-package com.vironit.onlinepharmacy.dao.collection.util;
+package com.vironit.onlinepharmacy.dao.util;
 
+import com.vironit.onlinepharmacy.dao.collection.util.BasicIdGenerator;
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

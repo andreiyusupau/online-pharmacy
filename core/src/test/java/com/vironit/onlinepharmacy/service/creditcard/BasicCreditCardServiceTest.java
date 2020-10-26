@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.service.creditcard;
 
 import com.vironit.onlinepharmacy.dao.CreditCardDao;
+import com.vironit.onlinepharmacy.dto.CreditCardData;
 import com.vironit.onlinepharmacy.model.CreditCard;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
@@ -32,6 +33,7 @@ public class BasicCreditCardServiceTest {
     private BasicCreditCardService creditCardService;
 
     private User user;
+    private CreditCardData creditCardData;
     private CreditCard creditCard;
     private CreditCard secondCreditCard;
     private Collection<CreditCard> creditCards;
@@ -41,6 +43,7 @@ public class BasicCreditCardServiceTest {
         user = new User(0, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
+        creditCardData=new CreditCardData("0000000000000000", "INSTANT ISSUE", LocalDate.now(), 938, 0);
         creditCard = new CreditCard(1, "0000000000000000", "INSTANT ISSUE", LocalDate.now(), 938, user);
         secondCreditCard = new CreditCard(2, "0000000000000001", "INSTANT ISSUE", LocalDate.now(), 542, user);
         creditCards = new ArrayList<>();
@@ -53,7 +56,7 @@ public class BasicCreditCardServiceTest {
         when(creditCardDao.add(any()))
                 .thenReturn(0L);
 
-        long id = creditCardService.add(creditCard);
+        long id = creditCardService.add(creditCardData);
 
         verify(creditCardDao).add(creditCard);
         Assertions.assertEquals(0, id);

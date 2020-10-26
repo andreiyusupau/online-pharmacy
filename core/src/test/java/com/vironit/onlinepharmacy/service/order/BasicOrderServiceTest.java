@@ -3,7 +3,6 @@ package com.vironit.onlinepharmacy.service.order;
 import com.vironit.onlinepharmacy.dao.OrderDao;
 import com.vironit.onlinepharmacy.dao.OrderPositionDao;
 import com.vironit.onlinepharmacy.dto.OrderData;
-import com.vironit.onlinepharmacy.dto.OrderUpdateData;
 import com.vironit.onlinepharmacy.dto.PositionData;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
@@ -73,9 +72,9 @@ public class BasicOrderServiceTest {
         firstOrderPosition = new OrderPosition(1, 7, firstProduct, order);
         secondOrderPosition = new OrderPosition(2, 64, secondProduct, order);
         thirdOrderPosition = new OrderPosition(3, 124, thirdProduct, order);
-        firstOperationPositionData = new PositionData(id, 1, 10);
-        secondOperationPositionData = new PositionData(id, 2, 15);
-        thirdOperationPositionData = new PositionData(id, 3, 25);
+        firstOperationPositionData = new PositionData(0, 1, 10);
+        secondOperationPositionData = new PositionData(0, 2, 15);
+        thirdOperationPositionData = new PositionData(0, 3, 25);
         operationPositionDataList = new ArrayList<>();
         operationPositionDataList.add(firstOperationPositionData);
         operationPositionDataList.add(secondOperationPositionData);
@@ -93,7 +92,7 @@ public class BasicOrderServiceTest {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
-        OrderData orderData = new OrderData(id, 1, operationPositionDataList);
+        OrderData orderData = new OrderData(0, 1, operationPositionDataList);
 
         long id = orderService.add(orderData);
 
@@ -212,7 +211,7 @@ public class BasicOrderServiceTest {
 
     @Test
     void updateShouldUseDao() {
-        OrderUpdateData orderUpdateData = new OrderUpdateData(1, 1, operationPositionDataList);
+        OrderData orderUpdateData = new OrderData(1, 1, operationPositionDataList);
         when(orderDao.get(1))
                 .thenReturn(Optional.of(order));
 
@@ -227,7 +226,7 @@ public class BasicOrderServiceTest {
         when(orderDao.getAllByOwnerId(anyLong()))
                 .thenReturn(orders);
 
-        Collection<Order> actualOrders = orderService.getOrdersByUserId(1);
+        Collection<Order> actualOrders = orderService.getAllByOwnerId(1);
 
         verify(orderDao).getAllByOwnerId(1);
         Assertions.assertEquals(orders, actualOrders);

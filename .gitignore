@@ -1,3 +1,7 @@
 /target/
 /online-pharmacy.iml
 /.idea/
+/core/target/
+/data/target/
+/model/target/
+/web/target/

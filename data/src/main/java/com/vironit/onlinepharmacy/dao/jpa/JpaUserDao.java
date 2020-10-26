@@ -4,11 +4,13 @@ import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.model.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Collection;
 import java.util.Optional;
 
 public class JpaUserDao implements UserDao {
 
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Override
@@ -23,12 +25,17 @@ public class JpaUserDao implements UserDao {
 
     @Override
     public long add(User user) {
-        return 0;
+        entityManager.persist(user);
+        entityManager.getTransaction()
+                .commit();
+        return user.getId();
     }
 
     @Override
     public Optional<User> get(long id) {
-        return Optional.of(entityManager.find(User.class,id));
+        User user=entityManager.find(User.class,id);
+        entityManager.detach(user);
+        return Optional.of(user);
     }
 
     @Override
@@ -38,7 +45,13 @@ public class JpaUserDao implements UserDao {
 
     @Override
     public boolean remove(long id) {
-        return false;
+        entityManager.getTransaction()
+                .begin();
+        User user=entityManager.find(User.class,id);
+        entityManager.remove(user);
+        entityManager.getTransaction()
+                .commit();
+        return true;
     }
 
     @Override

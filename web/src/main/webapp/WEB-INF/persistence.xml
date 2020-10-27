@@ -1,13 +1,22 @@
 <persistence-unit name="com.vironit.onlinepharmacy">
     <description>Online Pharmacy</description>
-    <class>com.baeldung.hibernate.pojo.Movie</class>
+    <class>com.vironit.onlinepharmacy.model.CreditCard</class>
+    <class>com.vironit.onlinepharmacy.model.Order</class>
+    <class>com.vironit.onlinepharmacy.model.OrderPosition</class>
+    <class>com.vironit.onlinepharmacy.model.Procurement</class>
+    <class>com.vironit.onlinepharmacy.model.ProcurementPosition</class>
+    <class>com.vironit.onlinepharmacy.model.Product</class>
+    <class>com.vironit.onlinepharmacy.model.ProductCategory</class>
+    <class>com.vironit.onlinepharmacy.model.Recipe</class>
+    <class>com.vironit.onlinepharmacy.model.StockPosition</class>
+    <class>com.vironit.onlinepharmacy.model.User</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
-        <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgresPlusDialect"/>
         <property name="hibernate.hbm2ddl.auto" value="update"/>
-        <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-        <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/moviecatalog"/>
-        <property name="javax.persistence.jdbc.user" value="root"/>
-        <property name="javax.persistence.jdbc.password" value="root"/>
+        <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+        <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/online_pharmacy"/>
+        <property name="javax.persistence.jdbc.user" value="pharmadmin"/>
+        <property name="javax.persistence.jdbc.password" value="pharmpassword"/>
     </properties>
 </persistence-unit>

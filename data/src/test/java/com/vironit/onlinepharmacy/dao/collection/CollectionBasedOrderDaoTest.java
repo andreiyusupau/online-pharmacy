@@ -154,7 +154,7 @@ class CollectionBasedOrderDaoTest {
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualZero() {
-        int totalElements = orderDao.getTotalElements();
+        long totalElements = orderDao.getTotalElements();
         Assertions.assertEquals(0, totalElements);
     }
 
@@ -165,7 +165,7 @@ class CollectionBasedOrderDaoTest {
                 .thenReturn(1L);
         orderDao.add(order);
         orderDao.add(secondOrder);
-        int totalElements = orderDao.getTotalElements();
+        long totalElements = orderDao.getTotalElements();
         Assertions.assertEquals(2, totalElements);
     }
 

@@ -59,7 +59,7 @@ public class CollectionBasedUserDao implements UserDao {
     }
 
     @Override
-    public int getTotalElements() {
+    public long getTotalElements() {
         return userList.size();
     }
 

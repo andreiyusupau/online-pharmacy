@@ -134,7 +134,7 @@ class CollectionBasedUserDaoTest {
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualZero() {
-        int totalElements = userDao.getTotalElements();
+        long totalElements = userDao.getTotalElements();
         Assertions.assertEquals(0, totalElements);
     }
 
@@ -145,7 +145,7 @@ class CollectionBasedUserDaoTest {
                 .thenReturn(1L);
         userDao.add(user);
         userDao.add(user);
-        int totalElements = userDao.getTotalElements();
+        long totalElements = userDao.getTotalElements();
         Assertions.assertEquals(2, totalElements);
     }
 

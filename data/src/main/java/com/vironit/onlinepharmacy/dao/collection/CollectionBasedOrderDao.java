@@ -71,7 +71,7 @@ public class CollectionBasedOrderDao implements OrderDao {
     }
 
     @Override
-    public int getTotalElements() {
+    public long getTotalElements() {
         return orderList.size();
     }
 

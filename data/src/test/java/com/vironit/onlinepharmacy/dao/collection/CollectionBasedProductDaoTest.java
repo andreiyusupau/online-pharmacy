@@ -110,7 +110,7 @@ class CollectionBasedProductDaoTest {
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualZero() {
-        int totalElements = productDao.getTotalElements();
+        long totalElements = productDao.getTotalElements();
         Assertions.assertEquals(0, totalElements);
     }
 
@@ -121,7 +121,7 @@ class CollectionBasedProductDaoTest {
                 .thenReturn(1L);
         productDao.add(product);
         productDao.add(secondProduct);
-        int totalElements = productDao.getTotalElements();
+        long totalElements = productDao.getTotalElements();
         Assertions.assertEquals(2, totalElements);
     }
 

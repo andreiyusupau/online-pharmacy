@@ -49,7 +49,7 @@ public class CollectionBasedProductDao implements ProductDao {
     }
 
     @Override
-    public int getTotalElements() {
+    public long getTotalElements() {
         return productList.size();
     }
 

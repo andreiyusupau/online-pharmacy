@@ -128,7 +128,7 @@ class CollectionBasedStockDaoTest {
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualZero() {
-        int totalElements = stockDao.getTotalElements();
+        long totalElements = stockDao.getTotalElements();
         assertEquals(0, totalElements);
     }
 
@@ -139,7 +139,7 @@ class CollectionBasedStockDaoTest {
                 .thenReturn(1L);
         stockDao.add(position);
         stockDao.add(secondPosition);
-        int totalElements = stockDao.getTotalElements();
+        long totalElements = stockDao.getTotalElements();
         assertEquals(2, totalElements);
     }
 

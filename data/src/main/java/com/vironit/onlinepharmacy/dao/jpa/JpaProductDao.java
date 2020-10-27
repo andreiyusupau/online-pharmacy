@@ -1,62 +1,53 @@
 package com.vironit.onlinepharmacy.dao.jpa;
 
-import com.vironit.onlinepharmacy.dao.UserDao;
-import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.dao.ProductDao;
+import com.vironit.onlinepharmacy.model.Product;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
-public class JpaUserDao implements UserDao {
+public class JpaProductDao implements ProductDao {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public Optional<User> getByEmail(String email) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> root=criteriaQuery.from(User.class);
-        criteriaQuery.select(root)
-                .where(criteriaBuilder.equal(root.get("email"),email));
-        return Optional.of(entityManager.createQuery(criteriaQuery)
-                .getSingleResult());
-    }
-
-    @Override
-    public boolean update(User user) {
+    public boolean update(Product product) {
         entityManager.getTransaction()
                 .begin();
-        entityManager.merge(user);
+        entityManager.merge(product);
         entityManager.getTransaction()
                 .commit();
         return true;
     }
 
     @Override
-    public long add(User user) {
+    public long add(Product product) {
         entityManager.getTransaction()
                 .begin();
-        entityManager.persist(user);
+        entityManager.persist(product);
         entityManager.getTransaction()
                 .commit();
-        return user.getId();
+        return product.getId();
     }
 
     @Override
-    public Optional<User> get(long id) {
-        User user=entityManager.find(User.class,id);
-        entityManager.detach(user);
-        return Optional.of(user);
+    public Optional<Product> get(long id) {
+        Product product=entityManager.find(Product.class,id);
+        entityManager.detach(product);
+        return Optional.of(product);
     }
 
     @Override
-    public Collection<User> getAll() {
+    public Collection<Product> getAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> root=criteriaQuery.from(User.class);
+        CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+        Root<Product> root=criteriaQuery.from(Product.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -66,8 +57,8 @@ public class JpaUserDao implements UserDao {
     public boolean remove(long id) {
         entityManager.getTransaction()
                 .begin();
-        User user=entityManager.find(User.class,id);
-        entityManager.remove(user);
+        Product product=entityManager.find(Product.class,id);
+        entityManager.remove(product);
         entityManager.getTransaction()
                 .commit();
         return true;
@@ -77,17 +68,17 @@ public class JpaUserDao implements UserDao {
     public long getTotalElements() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-        Root<User> root = criteriaQuery.from(User.class);
+        Root<Product> root = criteriaQuery.from(Product.class);
         criteriaQuery.select(criteriaBuilder.count(root));
-return entityManager.createQuery(criteriaQuery)
-        .getSingleResult();
+        return entityManager.createQuery(criteriaQuery)
+                .getSingleResult();
     }
 
     @Override
-    public Collection<User> getPage(int currentPage, int pageLimit) {
+    public Collection<Product> getPage(int currentPage, int pageLimit) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> root=criteriaQuery.from(User.class);
+        CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+        Root<Product> root=criteriaQuery.from(Product.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .setFirstResult((currentPage - 1) * pageLimit)

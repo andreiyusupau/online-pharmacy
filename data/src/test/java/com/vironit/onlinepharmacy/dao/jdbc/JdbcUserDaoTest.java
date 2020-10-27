@@ -121,7 +121,7 @@ class JdbcUserDaoTest {
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualZero() {
-        int totalElements = userDao.getTotalElements();
+        long totalElements = userDao.getTotalElements();
 
         assertEquals(1, totalElements);
     }
@@ -131,7 +131,7 @@ class JdbcUserDaoTest {
         userDao.add(secondUser);
         userDao.add(thirdUser);
 
-        int totalElements = userDao.getTotalElements();
+        long totalElements = userDao.getTotalElements();
 
         assertEquals(3, totalElements);
     }

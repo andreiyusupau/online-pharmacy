@@ -67,7 +67,7 @@ public class CollectionBasedProcurementDao implements ProcurementDao {
     }
 
     @Override
-    public int getTotalElements() {
+    public long getTotalElements() {
         return procurementList.size();
     }
 

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 public interface PaginationDao<T> {
 
-    int getTotalElements();
+    long getTotalElements();
 
     Collection<T> getPage(int currentPage, int pageLimit);
 }

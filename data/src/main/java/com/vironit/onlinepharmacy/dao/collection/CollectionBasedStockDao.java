@@ -56,7 +56,7 @@ public class CollectionBasedStockDao implements StockDao {
     }
 
     @Override
-    public int getTotalElements() {
+    public long getTotalElements() {
         return stock.size();
     }
 

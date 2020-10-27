@@ -139,12 +139,12 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public int getTotalElements() {
+    public long getTotalElements() {
         String sql = "SELECT COUNT(*) FROM " + USERS_TABLE;
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
-            return resultSet.next() ? resultSet.getInt(1) : -1;
+            return resultSet.next() ? resultSet.getLong(1) : -1;
         } catch (SQLException sqle) {
             throw new DaoException("Error getting total users from database", sqle);
         }

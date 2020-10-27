@@ -52,7 +52,7 @@ class CollectionBasedRecipeDaoTest {
                 .thenReturn(0L);
         recipeDao.add(recipe);
 
-        Recipe actualRecipe = recipeDao.getByOperationPositionId(1)
+        Recipe actualRecipe = recipeDao.getByOrderPositionId(1)
                 .get();
 
         Assertions.assertEquals(recipe, actualRecipe);

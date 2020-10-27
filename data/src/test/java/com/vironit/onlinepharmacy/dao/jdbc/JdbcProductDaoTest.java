@@ -104,13 +104,13 @@ class JdbcProductDaoTest {
     void getTotalElementsShouldReturnTotalElementsEqualThree() {
         productDao.add(secondProduct);
         productDao.add(thirdProduct);
-        int totalElements = productDao.getTotalElements();
+        long totalElements = productDao.getTotalElements();
         assertEquals(3, totalElements);
     }
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualOne() {
-        int totalElements = productDao.getTotalElements();
+        long totalElements = productDao.getTotalElements();
         assertEquals(1, totalElements);
     }
 

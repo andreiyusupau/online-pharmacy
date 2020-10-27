@@ -154,7 +154,7 @@ class CollectionBasedProcurementDaoTest {
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualZero() {
-        int totalElements = procurementDao.getTotalElements();
+        long totalElements = procurementDao.getTotalElements();
         Assertions.assertEquals(0, totalElements);
     }
 
@@ -165,7 +165,7 @@ class CollectionBasedProcurementDaoTest {
                 .thenReturn(1L);
         procurementDao.add(procurement);
         procurementDao.add(secondProcurement);
-        int totalElements = procurementDao.getTotalElements();
+        long totalElements = procurementDao.getTotalElements();
         Assertions.assertEquals(2, totalElements);
     }
 

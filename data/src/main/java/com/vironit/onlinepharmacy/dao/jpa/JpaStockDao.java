@@ -2,6 +2,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 
 import com.vironit.onlinepharmacy.dao.StockDao;
 import com.vironit.onlinepharmacy.model.StockPosition;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +12,7 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
+@Repository
 public class JpaStockDao implements StockDao {
 
     @PersistenceContext
@@ -20,10 +22,10 @@ public class JpaStockDao implements StockDao {
     public Optional<StockPosition> getByProductId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<StockPosition> criteriaQuery = criteriaBuilder.createQuery(StockPosition.class);
-        Root<StockPosition> root=criteriaQuery.from(StockPosition.class);
+        Root<StockPosition> root = criteriaQuery.from(StockPosition.class);
         criteriaQuery.select(root)
                 .where(criteriaBuilder.equal(root.get("product")
-                        .get("id"),id));
+                        .get("id"), id));
         return Optional.of(entityManager.createQuery(criteriaQuery)
                 .getSingleResult());
     }
@@ -50,7 +52,7 @@ public class JpaStockDao implements StockDao {
 
     @Override
     public Optional<StockPosition> get(long id) {
-        StockPosition stockPosition=entityManager.find(StockPosition.class,id);
+        StockPosition stockPosition = entityManager.find(StockPosition.class, id);
         entityManager.detach(stockPosition);
         return Optional.of(stockPosition);
     }
@@ -59,7 +61,7 @@ public class JpaStockDao implements StockDao {
     public Collection<StockPosition> getAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<StockPosition> criteriaQuery = criteriaBuilder.createQuery(StockPosition.class);
-        Root<StockPosition> root=criteriaQuery.from(StockPosition.class);
+        Root<StockPosition> root = criteriaQuery.from(StockPosition.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -69,7 +71,7 @@ public class JpaStockDao implements StockDao {
     public boolean remove(long id) {
         entityManager.getTransaction()
                 .begin();
-        StockPosition stockPosition=entityManager.find(StockPosition.class,id);
+        StockPosition stockPosition = entityManager.find(StockPosition.class, id);
         entityManager.remove(stockPosition);
         entityManager.getTransaction()
                 .commit();
@@ -90,7 +92,7 @@ public class JpaStockDao implements StockDao {
     public Collection<StockPosition> getPage(int currentPage, int pageLimit) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<StockPosition> criteriaQuery = criteriaBuilder.createQuery(StockPosition.class);
-        Root<StockPosition> root=criteriaQuery.from(StockPosition.class);
+        Root<StockPosition> root = criteriaQuery.from(StockPosition.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .setFirstResult((currentPage - 1) * pageLimit)

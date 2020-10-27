@@ -2,6 +2,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 
 import com.vironit.onlinepharmacy.dao.CreditCardDao;
 import com.vironit.onlinepharmacy.model.CreditCard;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
+@Repository
 public class JpaCreditCardDao implements CreditCardDao {
 
     @PersistenceContext
@@ -29,7 +31,7 @@ public class JpaCreditCardDao implements CreditCardDao {
 
     @Override
     public Optional<CreditCard> get(long id) {
-        CreditCard creditCard =entityManager.find(CreditCard.class,id);
+        CreditCard creditCard = entityManager.find(CreditCard.class, id);
         entityManager.detach(creditCard);
         return Optional.of(creditCard);
     }
@@ -38,7 +40,7 @@ public class JpaCreditCardDao implements CreditCardDao {
     public Collection<CreditCard> getAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<CreditCard> criteriaQuery = criteriaBuilder.createQuery(CreditCard.class);
-        Root<CreditCard> root=criteriaQuery.from(CreditCard.class);
+        Root<CreditCard> root = criteriaQuery.from(CreditCard.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -48,7 +50,7 @@ public class JpaCreditCardDao implements CreditCardDao {
     public boolean remove(long id) {
         entityManager.getTransaction()
                 .begin();
-        CreditCard creditCard=entityManager.find(CreditCard.class,id);
+        CreditCard creditCard = entityManager.find(CreditCard.class, id);
         entityManager.remove(creditCard);
         entityManager.getTransaction()
                 .commit();
@@ -59,7 +61,7 @@ public class JpaCreditCardDao implements CreditCardDao {
     public boolean addAll(Collection<CreditCard> creditCards) {
         entityManager.getTransaction()
                 .begin();
-        for (CreditCard creditCard:creditCards){
+        for (CreditCard creditCard : creditCards) {
             entityManager.persist(creditCard);
         }
         entityManager.getTransaction()
@@ -71,10 +73,10 @@ public class JpaCreditCardDao implements CreditCardDao {
     public Collection<CreditCard> getAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<CreditCard> criteriaQuery = criteriaBuilder.createQuery(CreditCard.class);
-        Root<CreditCard> root=criteriaQuery.from(CreditCard.class);
+        Root<CreditCard> root = criteriaQuery.from(CreditCard.class);
         criteriaQuery.select(root)
                 .where(criteriaBuilder.equal(root.get("user")
-                        .get("id"),id));
+                        .get("id"), id));
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
@@ -83,10 +85,10 @@ public class JpaCreditCardDao implements CreditCardDao {
     public boolean removeAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaDelete<CreditCard> criteriaDelete = criteriaBuilder.createCriteriaDelete(CreditCard.class);
-        Root<CreditCard> root= criteriaDelete.from(CreditCard.class);
+        Root<CreditCard> root = criteriaDelete.from(CreditCard.class);
         criteriaDelete.where(criteriaBuilder.equal(root.get("user")
-                .get("id"),id));
+                .get("id"), id));
         return entityManager.createQuery(criteriaDelete)
-                .executeUpdate()>0;
+                .executeUpdate() > 0;
     }
 }

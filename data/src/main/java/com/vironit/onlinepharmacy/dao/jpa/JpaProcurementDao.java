@@ -2,6 +2,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
 import com.vironit.onlinepharmacy.model.Procurement;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
+@Repository
 public class JpaProcurementDao implements ProcurementDao {
 
     @PersistenceContext
@@ -40,7 +42,7 @@ public class JpaProcurementDao implements ProcurementDao {
 
     @Override
     public Optional<Procurement> get(long id) {
-        Procurement procurement =entityManager.find(Procurement.class,id);
+        Procurement procurement = entityManager.find(Procurement.class, id);
         entityManager.detach(procurement);
         return Optional.of(procurement);
     }
@@ -49,7 +51,7 @@ public class JpaProcurementDao implements ProcurementDao {
     public Collection<Procurement> getAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Procurement> criteriaQuery = criteriaBuilder.createQuery(Procurement.class);
-        Root<Procurement> root=criteriaQuery.from(Procurement.class);
+        Root<Procurement> root = criteriaQuery.from(Procurement.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -59,7 +61,7 @@ public class JpaProcurementDao implements ProcurementDao {
     public boolean remove(long id) {
         entityManager.getTransaction()
                 .begin();
-        Procurement procurement=entityManager.find(Procurement.class,id);
+        Procurement procurement = entityManager.find(Procurement.class, id);
         entityManager.remove(procurement);
         entityManager.getTransaction()
                 .commit();
@@ -80,7 +82,7 @@ public class JpaProcurementDao implements ProcurementDao {
     public Collection<Procurement> getPage(int currentPage, int pageLimit) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Procurement> criteriaQuery = criteriaBuilder.createQuery(Procurement.class);
-        Root<Procurement> root=criteriaQuery.from(Procurement.class);
+        Root<Procurement> root = criteriaQuery.from(Procurement.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .setFirstResult((currentPage - 1) * pageLimit)
@@ -92,7 +94,7 @@ public class JpaProcurementDao implements ProcurementDao {
     public boolean addAll(Collection<Procurement> procurements) {
         entityManager.getTransaction()
                 .begin();
-        for (Procurement procurement:procurements){
+        for (Procurement procurement : procurements) {
             entityManager.persist(procurement);
         }
         entityManager.getTransaction()
@@ -104,10 +106,10 @@ public class JpaProcurementDao implements ProcurementDao {
     public Collection<Procurement> getAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Procurement> criteriaQuery = criteriaBuilder.createQuery(Procurement.class);
-        Root<Procurement> root=criteriaQuery.from(Procurement.class);
+        Root<Procurement> root = criteriaQuery.from(Procurement.class);
         criteriaQuery.select(root)
                 .where(criteriaBuilder.equal(root.get("user")
-                        .get("id"),id));
+                        .get("id"), id));
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
@@ -116,10 +118,10 @@ public class JpaProcurementDao implements ProcurementDao {
     public boolean removeAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaDelete<Procurement> criteriaDelete = criteriaBuilder.createCriteriaDelete(Procurement.class);
-        Root<Procurement> root= criteriaDelete.from(Procurement.class);
+        Root<Procurement> root = criteriaDelete.from(Procurement.class);
         criteriaDelete.where(criteriaBuilder.equal(root.get("user")
-                .get("id"),id));
+                .get("id"), id));
         return entityManager.createQuery(criteriaDelete)
-                .executeUpdate()>0;
+                .executeUpdate() > 0;
     }
 }

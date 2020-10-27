@@ -2,6 +2,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 
 import com.vironit.onlinepharmacy.dao.OrderPositionDao;
 import com.vironit.onlinepharmacy.model.OrderPosition;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
+@Repository
 public class JpaOrderPositionDao implements OrderPositionDao {
 
     @PersistenceContext
@@ -39,7 +41,7 @@ public class JpaOrderPositionDao implements OrderPositionDao {
 
     @Override
     public Optional<OrderPosition> get(long id) {
-        OrderPosition orderPosition =entityManager.find(OrderPosition.class,id);
+        OrderPosition orderPosition = entityManager.find(OrderPosition.class, id);
         entityManager.detach(orderPosition);
         return Optional.of(orderPosition);
     }
@@ -48,7 +50,7 @@ public class JpaOrderPositionDao implements OrderPositionDao {
     public Collection<OrderPosition> getAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<OrderPosition> criteriaQuery = criteriaBuilder.createQuery(OrderPosition.class);
-        Root<OrderPosition> root=criteriaQuery.from(OrderPosition.class);
+        Root<OrderPosition> root = criteriaQuery.from(OrderPosition.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -58,7 +60,7 @@ public class JpaOrderPositionDao implements OrderPositionDao {
     public boolean remove(long id) {
         entityManager.getTransaction()
                 .begin();
-        OrderPosition orderPosition=entityManager.find(OrderPosition.class,id);
+        OrderPosition orderPosition = entityManager.find(OrderPosition.class, id);
         entityManager.remove(orderPosition);
         entityManager.getTransaction()
                 .commit();
@@ -69,7 +71,7 @@ public class JpaOrderPositionDao implements OrderPositionDao {
     public boolean addAll(Collection<OrderPosition> orderPositions) {
         entityManager.getTransaction()
                 .begin();
-        for (OrderPosition orderPosition:orderPositions){
+        for (OrderPosition orderPosition : orderPositions) {
             entityManager.persist(orderPosition);
         }
         entityManager.getTransaction()
@@ -81,10 +83,10 @@ public class JpaOrderPositionDao implements OrderPositionDao {
     public Collection<OrderPosition> getAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<OrderPosition> criteriaQuery = criteriaBuilder.createQuery(OrderPosition.class);
-        Root<OrderPosition> root=criteriaQuery.from(OrderPosition.class);
+        Root<OrderPosition> root = criteriaQuery.from(OrderPosition.class);
         criteriaQuery.select(root)
                 .where(criteriaBuilder.equal(root.get("order")
-                        .get("id"),id));
+                        .get("id"), id));
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
@@ -93,10 +95,10 @@ public class JpaOrderPositionDao implements OrderPositionDao {
     public boolean removeAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaDelete<OrderPosition> criteriaDelete = criteriaBuilder.createCriteriaDelete(OrderPosition.class);
-        Root<OrderPosition> root= criteriaDelete.from(OrderPosition.class);
+        Root<OrderPosition> root = criteriaDelete.from(OrderPosition.class);
         criteriaDelete.where(criteriaBuilder.equal(root.get("order")
-                .get("id"),id));
+                .get("id"), id));
         return entityManager.createQuery(criteriaDelete)
-                .executeUpdate()>0;
+                .executeUpdate() > 0;
     }
 }

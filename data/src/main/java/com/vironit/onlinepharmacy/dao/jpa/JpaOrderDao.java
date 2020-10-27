@@ -2,6 +2,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 
 import com.vironit.onlinepharmacy.dao.OrderDao;
 import com.vironit.onlinepharmacy.model.Order;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
+@Repository
 public class JpaOrderDao implements OrderDao {
 
     @PersistenceContext
@@ -39,7 +41,7 @@ public class JpaOrderDao implements OrderDao {
 
     @Override
     public Optional<Order> get(long id) {
-        Order order =entityManager.find(Order.class,id);
+        Order order = entityManager.find(Order.class, id);
         entityManager.detach(order);
         return Optional.of(order);
     }
@@ -48,7 +50,7 @@ public class JpaOrderDao implements OrderDao {
     public Collection<Order> getAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
-        Root<Order> root=criteriaQuery.from(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -58,7 +60,7 @@ public class JpaOrderDao implements OrderDao {
     public boolean remove(long id) {
         entityManager.getTransaction()
                 .begin();
-        Order order=entityManager.find(Order.class,id);
+        Order order = entityManager.find(Order.class, id);
         entityManager.remove(order);
         entityManager.getTransaction()
                 .commit();
@@ -79,7 +81,7 @@ public class JpaOrderDao implements OrderDao {
     public Collection<Order> getPage(int currentPage, int pageLimit) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
-        Root<Order> root=criteriaQuery.from(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .setFirstResult((currentPage - 1) * pageLimit)
@@ -91,7 +93,7 @@ public class JpaOrderDao implements OrderDao {
     public boolean addAll(Collection<Order> orders) {
         entityManager.getTransaction()
                 .begin();
-        for (Order order:orders){
+        for (Order order : orders) {
             entityManager.persist(order);
         }
         entityManager.getTransaction()
@@ -103,10 +105,10 @@ public class JpaOrderDao implements OrderDao {
     public Collection<Order> getAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
-        Root<Order> root=criteriaQuery.from(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
         criteriaQuery.select(root)
                 .where(criteriaBuilder.equal(root.get("user")
-                        .get("id"),id));
+                        .get("id"), id));
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
@@ -115,10 +117,10 @@ public class JpaOrderDao implements OrderDao {
     public boolean removeAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaDelete<Order> criteriaDelete = criteriaBuilder.createCriteriaDelete(Order.class);
-        Root<Order> root= criteriaDelete.from(Order.class);
+        Root<Order> root = criteriaDelete.from(Order.class);
         criteriaDelete.where(criteriaBuilder.equal(root.get("user")
-                .get("id"),id));
+                .get("id"), id));
         return entityManager.createQuery(criteriaDelete)
-                .executeUpdate()>0;
+                .executeUpdate() > 0;
     }
 }

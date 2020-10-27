@@ -2,6 +2,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 
 import com.vironit.onlinepharmacy.dao.ProductCategoryDao;
 import com.vironit.onlinepharmacy.model.ProductCategory;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +12,7 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
+@Repository
 public class JpaProductCategoryDao implements ProductCategoryDao {
 
     @PersistenceContext
@@ -38,7 +40,7 @@ public class JpaProductCategoryDao implements ProductCategoryDao {
 
     @Override
     public Optional<ProductCategory> get(long id) {
-        ProductCategory productCategory=entityManager.find(ProductCategory.class,id);
+        ProductCategory productCategory = entityManager.find(ProductCategory.class, id);
         entityManager.detach(productCategory);
         return Optional.of(productCategory);
     }
@@ -47,7 +49,7 @@ public class JpaProductCategoryDao implements ProductCategoryDao {
     public Collection<ProductCategory> getAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProductCategory> criteriaQuery = criteriaBuilder.createQuery(ProductCategory.class);
-        Root<ProductCategory> root=criteriaQuery.from(ProductCategory.class);
+        Root<ProductCategory> root = criteriaQuery.from(ProductCategory.class);
         criteriaQuery.select(root);
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -57,7 +59,7 @@ public class JpaProductCategoryDao implements ProductCategoryDao {
     public boolean remove(long id) {
         entityManager.getTransaction()
                 .begin();
-        ProductCategory productCategory=entityManager.find(ProductCategory.class,id);
+        ProductCategory productCategory = entityManager.find(ProductCategory.class, id);
         entityManager.remove(productCategory);
         entityManager.getTransaction()
                 .commit();

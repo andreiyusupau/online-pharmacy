@@ -1,4 +1,4 @@
-package com.vironit.onlinepharmacy.config;
+package com.vironit.onlinepharmacy.dao.jpa;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,10 +21,11 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com.vironit.onlinepharmacy")
 @Configuration
 @EnableTransactionManagement
-public class ApplicationConfiguration {
+public class ApplicationConfigurationTest {
 
     public static final String PACKAGES_TO_SCAN = "com.vironit.onlinepharmacy.model";
-    private final String jdbcConfigurationFile = "src/main/resources/jdbc.properties";
+    private static final String JDBC_CONFIGURATION_FILE = "src/test/resources/jdbc.properties";
+    private static final String HIBERNATE_CONFIGURATION_FILE = "src/test/resources/hibernate.properties";
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -39,9 +40,8 @@ public class ApplicationConfiguration {
         return entityManagerFactoryBean;
     }
 
-
     private DataSource dataSource(){
-        HikariConfig hikariConfig = new HikariConfig(jdbcConfigurationFile);
+        HikariConfig hikariConfig = new HikariConfig(JDBC_CONFIGURATION_FILE);
         return new HikariDataSource(hikariConfig);
     }
 
@@ -62,7 +62,7 @@ public class ApplicationConfiguration {
 //    }
 
     private Properties additionalProperties() {
-         try (InputStream input = new FileInputStream(jdbcConfigurationFile)) {
+         try (InputStream input = new FileInputStream(HIBERNATE_CONFIGURATION_FILE)) {
             Properties properties = new Properties();
             properties.load(input);
              return properties;

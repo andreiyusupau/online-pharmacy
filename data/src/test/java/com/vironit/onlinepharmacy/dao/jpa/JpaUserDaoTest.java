@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ApplicationConfigurationTest.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Testcontainers
 class JpaUserDaoTest {
 
@@ -40,9 +42,6 @@ class JpaUserDaoTest {
 
     @BeforeEach
     void set(){
-        System.out.println(postgreSqlContainer.getJdbcUrl());
-        System.out.println(postgreSqlContainer.getUsername());
-        System.out.println(postgreSqlContainer.getPassword());
         user = new User();
        user.setFirstName("testFirstName");
        user.setMiddleName("testMiddleName");

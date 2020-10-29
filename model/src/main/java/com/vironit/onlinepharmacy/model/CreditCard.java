@@ -9,13 +9,19 @@ import java.util.Objects;
 public class CreditCard {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
+    @Column(name = "card_number")
     private String cardNumber;
+    @Column(name = "owner_name")
     private String ownerName;
+    @Column(name = "valid_thru")
     private LocalDate validThru;
+    @Column(name = "cvv")
     private int cvv;
     @ManyToOne
+    @JoinColumn(name = "user_id",nullable = false)
     private User owner;
 
     public CreditCard() {

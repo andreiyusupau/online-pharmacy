@@ -1,9 +1,6 @@
 package com.vironit.onlinepharmacy.model;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -12,6 +9,7 @@ import java.util.Objects;
 public class Procurement extends Operation {
 
     @Enumerated(value = EnumType.STRING)
+    @Column(name="status")
     private ProcurementStatus procurementStatus;
 
     public Procurement() {

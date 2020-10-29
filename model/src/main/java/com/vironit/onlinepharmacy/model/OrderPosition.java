@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.model;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.Objects;
 public class OrderPosition extends Position {
 
     @ManyToOne
+    @JoinColumn(name = "order_id",nullable = false)
     private Order order;
 
     public OrderPosition() {
@@ -44,5 +46,9 @@ public class OrderPosition extends Position {
 
     public Order getOrder() {
         return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

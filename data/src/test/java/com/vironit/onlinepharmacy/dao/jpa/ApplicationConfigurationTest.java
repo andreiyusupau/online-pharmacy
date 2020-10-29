@@ -72,9 +72,4 @@ public class ApplicationConfigurationTest {
         }
     }
 
-//    @Bean
-//    public EntityManager entityManager(EntityManagerFactory entityManagerFactory){
-//        return entityManagerFactory.createEntityManager();
-//    }
-
 }

@@ -1,18 +1,18 @@
 package com.vironit.onlinepharmacy.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "product_categories")
 public class ProductCategory {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private long id;
+    @Column(name="name")
     private String name;
+    @Column(name="description")
     private String description;
 
     public ProductCategory() {

@@ -3,6 +3,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.CreditCardDao;
 import com.vironit.onlinepharmacy.model.CreditCard;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,13 +20,10 @@ public class JpaCreditCardDao implements CreditCardDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     @Override
     public long add(CreditCard creditCard) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(creditCard);
-        entityManager.getTransaction()
-                .commit();
         return creditCard.getId();
     }
 
@@ -46,26 +44,20 @@ public class JpaCreditCardDao implements CreditCardDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         CreditCard creditCard = entityManager.find(CreditCard.class, id);
         entityManager.remove(creditCard);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
+    @Transactional
     @Override
     public boolean addAll(Collection<CreditCard> creditCards) {
-        entityManager.getTransaction()
-                .begin();
         for (CreditCard creditCard : creditCards) {
             entityManager.persist(creditCard);
         }
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
@@ -75,18 +67,19 @@ public class JpaCreditCardDao implements CreditCardDao {
         CriteriaQuery<CreditCard> criteriaQuery = criteriaBuilder.createQuery(CreditCard.class);
         Root<CreditCard> root = criteriaQuery.from(CreditCard.class);
         criteriaQuery.select(root)
-                .where(criteriaBuilder.equal(root.get("user")
+                .where(criteriaBuilder.equal(root.get("owner")
                         .get("id"), id));
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean removeAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaDelete<CreditCard> criteriaDelete = criteriaBuilder.createCriteriaDelete(CreditCard.class);
         Root<CreditCard> root = criteriaDelete.from(CreditCard.class);
-        criteriaDelete.where(criteriaBuilder.equal(root.get("user")
+        criteriaDelete.where(criteriaBuilder.equal(root.get("owner")
                 .get("id"), id));
         return entityManager.createQuery(criteriaDelete)
                 .executeUpdate() > 0;

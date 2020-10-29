@@ -8,10 +8,13 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Operation {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @Column(name = "id")
     private long id;
+    @Column(name = "date")
     private Instant date;
     @ManyToOne
+    @JoinColumn(name = "user_id",nullable = false)
     private User owner;
 
     public Operation() {

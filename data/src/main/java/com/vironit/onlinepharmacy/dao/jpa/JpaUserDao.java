@@ -20,7 +20,6 @@ public class JpaUserDao implements UserDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Transactional
     @Override
     public Optional<User> getByEmail(String email) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -50,7 +49,6 @@ public class JpaUserDao implements UserDao {
         return user.getId();
     }
 
-    @Transactional
     @Override
     public Optional<User> get(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -66,7 +64,6 @@ public class JpaUserDao implements UserDao {
         }
     }
 
-    @Transactional
     @Override
     public Collection<User> getAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -85,7 +82,6 @@ public class JpaUserDao implements UserDao {
         return true;
     }
 
-    @Transactional
     @Override
     public long getTotalElements() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -96,7 +92,6 @@ public class JpaUserDao implements UserDao {
                 .getSingleResult();
     }
 
-    @Transactional
     @Override
     public Collection<User> getPage(int currentPage, int pageLimit) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

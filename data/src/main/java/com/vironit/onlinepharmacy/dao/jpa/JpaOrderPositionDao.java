@@ -3,6 +3,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.OrderPositionDao;
 import com.vironit.onlinepharmacy.model.OrderPosition;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,23 +20,17 @@ public class JpaOrderPositionDao implements OrderPositionDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     @Override
     public boolean update(OrderPosition orderPosition) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.merge(orderPosition);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
+    @Transactional
     @Override
     public long add(OrderPosition orderPosition) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(orderPosition);
-        entityManager.getTransaction()
-                .commit();
         return orderPosition.getId();
     }
 
@@ -43,7 +38,7 @@ public class JpaOrderPositionDao implements OrderPositionDao {
     public Optional<OrderPosition> get(long id) {
         OrderPosition orderPosition = entityManager.find(OrderPosition.class, id);
         entityManager.detach(orderPosition);
-        return Optional.of(orderPosition);
+        return Optional.ofNullable(orderPosition);
     }
 
     @Override
@@ -56,26 +51,20 @@ public class JpaOrderPositionDao implements OrderPositionDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         OrderPosition orderPosition = entityManager.find(OrderPosition.class, id);
         entityManager.remove(orderPosition);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
+    @Transactional
     @Override
     public boolean addAll(Collection<OrderPosition> orderPositions) {
-        entityManager.getTransaction()
-                .begin();
         for (OrderPosition orderPosition : orderPositions) {
             entityManager.persist(orderPosition);
         }
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
@@ -91,6 +80,7 @@ public class JpaOrderPositionDao implements OrderPositionDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean removeAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

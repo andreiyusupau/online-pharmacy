@@ -3,6 +3,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.model.Product;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,23 +19,16 @@ public class JpaProductDao implements ProductDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     @Override
     public boolean update(Product product) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.merge(product);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
     @Override
     public long add(Product product) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(product);
-        entityManager.getTransaction()
-                .commit();
         return product.getId();
     }
 
@@ -42,7 +36,7 @@ public class JpaProductDao implements ProductDao {
     public Optional<Product> get(long id) {
         Product product = entityManager.find(Product.class, id);
         entityManager.detach(product);
-        return Optional.of(product);
+        return Optional.ofNullable(product);
     }
 
     @Override
@@ -55,14 +49,11 @@ public class JpaProductDao implements ProductDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         Product product = entityManager.find(Product.class, id);
         entityManager.remove(product);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 

@@ -29,18 +29,16 @@ public class ApplicationConfigurationTest {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean
-                = new LocalContainerEntityManagerFactoryBean();
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource());
         entityManagerFactoryBean.setPackagesToScan(PACKAGES_TO_SCAN);
-
         entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter());
         entityManagerFactoryBean.setJpaProperties(additionalProperties());
-
         return entityManagerFactoryBean;
     }
 
-    private DataSource dataSource(){
+    @Bean
+    public DataSource dataSource(){
         HikariConfig hikariConfig = new HikariConfig(JDBC_CONFIGURATION_FILE);
         return new HikariDataSource(hikariConfig);
     }

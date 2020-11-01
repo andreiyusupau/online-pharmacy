@@ -3,6 +3,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.ProcurementPositionDao;
 import com.vironit.onlinepharmacy.model.ProcurementPosition;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,23 +20,16 @@ public class JpaProcurementPositionDao implements ProcurementPositionDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     @Override
     public boolean update(ProcurementPosition procurementposition) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.merge(procurementposition);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
     @Override
     public long add(ProcurementPosition procurementposition) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(procurementposition);
-        entityManager.getTransaction()
-                .commit();
         return procurementposition.getId();
     }
 
@@ -43,7 +37,7 @@ public class JpaProcurementPositionDao implements ProcurementPositionDao {
     public Optional<ProcurementPosition> get(long id) {
         ProcurementPosition procurementposition = entityManager.find(ProcurementPosition.class, id);
         entityManager.detach(procurementposition);
-        return Optional.of(procurementposition);
+        return Optional.ofNullable(procurementposition);
     }
 
     @Override
@@ -56,26 +50,20 @@ public class JpaProcurementPositionDao implements ProcurementPositionDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         ProcurementPosition procurementposition = entityManager.find(ProcurementPosition.class, id);
         entityManager.remove(procurementposition);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
+    @Transactional
     @Override
     public boolean addAll(Collection<ProcurementPosition> procurementpositions) {
-        entityManager.getTransaction()
-                .begin();
         for (ProcurementPosition procurementposition : procurementpositions) {
             entityManager.persist(procurementposition);
         }
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
@@ -91,6 +79,7 @@ public class JpaProcurementPositionDao implements ProcurementPositionDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean removeAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

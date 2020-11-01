@@ -31,7 +31,7 @@ public class JpaCreditCardDao implements CreditCardDao {
     public Optional<CreditCard> get(long id) {
         CreditCard creditCard = entityManager.find(CreditCard.class, id);
         entityManager.detach(creditCard);
-        return Optional.of(creditCard);
+        return Optional.ofNullable(creditCard);
     }
 
     @Override

@@ -3,8 +3,10 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.RecipeDao;
 import com.vironit.onlinepharmacy.model.Recipe;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,13 +20,10 @@ public class JpaRecipeDao implements RecipeDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     @Override
     public long add(Recipe recipe) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(recipe);
-        entityManager.getTransaction()
-                .commit();
         return recipe.getId();
     }
 
@@ -32,7 +31,7 @@ public class JpaRecipeDao implements RecipeDao {
     public Optional<Recipe> get(long id) {
         Recipe recipe = entityManager.find(Recipe.class, id);
         entityManager.detach(recipe);
-        return Optional.of(recipe);
+        return Optional.ofNullable(recipe);
     }
 
     @Override
@@ -45,14 +44,11 @@ public class JpaRecipeDao implements RecipeDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         Recipe recipe = entityManager.find(Recipe.class, id);
         entityManager.remove(recipe);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
@@ -64,7 +60,11 @@ public class JpaRecipeDao implements RecipeDao {
         criteriaQuery.select(root)
                 .where(criteriaBuilder.equal(root.get("orderPosition")
                         .get("id"), id));
-        return Optional.of(entityManager.createQuery(criteriaQuery)
-                .getSingleResult());
+        try {
+            return Optional.of(entityManager.createQuery(criteriaQuery)
+                    .getSingleResult());
+        } catch (NoResultException noResultException) {
+            return Optional.empty();
+        }
     }
 }

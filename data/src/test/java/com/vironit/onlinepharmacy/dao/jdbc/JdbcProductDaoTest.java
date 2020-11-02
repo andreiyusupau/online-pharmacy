@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.model.ProductCategory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -19,6 +20,7 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 @Testcontainers
 class JdbcProductDaoTest {
 

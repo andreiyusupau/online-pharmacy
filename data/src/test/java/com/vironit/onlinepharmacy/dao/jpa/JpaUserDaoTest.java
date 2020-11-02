@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ApplicationConfigurationTest.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)

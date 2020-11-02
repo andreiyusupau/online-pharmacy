@@ -11,6 +11,7 @@ import com.vironit.onlinepharmacy.service.stock.StockService;
 import com.vironit.onlinepharmacy.service.user.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class BasicOrderServiceTest {
 

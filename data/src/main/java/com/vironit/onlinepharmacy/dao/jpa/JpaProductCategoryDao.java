@@ -3,6 +3,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.ProductCategoryDao;
 import com.vironit.onlinepharmacy.model.ProductCategory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,23 +19,16 @@ public class JpaProductCategoryDao implements ProductCategoryDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     @Override
     public boolean update(ProductCategory productCategory) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.merge(productCategory);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
     @Override
     public long add(ProductCategory productCategory) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(productCategory);
-        entityManager.getTransaction()
-                .commit();
         return productCategory.getId();
     }
 
@@ -42,7 +36,7 @@ public class JpaProductCategoryDao implements ProductCategoryDao {
     public Optional<ProductCategory> get(long id) {
         ProductCategory productCategory = entityManager.find(ProductCategory.class, id);
         entityManager.detach(productCategory);
-        return Optional.of(productCategory);
+        return Optional.ofNullable(productCategory);
     }
 
     @Override
@@ -55,14 +49,11 @@ public class JpaProductCategoryDao implements ProductCategoryDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         ProductCategory productCategory = entityManager.find(ProductCategory.class, id);
         entityManager.remove(productCategory);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 }

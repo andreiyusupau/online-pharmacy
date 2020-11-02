@@ -7,10 +7,13 @@ import javax.persistence.*;
 public abstract class Position {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @Column(name = "id")
     private long id;
+    @Column(name = "quantity")
     private int quantity;
     @ManyToOne
+    @JoinColumn(name = "product_id",nullable = false)
     private Product product;
 
     public Position() {

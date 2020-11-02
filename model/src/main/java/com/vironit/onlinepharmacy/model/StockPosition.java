@@ -1,5 +1,6 @@
 package com.vironit.onlinepharmacy.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Objects;
@@ -7,7 +8,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "stock_positions")
 public class StockPosition extends Position {
-
+@Column(name = "reserved_quantity")
     private int reservedQuantity;
 
     public StockPosition() {

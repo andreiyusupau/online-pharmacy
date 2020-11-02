@@ -3,8 +3,10 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.model.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -25,35 +27,41 @@ public class JpaUserDao implements UserDao {
         Root<User> root = criteriaQuery.from(User.class);
         criteriaQuery.select(root)
                 .where(criteriaBuilder.equal(root.get("email"), email));
-        return Optional.of(entityManager.createQuery(criteriaQuery)
-                .getSingleResult());
+        try {
+            return Optional.of(entityManager.createQuery(criteriaQuery)
+                    .getSingleResult());
+        } catch (NoResultException noResultException) {
+            return Optional.empty();
+        }
     }
 
+    @Transactional
     @Override
     public boolean update(User user) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.merge(user);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
+    @Transactional
     @Override
     public long add(User user) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(user);
-        entityManager.getTransaction()
-                .commit();
         return user.getId();
     }
 
     @Override
     public Optional<User> get(long id) {
-        User user = entityManager.find(User.class, id);
-        entityManager.detach(user);
-        return Optional.of(user);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.equal(root.get("id"), id));
+        try {
+            return Optional.of(entityManager.createQuery(criteriaQuery)
+                    .getSingleResult());
+        } catch (NoResultException noResultException) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -66,14 +74,11 @@ public class JpaUserDao implements UserDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         User user = entityManager.find(User.class, id);
         entityManager.remove(user);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 

@@ -8,14 +8,20 @@ import java.util.Objects;
 @Table(name = "recipes")
 public class Recipe {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private long id;
+    @Column(name="description")
     private String description;
+    @Column(name="quantity")
     private int quantity;
     @ManyToOne
+    @JoinColumn(name="product_id")
     private Product product;
+    @Column(name="valid_thru")
     private Instant validThru;
     @OneToOne
+    @JoinColumn(name="order_position_id")
     private OrderPosition orderPosition;
 
     public Recipe() {

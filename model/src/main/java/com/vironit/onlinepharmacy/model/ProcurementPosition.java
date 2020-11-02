@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.model;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.Objects;
 public class ProcurementPosition extends Position {
 
     @ManyToOne
+    @JoinColumn(name = "procurement_id",nullable = false)
     private Procurement procurement;
 
     public ProcurementPosition() {
@@ -43,5 +45,9 @@ public class ProcurementPosition extends Position {
 
     public Procurement getProcurement() {
         return procurement;
+    }
+
+    public void setProcurement(Procurement procurement) {
+        this.procurement = procurement;
     }
 }

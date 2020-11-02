@@ -63,7 +63,11 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setLong(4, product.getProductCategory()
                     .getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next() ? resultSet.getLong(1) : -1;
+                if(resultSet.next()){
+                    return resultSet.getLong(1);
+                }else {
+                    throw new DaoException("Can't add new product.");
+                }
             }
         } catch (SQLException sqle) {
             throw new DaoException("Error adding product to database", sqle);

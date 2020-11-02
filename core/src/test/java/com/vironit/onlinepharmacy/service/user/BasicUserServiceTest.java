@@ -7,6 +7,7 @@ import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.UserServiceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class BasicUserServiceTest {
 

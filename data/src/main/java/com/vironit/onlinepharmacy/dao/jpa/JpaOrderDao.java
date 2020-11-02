@@ -3,6 +3,7 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.OrderDao;
 import com.vironit.onlinepharmacy.model.Order;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,23 +20,17 @@ public class JpaOrderDao implements OrderDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+   @Transactional
     @Override
     public boolean update(Order order) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.merge(order);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
+    @Transactional
     @Override
     public long add(Order order) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(order);
-        entityManager.getTransaction()
-                .commit();
         return order.getId();
     }
 
@@ -43,7 +38,7 @@ public class JpaOrderDao implements OrderDao {
     public Optional<Order> get(long id) {
         Order order = entityManager.find(Order.class, id);
         entityManager.detach(order);
-        return Optional.of(order);
+        return Optional.ofNullable(order);
     }
 
     @Override
@@ -56,14 +51,11 @@ public class JpaOrderDao implements OrderDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         Order order = entityManager.find(Order.class, id);
         entityManager.remove(order);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
@@ -89,15 +81,12 @@ public class JpaOrderDao implements OrderDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean addAll(Collection<Order> orders) {
-        entityManager.getTransaction()
-                .begin();
         for (Order order : orders) {
             entityManager.persist(order);
         }
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 

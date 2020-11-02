@@ -3,8 +3,10 @@ package com.vironit.onlinepharmacy.dao.jpa;
 import com.vironit.onlinepharmacy.dao.StockDao;
 import com.vironit.onlinepharmacy.model.StockPosition;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,27 +28,24 @@ public class JpaStockDao implements StockDao {
         criteriaQuery.select(root)
                 .where(criteriaBuilder.equal(root.get("product")
                         .get("id"), id));
-        return Optional.of(entityManager.createQuery(criteriaQuery)
-                .getSingleResult());
+        try {
+            return Optional.of(entityManager.createQuery(criteriaQuery)
+                    .getSingleResult());
+        } catch (NoResultException noResultException) {
+            return Optional.empty();
+        }
     }
 
+    @Transactional
     @Override
     public boolean update(StockPosition stockPosition) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.merge(stockPosition);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 
     @Override
     public long add(StockPosition stockPosition) {
-        entityManager.getTransaction()
-                .begin();
         entityManager.persist(stockPosition);
-        entityManager.getTransaction()
-                .commit();
         return stockPosition.getId();
     }
 
@@ -54,7 +53,7 @@ public class JpaStockDao implements StockDao {
     public Optional<StockPosition> get(long id) {
         StockPosition stockPosition = entityManager.find(StockPosition.class, id);
         entityManager.detach(stockPosition);
-        return Optional.of(stockPosition);
+        return Optional.ofNullable(stockPosition);
     }
 
     @Override
@@ -67,14 +66,11 @@ public class JpaStockDao implements StockDao {
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean remove(long id) {
-        entityManager.getTransaction()
-                .begin();
         StockPosition stockPosition = entityManager.find(StockPosition.class, id);
         entityManager.remove(stockPosition);
-        entityManager.getTransaction()
-                .commit();
         return true;
     }
 

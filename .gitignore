@@ -5,3 +5,7 @@
 /data/target/
 /model/target/
 /web/target/
+/model/model.iml
+/data/data.iml
+/core/core.iml
+/web/web.iml

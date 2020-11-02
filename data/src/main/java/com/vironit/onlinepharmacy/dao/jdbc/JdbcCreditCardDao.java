@@ -35,9 +35,12 @@ public class JdbcCreditCardDao implements CreditCardDao {
             preparedStatement.setLong(5, creditCard.getOwner()
                     .getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next() ? resultSet.getLong(1) : -1;
+                if(resultSet.next()){
+                    return resultSet.getLong(1);
+                }else {
+                    throw new DaoException("Can't add new credit card.");
+                }
             }
-
         } catch (SQLException sqle) {
             throw new DaoException("Error adding credit card to database", sqle);
         }

@@ -1,31 +1,31 @@
 package com.vironit.onlinepharmacy.dao.jpa;
 
-import com.vironit.onlinepharmacy.dao.jdbc.JdbcUserDao;
+import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
+@Disabled
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ApplicationConfigurationTest.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Testcontainers
 class JpaUserDaoTest {
 
@@ -36,29 +36,44 @@ class JpaUserDaoTest {
             .withPassword("test");
 
     @Autowired
-    private JpaUserDao userDao;
+    private UserDao userDao;
 
     private User user;
     private User secondUser;
     private User thirdUser;
 
     @BeforeEach
-    void set() throws SQLException {
-        userDao = new JpaUserDao();
-        user = new User(1, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.of(2000, 12, 12), "test@email.com", "testpass123", Role.CONSUMER);
-        secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test2@email.com", "testpass123", Role.MODERATOR);
-        thirdUser = new User(3, "testFirstName", "testMiddleName", "testLastName",
-                LocalDate.now(), "test3@email.com", "testpass123", Role.PROCUREMENT_SPECIALIST);
-        String sql = "INSERT INTO roles (name) " +
-                "VALUES('" + Role.CONSUMER.toString() + "'),('" + Role.MODERATOR.toString() + "'),('" + Role.PROCUREMENT_SPECIALIST.toString() + "');\n" +
-                "INSERT INTO users (first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +
-                "VALUES('testFirstName','testMiddleName','testLastName','2000-12-12','test@email.com','testpass123',1);";
+    void set(){
+        user = new User();
+       user.setFirstName("testFirstName");
+       user.setMiddleName("testMiddleName");
+       user.setLastName("testLastName");
+       user.setDateOfBirth(LocalDate.of(2000, 12, 12));
+       user.setEmail("test@email.com");
+       user.setPassword("testpass123");
+       user.setRole(Role.CONSUMER);
+        secondUser = new User();
+        secondUser.setFirstName("testFirstName");
+        secondUser.setMiddleName("testMiddleName");
+        secondUser.setLastName("testLastName");
+        secondUser.setDateOfBirth(LocalDate.of(2000, 10, 12));
+        secondUser.setEmail("test2@email.com");
+        secondUser.setPassword("testpass123");
+        secondUser.setRole(Role.MODERATOR);
+        thirdUser = new User();
+        thirdUser.setFirstName("testFirstName");
+        thirdUser.setMiddleName("testMiddleName");
+        thirdUser.setLastName("testLastName");
+        thirdUser.setDateOfBirth(LocalDate.of(2000, 11, 20));
+        thirdUser.setEmail("test3@email.com");
+        thirdUser.setPassword("testpass3213");
+        thirdUser.setRole(Role.PROCUREMENT_SPECIALIST);
     }
 
     @Test
     void getByEmailShouldReturnUserWithCertainEmail() {
+        userDao.add(user);
+
         User actualUser = userDao.getByEmail("test@email.com")
                 .get();
 
@@ -67,15 +82,18 @@ class JpaUserDaoTest {
 
     @Test
     void addShouldAddUserToDatabase() {
-        long id = userDao.add(secondUser);
+        long id = userDao.add(user);
 
-        assertEquals(2, id);
+        assertEquals(1, id);
     }
 
     @Test
     void getShouldGetUserFromDatabase() {
+        userDao.add(user);
+
         User actualUser = userDao.get(1)
                 .get();
+
         assertEquals(user.getFirstName(), actualUser.getFirstName());
         assertEquals(user.getDateOfBirth(), actualUser.getDateOfBirth());
     }
@@ -89,6 +107,7 @@ class JpaUserDaoTest {
 
     @Test
     void getAllShouldGetAllUsersFromDatabase() {
+        userDao.add(user);
         userDao.add(secondUser);
         userDao.add(thirdUser);
 
@@ -106,12 +125,14 @@ class JpaUserDaoTest {
 
         User updatedUser = userDao.get(1)
                 .get();
+
         assertEquals(userForUpdate.getFirstName(), updatedUser.getFirstName());
         assertEquals(userForUpdate.getDateOfBirth(), updatedUser.getDateOfBirth());
     }
 
     @Test
     void removeShouldRemoveUserFromDatabase() {
+        userDao.add(user);
         userDao.add(secondUser);
         userDao.add(thirdUser);
 
@@ -124,23 +145,25 @@ class JpaUserDaoTest {
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualZero() {
-        int totalElements = userDao.getTotalElements();
+        long totalElements = userDao.getTotalElements();
 
-        assertEquals(1, totalElements);
+        assertEquals(0, totalElements);
     }
 
     @Test
-    void getTotalElementsShouldReturnTotalElementsEqualTwo() {
+    void getTotalElementsShouldReturnTotalElementsEqualThree() {
+        userDao.add(user);
         userDao.add(secondUser);
         userDao.add(thirdUser);
 
-        int totalElements = userDao.getTotalElements();
+        long totalElements = userDao.getTotalElements();
 
         assertEquals(3, totalElements);
     }
 
     @Test
     void getPageShouldReturnASecondPageWithOneElement() {
+        userDao.add(user);
         userDao.add(secondUser);
         userDao.add(thirdUser);
 
@@ -152,6 +175,7 @@ class JpaUserDaoTest {
 
     @Test
     void getPageShouldReturnAThirdPageWithNoElements() {
+        userDao.add(user);
         userDao.add(secondUser);
         userDao.add(thirdUser);
 

@@ -1,38 +1,40 @@
-package com.vironit.onlinepharmacy.dao.jdbc;
+package com.vironit.onlinepharmacy.dao.jpa;
 
+import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.ProductCategory;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ApplicationConfigurationTest.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Testcontainers
-class JdbcProductDaoTest {
+class JpaProductDaoTest {
 
     @Container
     private PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:13.0-alpine")
             .withDatabaseName("online_pharmacy")
             .withUsername("test")
-            .withPassword("test")
-            .withInitScript("schema.sql");
+            .withPassword("test");
 
-    private DataSource dataSource;
-    private JdbcProductDao productDao;
+    @Autowired
+    private ProductDao productDao;
 
     private Product product;
     private Product secondProduct;
@@ -40,29 +42,36 @@ class JdbcProductDaoTest {
     private ProductCategory productCategory;
 
     @BeforeEach
-    void set() throws SQLException {
-        dataSource = getDataSource(postgreSqlContainer);
-        productDao = new JdbcProductDao(dataSource);
+    void set() {
         productCategory = new ProductCategory(1, "medicine", "any medicine");
-        product = new Product(-1, "testProduct", new BigDecimal("100"), productCategory, false);
-        secondProduct = new Product(-1, "secondTestProduct", new BigDecimal("120"), productCategory, false);
-        thirdProduct = new Product(-1, "thirdTestProduct", new BigDecimal("150"), productCategory, false);
-        String sql = "INSERT INTO product_categories (name, description) " +
-                "VALUES('medicine','any medicine');\n" +
-                "INSERT INTO products (name, price, recipe_required, product_category_id) " +
-                "VALUES('testProduct','10000','true',1);";
-        executeUpdate(dataSource, sql);
+        product = new Product();
+        product.setName("testProduct");
+        product.setPrice(new BigDecimal("100"));
+        product.setProductCategory(productCategory);
+        product.setRecipeRequired(false);
+        secondProduct = new Product();
+        secondProduct.setName("secondTestProduct");
+        secondProduct.setPrice(new BigDecimal("120"));
+        secondProduct.setProductCategory(productCategory);
+        secondProduct.setRecipeRequired(false);
+        thirdProduct = new Product();
+        thirdProduct.setName("thirdTestProduct");
+        thirdProduct.setPrice(new BigDecimal("150"));
+        thirdProduct.setProductCategory(productCategory);
+        thirdProduct.setRecipeRequired(false);
     }
 
     @Test
     void addShouldAddProductToDatabase() {
         long id = productDao.add(secondProduct);
 
-        assertEquals(2, id);
+        assertEquals(1, id);
     }
 
     @Test
     void getShouldGetProductFromDatabase() {
+        productDao.add(product);
+
         Product acquiredProduct = productDao.get(1)
                 .get();
 
@@ -71,6 +80,7 @@ class JdbcProductDaoTest {
 
     @Test
     void getAllShouldGetAllProductsFromDatabase() {
+        productDao.add(product);
         productDao.add(secondProduct);
         productDao.add(thirdProduct);
 
@@ -95,29 +105,38 @@ class JdbcProductDaoTest {
 
     @Test
     void removeShouldRemoveProductFromDatabase() {
+        productDao.add(product);
+
         productDao.remove(1);
+
         long sizeAfterRemove = productDao.getAll()
                 .size();
-
         assertEquals(0, sizeAfterRemove);
     }
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualThree() {
+        productDao.add(product);
         productDao.add(secondProduct);
         productDao.add(thirdProduct);
+
         long totalElements = productDao.getTotalElements();
+
         assertEquals(3, totalElements);
     }
 
     @Test
     void getTotalElementsShouldReturnTotalElementsEqualOne() {
+        productDao.add(product);
+
         long totalElements = productDao.getTotalElements();
+
         assertEquals(1, totalElements);
     }
 
     @Test
     void getPageShouldReturnASecondPageWithOneElement() {
+        productDao.add(product);
         productDao.add(secondProduct);
         productDao.add(thirdProduct);
 
@@ -129,6 +148,7 @@ class JdbcProductDaoTest {
 
     @Test
     void getPageShouldReturnAThirdPageWithNoElements() {
+        productDao.add(product);
         productDao.add(secondProduct);
         productDao.add(thirdProduct);
 
@@ -136,21 +156,5 @@ class JdbcProductDaoTest {
 
         int pageSize = productPage.size();
         assertEquals(0, pageSize);
-    }
-
-    private int executeUpdate(DataSource dataSource, String sql) throws SQLException {
-        try (Statement statement = dataSource.getConnection()
-                .createStatement()) {
-            return statement.executeUpdate(sql);
-        }
-    }
-
-    private DataSource getDataSource(JdbcDatabaseContainer<?> container) {
-        HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(container.getJdbcUrl());
-        hikariConfig.setUsername(container.getUsername());
-        hikariConfig.setPassword(container.getPassword());
-        hikariConfig.setDriverClassName(container.getDriverClassName());
-        return new HikariDataSource(hikariConfig);
     }
 }

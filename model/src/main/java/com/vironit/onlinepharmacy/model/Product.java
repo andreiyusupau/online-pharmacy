@@ -8,12 +8,18 @@ import java.util.Objects;
 @Table(name = "products")
 public class Product {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "price")
+    //TODO:x100 multiplier
     private BigDecimal price;
     @ManyToOne
+    @JoinColumn(name = "product_category_id", nullable = false)
     private ProductCategory productCategory;
+    @Column(name = "recipe_required")
     private boolean recipeRequired;
 
     public Product() {

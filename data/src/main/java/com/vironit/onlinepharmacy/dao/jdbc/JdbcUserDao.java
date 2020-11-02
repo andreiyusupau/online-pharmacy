@@ -82,7 +82,11 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setString(6, user.getPassword());
             preparedStatement.setString(7, user.getRole().name());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next() ? resultSet.getLong(1) : -1;
+                if(resultSet.next()){
+                    return resultSet.getLong(1);
+                }else {
+                    throw new DaoException("Can't add new user.");
+                }
             }
         } catch (SQLException sqle) {
             throw new DaoException("Error adding user to database", sqle);

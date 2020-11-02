@@ -96,18 +96,19 @@ public class JpaOrderDao implements OrderDao {
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
         Root<Order> root = criteriaQuery.from(Order.class);
         criteriaQuery.select(root)
-                .where(criteriaBuilder.equal(root.get("user")
+                .where(criteriaBuilder.equal(root.get("owner")
                         .get("id"), id));
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
 
+    @Transactional
     @Override
     public boolean removeAllByOwnerId(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaDelete<Order> criteriaDelete = criteriaBuilder.createCriteriaDelete(Order.class);
         Root<Order> root = criteriaDelete.from(Order.class);
-        criteriaDelete.where(criteriaBuilder.equal(root.get("user")
+        criteriaDelete.where(criteriaBuilder.equal(root.get("owner")
                 .get("id"), id));
         return entityManager.createQuery(criteriaDelete)
                 .executeUpdate() > 0;

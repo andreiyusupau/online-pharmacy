@@ -5,9 +5,11 @@ import com.vironit.onlinepharmacy.dto.UserData;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.UserServiceException;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class BasicUserService implements UserService {
 
     private final UserDao userDAO;
@@ -25,7 +27,8 @@ public class BasicUserService implements UserService {
 
     @Override
     public User get(long id) {
-        return userDAO.get(id).orElseThrow(() -> new UserServiceException("Can't get user. User with id " + id + " not found."));
+        return userDAO.get(id)
+                .orElseThrow(() -> new UserServiceException("Can't get user. User with id " + id + " not found."));
     }
 
     @Override

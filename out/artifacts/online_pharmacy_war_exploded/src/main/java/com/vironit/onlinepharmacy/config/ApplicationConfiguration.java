@@ -24,8 +24,8 @@ import java.util.Properties;
 public class ApplicationConfiguration {
 
     public static final String PACKAGES_TO_SCAN = "com.vironit.onlinepharmacy.model";
-    private static final String JDBC_CONFIGURATION_FILE = "/jdbc.properties";
-    private static final String HIBERNATE_CONFIGURATION_FILE = "/hibernate.properties";
+    private static final String JDBC_CONFIGURATION_FILE = "src/main/resources/jdbc.properties";
+    private static final String HIBERNATE_CONFIGURATION_FILE = "src/main/resources/hibernate.properties";
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -35,12 +35,13 @@ public class ApplicationConfiguration {
         entityManagerFactoryBean.setPackagesToScan(PACKAGES_TO_SCAN);
         entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter());
         entityManagerFactoryBean.setJpaProperties(additionalProperties());
+
         return entityManagerFactoryBean;
     }
 
-    @Bean
+@Bean
     public DataSource dataSource(){
-        HikariConfig hikariConfig = new HikariConfig(JDBC_CONFIGURATION_FILE);
+        HikariConfig hikariConfig = new HikariConfig(HIBERNATE_CONFIGURATION_FILE);
         return new HikariDataSource(hikariConfig);
     }
 
@@ -61,7 +62,7 @@ public class ApplicationConfiguration {
 //    }
 
     private Properties additionalProperties() {
-         try (InputStream input = new FileInputStream(HIBERNATE_CONFIGURATION_FILE)) {
+         try (InputStream input = new FileInputStream(JDBC_CONFIGURATION_FILE)) {
             Properties properties = new Properties();
             properties.load(input);
              return properties;

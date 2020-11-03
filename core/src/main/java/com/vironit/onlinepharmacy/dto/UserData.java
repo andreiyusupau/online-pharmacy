@@ -1,7 +1,12 @@
 package com.vironit.onlinepharmacy.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 import java.util.Objects;
+
 
 public class UserData {
 
@@ -9,12 +14,14 @@ public class UserData {
     private final String firstName;
     private final String middleName;
     private final String lastName;
+
     private final LocalDate dateOfBirth;
     private final String email;
     private final String password;
     private final String confirmPassword;
 
-    public UserData(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, String password, String confirmPassword) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public UserData(@JsonProperty("id") long id, @JsonProperty("firstName")String firstName, @JsonProperty("middleName")String middleName, @JsonProperty("lastName")String lastName, @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy") @JsonProperty("dateOfBirth")LocalDate dateOfBirth, @JsonProperty("email")String email, @JsonProperty("password") String password, @JsonProperty("confirmPassword")String confirmPassword) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;

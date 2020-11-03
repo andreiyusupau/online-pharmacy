@@ -9,10 +9,12 @@ import com.vironit.onlinepharmacy.model.StockPosition;
 import com.vironit.onlinepharmacy.service.exception.StockServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
+@Service
 public class BasicStockService implements StockService {
 
     private final StockDao stockDAO;

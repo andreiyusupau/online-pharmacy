@@ -6,9 +6,11 @@ import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.ProductCategory;
 import com.vironit.onlinepharmacy.service.exception.ProductServiceException;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class BasicProductService implements ProductService {
 
     private final ProductDao productDAO;

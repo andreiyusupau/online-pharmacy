@@ -13,7 +13,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -21,7 +20,8 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com.vironit.onlinepharmacy")
 @Configuration
 @EnableTransactionManagement
-public class ApplicationConfiguration {
+//@EnableCaching TODO:caching
+public class DatabaseConfiguration {
 
     public static final String PACKAGES_TO_SCAN = "com.vironit.onlinepharmacy.model";
     private static final String JDBC_CONFIGURATION_FILE = "/jdbc.properties";
@@ -59,16 +59,20 @@ public class ApplicationConfiguration {
 //    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
 //        return new PersistenceExceptionTranslationPostProcessor();
 //    }
-
+//
     private Properties additionalProperties() {
-         try (InputStream input = new FileInputStream(HIBERNATE_CONFIGURATION_FILE)) {
+         try (InputStream inputStream = getClass().getResourceAsStream(HIBERNATE_CONFIGURATION_FILE)) {
             Properties properties = new Properties();
-            properties.load(input);
+            properties.load(inputStream);
              return properties;
         } catch (IOException ex) {
-             //TODO:own exception
-            throw new NullPointerException();
+            throw new ConfigurationException("Can't load configuration.",ex);
         }
     }
 
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/resources/**")
+//                .addResourceLocations("/resources/");
+//    }
 }

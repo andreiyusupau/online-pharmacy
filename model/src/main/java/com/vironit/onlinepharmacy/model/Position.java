@@ -2,12 +2,14 @@ package com.vironit.onlinepharmacy.model;
 
 import javax.persistence.*;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@Entity
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 public abstract class Position {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+  //  @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private long id;
     @Column(name = "quantity")

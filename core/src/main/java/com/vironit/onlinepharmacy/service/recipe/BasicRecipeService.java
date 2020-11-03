@@ -7,9 +7,11 @@ import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.Recipe;
 import com.vironit.onlinepharmacy.service.exception.RecipeServiceException;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class BasicRecipeService implements RecipeService {
 
     private final RecipeDao recipeDao;

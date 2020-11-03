@@ -8,8 +8,9 @@ import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class BasicAuthenticationService implements AuthenticationService<UserData,UserPublicData,UserLoginData> {
 
     private final UserDao userDao;

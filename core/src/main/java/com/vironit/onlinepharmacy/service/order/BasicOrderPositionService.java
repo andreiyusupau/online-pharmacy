@@ -3,9 +3,11 @@ package com.vironit.onlinepharmacy.service.order;
 import com.vironit.onlinepharmacy.dao.OrderPositionDao;
 import com.vironit.onlinepharmacy.model.OrderPosition;
 import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class BasicOrderPositionService implements OrderPositionService {
 
     private final OrderPositionDao orderPositionDao;

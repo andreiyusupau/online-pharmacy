@@ -7,9 +7,11 @@ import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.CreditCardServiceException;
 import com.vironit.onlinepharmacy.service.user.UserService;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class BasicCreditCardService implements CreditCardService {
 
     private final CreditCardDao creditCardDao;

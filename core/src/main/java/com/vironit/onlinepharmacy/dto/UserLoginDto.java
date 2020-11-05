@@ -1,13 +1,18 @@
 package com.vironit.onlinepharmacy.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
-public class UserLoginData {
+public class UserLoginDto {
 
     private final String email;
     private final String password;
 
-    public UserLoginData(String email, String password) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public UserLoginDto(@JsonProperty("email")String email,
+                        @JsonProperty("password")String password) {
         this.email = email;
         this.password = password;
     }
@@ -24,7 +29,7 @@ public class UserLoginData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserLoginData that = (UserLoginData) o;
+        UserLoginDto that = (UserLoginDto) o;
         return email.equals(that.email) &&
                 password.equals(that.password);
     }

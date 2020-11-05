@@ -1,17 +1,23 @@
 package com.vironit.onlinepharmacy.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
-public class ProductData {
+public class ProductDto {
 
-    private final long id;
+    private long id;
     private final String name;
     private final BigDecimal price;
     private final long productCategoryId;
     private final boolean recipeRequired;
 
-    public ProductData(long id, String name, BigDecimal price, long productCategoryId, boolean recipeRequired) {
-        this.id = id;
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public ProductDto(@JsonProperty("name")String name,
+                      @JsonProperty("price")BigDecimal price,
+                      @JsonProperty("productCategoryId")long productCategoryId,
+                      @JsonProperty("recipeRequired")boolean recipeRequired) {
         this.name = name;
         this.price = price;
         this.productCategoryId = productCategoryId;
@@ -20,6 +26,10 @@ public class ProductData {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

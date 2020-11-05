@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.service.product;
 
 import com.vironit.onlinepharmacy.dao.ProductDao;
-import com.vironit.onlinepharmacy.dto.ProductData;
+import com.vironit.onlinepharmacy.dto.ProductDto;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.ProductCategory;
 import com.vironit.onlinepharmacy.service.exception.ProductServiceException;
@@ -15,19 +15,19 @@ public class BasicProductService implements ProductService {
 
     private final ProductDao productDAO;
     private final ProductCategoryService productCategoryService;
-    private final Converter<Product, ProductData> productDataToProductConverter;
+    private final Converter<Product, ProductDto> productDataToProductConverter;
 
-    public BasicProductService(ProductDao productDAO, ProductCategoryService productCategoryService, Converter<Product, ProductData> productDataToProductConverter) {
+    public BasicProductService(ProductDao productDAO, ProductCategoryService productCategoryService, Converter<Product, ProductDto> productDataToProductConverter) {
         this.productDAO = productDAO;
         this.productCategoryService = productCategoryService;
         this.productDataToProductConverter = productDataToProductConverter;
     }
 
     @Override
-    public long add(ProductData productData) {
+    public long add(ProductDto productDto) {
         ProductCategory productCategory= new ProductCategory();
-        productCategory.setId(productData.getProductCategoryId());
-        Product product= productDataToProductConverter.convert(productData);
+        productCategory.setId(productDto.getProductCategoryId());
+        Product product= productDataToProductConverter.convert(productDto);
         product.setProductCategory(productCategory);
         return productDAO.add(product);
     }
@@ -44,10 +44,10 @@ public class BasicProductService implements ProductService {
     }
 
     @Override
-    public void update(ProductData productData) {
+    public void update(ProductDto productDto) {
         ProductCategory productCategory= new ProductCategory();
-        productCategory.setId(productData.getProductCategoryId());
-        Product product= productDataToProductConverter.convert(productData);
+        productCategory.setId(productDto.getProductCategoryId());
+        Product product= productDataToProductConverter.convert(productDto);
         product.setProductCategory(productCategory);
         productDAO.update(product);
     }

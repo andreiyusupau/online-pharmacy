@@ -1,9 +1,9 @@
 package com.vironit.onlinepharmacy.service.authentication;
 
 import com.vironit.onlinepharmacy.dao.UserDao;
-import com.vironit.onlinepharmacy.dto.UserData;
-import com.vironit.onlinepharmacy.dto.UserLoginData;
-import com.vironit.onlinepharmacy.dto.UserPublicData;
+import com.vironit.onlinepharmacy.dto.UserDto;
+import com.vironit.onlinepharmacy.dto.UserLoginDto;
+import com.vironit.onlinepharmacy.dto.UserPublicDto;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
@@ -11,16 +11,16 @@ import com.vironit.onlinepharmacy.util.Converter;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BasicAuthenticationService implements AuthenticationService<UserData,UserPublicData,UserLoginData> {
+public class BasicAuthenticationService implements AuthenticationService<UserDto, UserPublicDto, UserLoginDto> {
 
     private final UserDao userDao;
     private final PasswordHasher passwordHasher;
-    private final Converter<UserPublicData, User> userToUserPublicDataConverter;
-    private final Converter<User, UserData> userDataToUserConverter;
+    private final Converter<UserPublicDto, User> userToUserPublicDataConverter;
+    private final Converter<User, UserDto> userDataToUserConverter;
 
     public BasicAuthenticationService(UserDao userDao, PasswordHasher passwordHasher,
-                                      Converter<UserPublicData, User> userToUserPublicDataConverter,
-                                      Converter<User, UserData> userDataToUserConverter) {
+                                      Converter<UserPublicDto, User> userToUserPublicDataConverter,
+                                      Converter<User, UserDto> userDataToUserConverter) {
         this.userDao = userDao;
         this.passwordHasher = passwordHasher;
         this.userToUserPublicDataConverter = userToUserPublicDataConverter;
@@ -28,11 +28,11 @@ public class BasicAuthenticationService implements AuthenticationService<UserDat
     }
 
     @Override
-    public long register(UserData userData) {
-        User user = userDataToUserConverter.convert(userData);
-        String email = userData.getEmail();
+    public long register(UserDto userDto) {
+        User user = userDataToUserConverter.convert(userDto);
+        String email = userDto.getEmail();
         if (userDao.getByEmail(email).isEmpty()) {
-            String password = userData.getPassword();
+            String password = userDto.getPassword();
             String hashedPassword = passwordHasher.hashPassword(password);
             user.setPassword(hashedPassword);
             return userDao.add(user);
@@ -41,10 +41,10 @@ public class BasicAuthenticationService implements AuthenticationService<UserDat
         }
     }
     @Override
-    public UserPublicData login(UserLoginData userLoginData) {
-        String email = userLoginData.getEmail();
+    public UserPublicDto login(UserLoginDto userLoginDto) {
+        String email = userLoginDto.getEmail();
         User user = userDao.getByEmail(email).orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
-        String password = userLoginData.getPassword();
+        String password = userLoginDto.getPassword();
         if (passwordHasher.validatePassword(password, user.getPassword())) {
             return userToUserPublicDataConverter.convert(user);
         } else {

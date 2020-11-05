@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.service.user;
 
 import com.vironit.onlinepharmacy.dao.UserDao;
-import com.vironit.onlinepharmacy.dto.UserData;
+import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.UserServiceException;
@@ -32,12 +32,12 @@ public class BasicUserServiceTest {
     @InjectMocks
     private BasicUserService userService;
 
-    private UserData userData;
+    private UserDto userDto;
     private User user;
 
     @BeforeEach
     void set() {
-        userData=new UserData(0, "testFirstName",
+        userDto =new UserDto( "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", "testPassword123");
         user = new User(0, "testFirstName",
@@ -50,7 +50,7 @@ public class BasicUserServiceTest {
         when(userDao.add(any()))
                 .thenReturn(0L);
 
-        long id = userService.add(userData);
+        long id = userService.add(userDto);
 
         verify(userDao).add(user);
         Assertions.assertEquals(0, id);
@@ -95,7 +95,7 @@ public class BasicUserServiceTest {
 
     @Test
     void updateShouldUseDao() {
-        UserData userDataForUpdate = new UserData(0, "updatedFirstName",
+        UserDto userDtoForUpdate = new UserDto("updatedFirstName",
                 "updatedMiddleName", "updatedLastName", LocalDate.of(1999, 12, 12),
                 "test@test2.com", "testPass4word123","\"testPass4word123\"");
         User userForUpdate = new User(0, "updatedFirstName",
@@ -104,7 +104,7 @@ public class BasicUserServiceTest {
         when(userDao.update(any()))
                 .thenReturn(true);
 
-        userService.update(userDataForUpdate);
+        userService.update(userDtoForUpdate);
 
         verify(userDao).update(userForUpdate);
     }

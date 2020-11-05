@@ -1,16 +1,16 @@
 package com.vironit.onlinepharmacy.util;
 
-import com.vironit.onlinepharmacy.dto.ProductCategoryData;
+import com.vironit.onlinepharmacy.dto.ProductCategoryDto;
 import com.vironit.onlinepharmacy.model.ProductCategory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductCategoryDataToProductCategoryConverter implements Converter<ProductCategory, ProductCategoryData> {
+public class ProductCategoryDataToProductCategoryConverter implements Converter<ProductCategory, ProductCategoryDto> {
     @Override
-    public ProductCategory convert(ProductCategoryData productCategoryData) {
+    public ProductCategory convert(ProductCategoryDto productCategoryDto) {
         ProductCategory productCategory=new ProductCategory();
-        productCategory.setName(productCategoryData.getName());
-        productCategory.setDescription(productCategoryData.getDescription());
+        productCategory.setName(productCategoryDto.getName());
+        productCategory.setDescription(productCategoryDto.getDescription());
         return productCategory;
     }
 }

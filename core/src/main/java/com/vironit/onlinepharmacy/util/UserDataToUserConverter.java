@@ -1,19 +1,19 @@
 package com.vironit.onlinepharmacy.util;
 
-import com.vironit.onlinepharmacy.dto.UserData;
+import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDataToUserConverter implements Converter<User, UserData> {
+public class UserDataToUserConverter implements Converter<User, UserDto> {
     @Override
-    public User convert(UserData userData) {
+    public User convert(UserDto userDto) {
         User user=new User();
-        user.setFirstName(userData.getFirstName());
-        user.setMiddleName(userData.getMiddleName());
-        user.setLastName(userData.getLastName());
-        user.setDateOfBirth(userData.getDateOfBirth());
-        user.setEmail(userData.getEmail());
+        user.setFirstName(userDto.getFirstName());
+        user.setMiddleName(userDto.getMiddleName());
+        user.setLastName(userDto.getLastName());
+        user.setDateOfBirth(userDto.getDateOfBirth());
+        user.setEmail(userDto.getEmail());
         return user;
     }
 }

@@ -5,7 +5,7 @@ import com.vironit.onlinepharmacy.model.Role;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class UserPublicData {
+public class UserPublicDto {
 
     private final long id;
     private final String firstName;
@@ -15,7 +15,7 @@ public class UserPublicData {
     private final String email;
     private final Role role;
 
-    public UserPublicData(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, Role role) {
+    public UserPublicDto(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, Role role) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -57,7 +57,7 @@ public class UserPublicData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserPublicData that = (UserPublicData) o;
+        UserPublicDto that = (UserPublicDto) o;
         return id == that.id &&
                 firstName.equals(that.firstName) &&
                 middleName.equals(that.middleName) &&

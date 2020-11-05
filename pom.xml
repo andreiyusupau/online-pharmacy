@@ -78,6 +78,7 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.4.22.Final</version>
         </dependency>
+<!-- TESTS -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -131,6 +132,7 @@
             <version>1.7.30</version>
             <scope>test</scope>
         </dependency>
+        <!-- WEB -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -139,6 +141,16 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.11.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-parameter-names</artifactId>
+            <version>2.11.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.11.3</version>
         </dependency>
     </dependencies>

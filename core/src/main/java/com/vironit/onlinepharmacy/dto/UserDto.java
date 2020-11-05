@@ -1,28 +1,32 @@
 package com.vironit.onlinepharmacy.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
+public class UserDto {
 
-public class UserData {
-
-    private final long id;
+    private long id;
     private final String firstName;
     private final String middleName;
     private final String lastName;
-
+    @JsonDeserialize(as=LocalDate.class)
     private final LocalDate dateOfBirth;
     private final String email;
     private final String password;
     private final String confirmPassword;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public UserData(@JsonProperty("id") long id, @JsonProperty("firstName")String firstName, @JsonProperty("middleName")String middleName, @JsonProperty("lastName")String lastName, @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy") @JsonProperty("dateOfBirth")LocalDate dateOfBirth, @JsonProperty("email")String email, @JsonProperty("password") String password, @JsonProperty("confirmPassword")String confirmPassword) {
-        this.id = id;
+    public UserDto(@JsonProperty("firstName")String firstName,
+                   @JsonProperty("middleName")String middleName,
+                   @JsonProperty("lastName")String lastName,
+                   @JsonProperty("dateOfBirth")LocalDate dateOfBirth,
+                   @JsonProperty("email")String email,
+                   @JsonProperty("password") String password,
+                   @JsonProperty("confirmPassword")String confirmPassword) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -34,6 +38,10 @@ public class UserData {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -67,26 +75,28 @@ public class UserData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserData)) return false;
-        UserData that = (UserData) o;
-        return firstName.equals(that.firstName) &&
-                middleName.equals(that.middleName) &&
-                lastName.equals(that.lastName) &&
-                dateOfBirth.equals(that.dateOfBirth) &&
-                email.equals(that.email) &&
-                password.equals(that.password) &&
-                confirmPassword.equals(that.confirmPassword);
+        if (!(o instanceof UserDto)) return false;
+        UserDto userDto = (UserDto) o;
+        return id == userDto.id &&
+                firstName.equals(userDto.firstName) &&
+                middleName.equals(userDto.middleName) &&
+                lastName.equals(userDto.lastName) &&
+                dateOfBirth.equals(userDto.dateOfBirth) &&
+                email.equals(userDto.email) &&
+                password.equals(userDto.password) &&
+                confirmPassword.equals(userDto.confirmPassword);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, middleName, lastName, dateOfBirth, email, password, confirmPassword);
+        return Objects.hash(id, firstName, middleName, lastName, dateOfBirth, email, password, confirmPassword);
     }
 
     @Override
     public String toString() {
-        return "UserRegisterParameters{" +
-                "firstName='" + firstName + '\'' +
+        return "UserData{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
@@ -95,5 +105,7 @@ public class UserData {
                 ", confirmPassword='" + confirmPassword + '\'' +
                 '}';
     }
+
+
 }
 

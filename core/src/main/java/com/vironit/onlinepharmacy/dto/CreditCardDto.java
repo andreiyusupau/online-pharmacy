@@ -1,16 +1,26 @@
 package com.vironit.onlinepharmacy.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.time.LocalDate;
 
-public class CreditCardData {
+public class CreditCardDto {
 
-    private  final String cardNumber;
+    private final String cardNumber;
     private final String ownerName;
+    @JsonDeserialize(as=LocalDate.class)
     private final LocalDate validThru;
     private final int cvv;
     private final long ownerId;
 
-    public CreditCardData(String cardNumber, String ownerName, LocalDate validThru, int cvv, long ownerId) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public CreditCardDto(@JsonProperty("cardNumber")String cardNumber,
+                         @JsonProperty("ownerName")String ownerName,
+                         @JsonProperty("validThru")LocalDate validThru,
+                         @JsonProperty("cvv")int cvv,
+                         @JsonProperty("ownerId")long ownerId) {
         this.cardNumber = cardNumber;
         this.ownerName = ownerName;
         this.validThru = validThru;

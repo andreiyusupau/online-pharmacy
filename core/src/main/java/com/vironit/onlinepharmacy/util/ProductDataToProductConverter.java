@@ -1,17 +1,17 @@
 package com.vironit.onlinepharmacy.util;
 
-import com.vironit.onlinepharmacy.dto.ProductData;
+import com.vironit.onlinepharmacy.dto.ProductDto;
 import com.vironit.onlinepharmacy.model.Product;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductDataToProductConverter implements Converter<Product, ProductData>{
+public class ProductDataToProductConverter implements Converter<Product, ProductDto>{
     @Override
-    public Product convert(ProductData productData) {
+    public Product convert(ProductDto productDto) {
         Product product=new Product();
-        product.setName(productData.getName());
-        product.setPrice(productData.getPrice());
-        product.setRecipeRequired(productData.isRecipeRequired());
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setRecipeRequired(productDto.isRecipeRequired());
         return product;
     }
 }

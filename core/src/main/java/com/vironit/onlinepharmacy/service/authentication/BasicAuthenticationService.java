@@ -31,7 +31,8 @@ public class BasicAuthenticationService implements AuthenticationService<UserDto
     public long register(UserDto userDto) {
         User user = userDataToUserConverter.convert(userDto);
         String email = userDto.getEmail();
-        if (userDao.getByEmail(email).isEmpty()) {
+        if (userDao.getByEmail(email)
+                .isEmpty()) {
             String password = userDto.getPassword();
             String hashedPassword = passwordHasher.hashPassword(password);
             user.setPassword(hashedPassword);
@@ -40,16 +41,17 @@ public class BasicAuthenticationService implements AuthenticationService<UserDto
             throw new AuthenticationServiceException("User with email " + email + " already exists.");
         }
     }
+
     @Override
     public UserPublicDto login(UserLoginDto userLoginDto) {
         String email = userLoginDto.getEmail();
         User user = userDao.getByEmail(email).orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
         String password = userLoginDto.getPassword();
         if (passwordHasher.validatePassword(password, user.getPassword())) {
+            System.out.println(user);
             return userToUserPublicDataConverter.convert(user);
         } else {
             throw new AuthenticationServiceException("Wrong password for user " + email);
         }
     }
-
 }

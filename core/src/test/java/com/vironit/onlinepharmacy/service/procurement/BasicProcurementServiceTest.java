@@ -89,7 +89,7 @@ public class BasicProcurementServiceTest {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
-        ProcurementDto procurementDto = new ProcurementDto(0, 1, operationPositionDtoList);
+        ProcurementDto procurementDto = new ProcurementDto( 1, operationPositionDtoList);
 
         long id = procurementService.add(procurementDto);
 
@@ -188,7 +188,8 @@ public class BasicProcurementServiceTest {
 
     @Test
     void updateShouldUseDao() {
-        ProcurementDto procurementUpdateData = new ProcurementDto(1, 1, operationPositionDtoList);
+        ProcurementDto procurementUpdateData = new ProcurementDto( 1, operationPositionDtoList);
+        procurementUpdateData.setId(1);
         when(procurementDao.get(1))
                 .thenReturn(Optional.of(procurement));
 

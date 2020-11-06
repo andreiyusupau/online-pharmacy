@@ -3,9 +3,11 @@ package com.vironit.onlinepharmacy.service.procurement;
 import com.vironit.onlinepharmacy.dao.ProcurementPositionDao;
 import com.vironit.onlinepharmacy.model.ProcurementPosition;
 import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class BasicProcurementPositionService implements ProcurementPositionService {
 
     private final ProcurementPositionDao procurementPositionDao;

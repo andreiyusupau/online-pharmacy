@@ -2,8 +2,8 @@ package com.vironit.onlinepharmacy.service.procurement;
 
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
 import com.vironit.onlinepharmacy.dao.ProcurementPositionDao;
-import com.vironit.onlinepharmacy.dto.PositionData;
-import com.vironit.onlinepharmacy.dto.ProcurementData;
+import com.vironit.onlinepharmacy.dto.PositionDto;
+import com.vironit.onlinepharmacy.dto.ProcurementDto;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
@@ -54,10 +54,10 @@ public class BasicProcurementServiceTest {
     private ProcurementPosition firstProcurementPosition;
     private ProcurementPosition secondProcurementPosition;
     private ProcurementPosition thirdProcurementPosition;
-    private PositionData firstOperationPositionData;
-    private PositionData secondOperationPositionData;
-    private PositionData thirdOperationPositionData;
-    private List<PositionData> operationPositionDataList;
+    private PositionDto firstOperationPositionDto;
+    private PositionDto secondOperationPositionDto;
+    private PositionDto thirdOperationPositionDto;
+    private List<PositionDto> operationPositionDtoList;
     private Procurement secondProcurement;
     private Procurement thirdProcurement;
     private Collection<Procurement> procurements;
@@ -75,10 +75,10 @@ public class BasicProcurementServiceTest {
         firstProcurementPosition = new ProcurementPosition(1, 7, firstProduct, procurement);
         secondProcurementPosition = new ProcurementPosition(2, 64, secondProduct, procurement);
         thirdProcurementPosition = new ProcurementPosition(3, 124, thirdProduct, procurement);
-        firstOperationPositionData = new PositionData(0, 1, 10);
-        secondOperationPositionData = new PositionData(0, 2, 15);
-        thirdOperationPositionData = new PositionData(0, 3, 25);
-        operationPositionDataList = List.of(firstOperationPositionData, secondOperationPositionData, thirdOperationPositionData);
+        firstOperationPositionDto = new PositionDto( 1, 10);
+        secondOperationPositionDto = new PositionDto( 2, 15);
+        thirdOperationPositionDto = new PositionDto( 3, 25);
+        operationPositionDtoList = List.of(firstOperationPositionDto, secondOperationPositionDto, thirdOperationPositionDto);
         secondProcurement = new Procurement(2, Instant.now(), user, ProcurementStatus.APPROVED);
         thirdProcurement = new Procurement(3, Instant.now(), user, ProcurementStatus.PREPARATION);
         procurements = List.of(procurement, secondProcurement, thirdProcurement);
@@ -89,9 +89,9 @@ public class BasicProcurementServiceTest {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
-        ProcurementData procurementData = new ProcurementData(0, 1, operationPositionDataList);
+        ProcurementDto procurementDto = new ProcurementDto( 1, operationPositionDtoList);
 
-        long id = procurementService.add(procurementData);
+        long id = procurementService.add(procurementDto);
 
         Assertions.assertEquals(0, id);
     }
@@ -188,7 +188,8 @@ public class BasicProcurementServiceTest {
 
     @Test
     void updateShouldUseDao() {
-        ProcurementData procurementUpdateData = new ProcurementData(1, 1, operationPositionDataList);
+        ProcurementDto procurementUpdateData = new ProcurementDto( 1, operationPositionDtoList);
+        procurementUpdateData.setId(1);
         when(procurementDao.get(1))
                 .thenReturn(Optional.of(procurement));
 

@@ -1,9 +1,9 @@
 package com.vironit.onlinepharmacy.service.authentification;
 
 import com.vironit.onlinepharmacy.dao.UserDao;
-import com.vironit.onlinepharmacy.dto.UserData;
-import com.vironit.onlinepharmacy.dto.UserLoginData;
-import com.vironit.onlinepharmacy.dto.UserPublicData;
+import com.vironit.onlinepharmacy.dto.UserDto;
+import com.vironit.onlinepharmacy.dto.UserLoginDto;
+import com.vironit.onlinepharmacy.dto.UserPublicDto;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
@@ -12,7 +12,6 @@ import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceExcepti
 import com.vironit.onlinepharmacy.util.Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +22,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-@Disabled
+//@Disabled
 @ExtendWith(MockitoExtension.class)
 public class BasicAuthenticationServiceTest {
     @Mock
@@ -31,19 +30,19 @@ public class BasicAuthenticationServiceTest {
     @Mock
     private PasswordHasher passwordHasher;
     @Mock
-    private Converter<UserPublicData, User> userToUserPublicParametersConverter;
+    private Converter<UserPublicDto, User> userToUserPublicParametersConverter;
     @Mock
-    private Converter<User, UserData> userRegisterParametersToUserConverter;
+    private Converter<User, UserDto> userRegisterParametersToUserConverter;
     @InjectMocks
     private BasicAuthenticationService authenticationService;
 
-    private UserData userData;
+    private UserDto userDto;
 
     private User user;
 
     @BeforeEach
     void set() {
-        userData = new UserData(0, "testFirstName",
+        userDto = new UserDto("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", "testPassword123");
         user = new User(0, "testFirstName",
@@ -55,40 +54,40 @@ public class BasicAuthenticationServiceTest {
     void registerShouldReturnIdEqualToZero() {
         when(userDao.getByEmail("test@test.com"))
                 .thenReturn(Optional.empty());
-        when(userRegisterParametersToUserConverter.convert(userData))
+        when(userRegisterParametersToUserConverter.convert(userDto))
                 .thenReturn(user);
         when(userDao.add(user))
                 .thenReturn(0L);
         when(passwordHasher.hashPassword("testPassword123"))
                 .thenReturn("testPassword123");
 
-        long id = authenticationService.register(userData);
+        long id = authenticationService.register(userDto);
 
-        verify(userRegisterParametersToUserConverter).convert(userData);
+        verify(userRegisterParametersToUserConverter).convert(userDto);
         verify(userDao).getByEmail("test@test.com");
         Assertions.assertEquals(0, id);
     }
 
     @Test
     void registerShouldThrowRegistrationExceptionUserWithSuchEmailAlreadyExists() {
-        when(userRegisterParametersToUserConverter.convert(userData))
+        when(userRegisterParametersToUserConverter.convert(userDto))
                 .thenReturn(user);
         when(userDao.getByEmail("test@test.com"))
                 .thenReturn(Optional.of(user));
 
         Exception exception = Assertions.assertThrows(AuthenticationServiceException.class,
-                () -> authenticationService.register(userData));
+                () -> authenticationService.register(userDto));
 //TODO:Not working properly
-        verify(userRegisterParametersToUserConverter).convert(userData);
+        verify(userRegisterParametersToUserConverter).convert(userDto);
         verify(userDao).getByEmail("test@test.com");
-        String expectedMessage = "User with email " + userData.getEmail() + " already exists.";
+        String expectedMessage = "User with email " + userDto.getEmail() + " already exists.";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
     void loginShouldReturnUserPublicParameters() {
-        UserPublicData expectedUserPublicData = new UserPublicData(0, "testFirstName",
+        UserPublicDto expectedUserPublicDto = new UserPublicDto(0, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", Role.CONSUMER);
         when(userDao.getByEmail("test@test.com"))
@@ -96,54 +95,54 @@ public class BasicAuthenticationServiceTest {
         when(passwordHasher.validatePassword("testPassword123", "testPassword123"))
                 .thenReturn(true);
         when(userToUserPublicParametersConverter.convert(user))
-                .thenReturn(expectedUserPublicData);
-        UserLoginData userLoginData = new UserLoginData("test@test.com", "testPassword123");
+                .thenReturn(expectedUserPublicDto);
+        UserLoginDto userLoginDto = new UserLoginDto("test@test.com", "testPassword123");
 
-        UserPublicData userPublicData = authenticationService.login(userLoginData);
+        UserPublicDto userPublicDto = authenticationService.login(userLoginDto);
 
         verify(userToUserPublicParametersConverter).convert(user);
         verify(userDao).getByEmail("test@test.com");
         verify(passwordHasher).validatePassword("testPassword123", "testPassword123");
 
-        Assertions.assertEquals(expectedUserPublicData, userPublicData);
+        Assertions.assertEquals(expectedUserPublicDto, userPublicDto);
     }
 
     @Test
     void loginShouldThrowExceptionEmailDoesNotExist() {
-        UserLoginData userLoginData = new UserLoginData("nonexistentemail@test.com",
+        UserLoginDto userLoginDto = new UserLoginDto("nonexistentemail@test.com",
                 "testPassword123");
         when(userDao.getByEmail("nonexistentemail@test.com"))
                 .thenReturn(Optional.empty());
 
         Exception exception = Assertions.assertThrows(AuthenticationServiceException.class,
-                () -> authenticationService.login(userLoginData));
+                () -> authenticationService.login(userLoginDto));
 
         verify(userToUserPublicParametersConverter, never()).convert(any(User.class));
         verify(userDao).getByEmail("nonexistentemail@test.com");
         verify(passwordHasher, never()).validatePassword(anyString(), anyString());
         verify(userDao, never()).add(any(User.class));
-        String expectedMessage = "User with email " + userLoginData.getEmail() + " does not exist.";
+        String expectedMessage = "User with email " + userLoginDto.getEmail() + " does not exist.";
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
     void loginShouldThrowExceptionWrongPassword() {
-        UserLoginData userLoginData = new UserLoginData("test@test.com", "wrongPassword");
+        UserLoginDto userLoginDto = new UserLoginDto("test@test.com", "wrongPassword");
         when(userDao.getByEmail("test@test.com"))
                 .thenReturn(Optional.of(user));
         when(passwordHasher.validatePassword("wrongPassword", "testPassword123"))
                 .thenReturn(false);
 
         Exception exception = Assertions.assertThrows(AuthenticationServiceException.class,
-                () -> authenticationService.login(userLoginData));
+                () -> authenticationService.login(userLoginDto));
 
         verify(userToUserPublicParametersConverter, never()).convert(any(User.class));
         verify(userDao).getByEmail("test@test.com");
         verify(passwordHasher).validatePassword("wrongPassword", "testPassword123");
         verify(userDao, never()).add(any(User.class));
 
-        String expectedMessage = "Wrong password for user " + userLoginData.getEmail();
+        String expectedMessage = "Wrong password for user " + userLoginDto.getEmail();
         String actualMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, actualMessage);
     }

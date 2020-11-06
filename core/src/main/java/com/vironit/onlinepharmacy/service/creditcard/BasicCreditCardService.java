@@ -1,32 +1,31 @@
 package com.vironit.onlinepharmacy.service.creditcard;
 
 import com.vironit.onlinepharmacy.dao.CreditCardDao;
-import com.vironit.onlinepharmacy.dto.CreditCardData;
+import com.vironit.onlinepharmacy.dto.CreditCardDto;
 import com.vironit.onlinepharmacy.model.CreditCard;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.CreditCardServiceException;
-import com.vironit.onlinepharmacy.service.user.UserService;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class BasicCreditCardService implements CreditCardService {
 
     private final CreditCardDao creditCardDao;
-    private final UserService userService;
-    private final Converter<CreditCard,CreditCardData> creditCardDataToCreditCardConverter;
+    private final Converter<CreditCard, CreditCardDto> creditCardDataToCreditCardConverter;
 
-    public BasicCreditCardService(CreditCardDao creditCardDao, UserService userService, Converter<CreditCard, CreditCardData> creditCardDataToCreditCardConverter) {
+    public BasicCreditCardService(CreditCardDao creditCardDao, Converter<CreditCard, CreditCardDto> creditCardDataToCreditCardConverter) {
         this.creditCardDao = creditCardDao;
-        this.userService = userService;
         this.creditCardDataToCreditCardConverter = creditCardDataToCreditCardConverter;
     }
 
     @Override
-    public long add(CreditCardData creditCardData) {
+    public long add(CreditCardDto creditCardDto) {
         User user=new User();
-        user.setId(creditCardData.getOwnerId());
-        CreditCard creditCard=creditCardDataToCreditCardConverter.convert(creditCardData);
+        user.setId(creditCardDto.getOwnerId());
+        CreditCard creditCard=creditCardDataToCreditCardConverter.convert(creditCardDto);
         creditCard.setOwner(user);
         return creditCardDao.add(creditCard);
     }

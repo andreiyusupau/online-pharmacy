@@ -96,7 +96,7 @@ public class JpaProcurementDao implements ProcurementDao {
         CriteriaQuery<Procurement> criteriaQuery = criteriaBuilder.createQuery(Procurement.class);
         Root<Procurement> root = criteriaQuery.from(Procurement.class);
         criteriaQuery.select(root)
-                .where(criteriaBuilder.equal(root.get("user")
+                .where(criteriaBuilder.equal(root.get("owner")
                         .get("id"), id));
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -108,7 +108,7 @@ public class JpaProcurementDao implements ProcurementDao {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaDelete<Procurement> criteriaDelete = criteriaBuilder.createCriteriaDelete(Procurement.class);
         Root<Procurement> root = criteriaDelete.from(Procurement.class);
-        criteriaDelete.where(criteriaBuilder.equal(root.get("user")
+        criteriaDelete.where(criteriaBuilder.equal(root.get("owner")
                 .get("id"), id));
         return entityManager.createQuery(criteriaDelete)
                 .executeUpdate() > 0;

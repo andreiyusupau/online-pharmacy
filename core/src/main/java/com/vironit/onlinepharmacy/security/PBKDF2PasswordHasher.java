@@ -1,6 +1,7 @@
 package com.vironit.onlinepharmacy.security;
 
 import com.vironit.onlinepharmacy.security.exception.PasswordHashException;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -9,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
+@Component
 public class PBKDF2PasswordHasher implements PasswordHasher {
 
     public static final int ITERATIONS = 65536;

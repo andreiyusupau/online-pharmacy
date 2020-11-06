@@ -2,8 +2,8 @@ package com.vironit.onlinepharmacy.service.order;
 
 import com.vironit.onlinepharmacy.dao.OrderDao;
 import com.vironit.onlinepharmacy.dao.OrderPositionDao;
-import com.vironit.onlinepharmacy.dto.OrderData;
-import com.vironit.onlinepharmacy.dto.PositionData;
+import com.vironit.onlinepharmacy.dto.OrderDto;
+import com.vironit.onlinepharmacy.dto.PositionDto;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
@@ -52,10 +52,10 @@ public class BasicOrderServiceTest {
     private OrderPosition firstOrderPosition;
     private OrderPosition secondOrderPosition;
     private OrderPosition thirdOrderPosition;
-    private PositionData firstOperationPositionData;
-    private PositionData secondOperationPositionData;
-    private PositionData thirdOperationPositionData;
-    private List<PositionData> operationPositionDataList;
+    private PositionDto firstOperationPositionDto;
+    private PositionDto secondOperationPositionDto;
+    private PositionDto thirdOperationPositionDto;
+    private List<PositionDto> operationPositionDtoList;
     private Order secondOrder;
     private Order thirdOrder;
     private Collection<Order> orders;
@@ -73,13 +73,13 @@ public class BasicOrderServiceTest {
         firstOrderPosition = new OrderPosition(1, 7, firstProduct, order);
         secondOrderPosition = new OrderPosition(2, 64, secondProduct, order);
         thirdOrderPosition = new OrderPosition(3, 124, thirdProduct, order);
-        firstOperationPositionData = new PositionData(0, 1, 10);
-        secondOperationPositionData = new PositionData(0, 2, 15);
-        thirdOperationPositionData = new PositionData(0, 3, 25);
-        operationPositionDataList = new ArrayList<>();
-        operationPositionDataList.add(firstOperationPositionData);
-        operationPositionDataList.add(secondOperationPositionData);
-        operationPositionDataList.add(thirdOperationPositionData);
+        firstOperationPositionDto = new PositionDto( 1, 10);
+        secondOperationPositionDto = new PositionDto( 2, 15);
+        thirdOperationPositionDto = new PositionDto( 3, 25);
+        operationPositionDtoList = new ArrayList<>();
+        operationPositionDtoList.add(firstOperationPositionDto);
+        operationPositionDtoList.add(secondOperationPositionDto);
+        operationPositionDtoList.add(thirdOperationPositionDto);
         secondOrder = new Order(2, Instant.now(), user, OrderStatus.PAID);
         thirdOrder = new Order(3, Instant.now(), user, OrderStatus.IN_PROGRESS);
         orders = new ArrayList<>();
@@ -93,9 +93,9 @@ public class BasicOrderServiceTest {
         when(userService.get(anyLong()))
                 .thenReturn(user);
 
-        OrderData orderData = new OrderData(0, 1, operationPositionDataList);
+        OrderDto orderDto = new OrderDto( 1, operationPositionDtoList);
 
-        long id = orderService.add(orderData);
+        long id = orderService.add(orderDto);
 
         Assertions.assertEquals(0, id);
     }
@@ -212,7 +212,8 @@ public class BasicOrderServiceTest {
 
     @Test
     void updateShouldUseDao() {
-        OrderData orderUpdateData = new OrderData(1, 1, operationPositionDataList);
+        OrderDto orderUpdateData = new OrderDto( 1, operationPositionDtoList);
+        orderUpdateData.setId(1);
         when(orderDao.get(1))
                 .thenReturn(Optional.of(order));
 

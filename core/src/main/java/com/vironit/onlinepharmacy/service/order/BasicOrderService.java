@@ -1,18 +1,20 @@
 package com.vironit.onlinepharmacy.service.order;
 
 import com.vironit.onlinepharmacy.dao.OrderDao;
-import com.vironit.onlinepharmacy.dto.OrderData;
+import com.vironit.onlinepharmacy.dto.OrderDto;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 import com.vironit.onlinepharmacy.service.user.UserService;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class BasicOrderService implements OrderService {
 
     private final OrderDao orderDao;
@@ -30,13 +32,13 @@ public class BasicOrderService implements OrderService {
     }
 
     @Override
-    public long add(OrderData orderData) {
+    public long add(OrderDto orderDto) {
         User owner = new User();
-        owner.setId(orderData.getOwnerId());
+        owner.setId(orderDto.getOwnerId());
         Order order = new Order(-1, Instant.now(), owner, OrderStatus.PREPARATION);
         long id=orderDao.add(order);
                 order.setId(id);
-        List<OrderPosition> orderPositions = orderData.getPositionDataList()
+        List<OrderPosition> orderPositions = orderDto.getPositionDataList()
                 .stream()
                 .map(positionData -> {
                     Product product=new Product();
@@ -98,12 +100,12 @@ public class BasicOrderService implements OrderService {
     }
 
     @Override
-    public void update(OrderData orderData) {
+    public void update(OrderDto orderDto) {
         User owner = new User();
-        owner.setId(orderData.getOwnerId());
-        Order order = get(orderData.getId());
+        owner.setId(orderDto.getOwnerId());
+        Order order = get(orderDto.getId());
         order.setOwner(owner);
-        List<OrderPosition> operationPositions = orderData.getPositionDataList()
+        List<OrderPosition> operationPositions = orderDto.getPositionDataList()
                 .stream()
                 .map(positionData -> {
                     Product product=new Product();
@@ -111,7 +113,7 @@ public class BasicOrderService implements OrderService {
                     return new OrderPosition(-1, positionData.getQuantity(), product, order);
                 })
                 .collect(Collectors.toList());
-        orderPositionService.removeAllByOwnerId(orderData.getOwnerId());
+        orderPositionService.removeAllByOwnerId(orderDto.getOwnerId());
         orderPositionService.addAll(operationPositions);
     }
 

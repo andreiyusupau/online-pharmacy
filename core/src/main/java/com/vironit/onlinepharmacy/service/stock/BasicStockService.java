@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.service.stock;
 
 import com.vironit.onlinepharmacy.dao.StockDao;
-import com.vironit.onlinepharmacy.dto.PositionData;
+import com.vironit.onlinepharmacy.dto.PositionDto;
 import com.vironit.onlinepharmacy.model.OrderPosition;
 import com.vironit.onlinepharmacy.model.Position;
 import com.vironit.onlinepharmacy.model.Product;
@@ -9,33 +9,35 @@ import com.vironit.onlinepharmacy.model.StockPosition;
 import com.vironit.onlinepharmacy.service.exception.StockServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
+@Service
 public class BasicStockService implements StockService {
 
     private final StockDao stockDAO;
     private final ProductService productService;
-    private final Converter<StockPosition, PositionData> positionDataToStockPositionConverter;
+    private final Converter<StockPosition, PositionDto> positionDataToStockPositionConverter;
 
-    public BasicStockService(StockDao stockDAO, ProductService productService, Converter<StockPosition, PositionData> positionDataToStockPositionConverter) {
+    public BasicStockService(StockDao stockDAO, ProductService productService, Converter<StockPosition, PositionDto> positionDataToStockPositionConverter) {
         this.stockDAO = stockDAO;
         this.productService = productService;
         this.positionDataToStockPositionConverter = positionDataToStockPositionConverter;
     }
 
     @Override
-    public long add(PositionData positionData) {
-        long productId = positionData.getProductId();
+    public long add(PositionDto positionDto) {
+        long productId = positionDto.getProductId();
         Optional<StockPosition> existingStockPosition = stockDAO.getByProductId(productId);
         if (existingStockPosition.isPresent()) {
             StockPosition updatedPosition = existingStockPosition.get();
-            updatedPosition.setQuantity(updatedPosition.getQuantity() + positionData.getQuantity());
+            updatedPosition.setQuantity(updatedPosition.getQuantity() + positionDto.getQuantity());
             stockDAO.update(updatedPosition);
             return updatedPosition.getId();
         } else {
-            StockPosition stockPosition = positionDataToStockPositionConverter.convert(positionData);
+            StockPosition stockPosition = positionDataToStockPositionConverter.convert(positionDto);
             Product product = new Product();
             product.setId(productId);
             return stockDAO.add(stockPosition);
@@ -54,8 +56,8 @@ public class BasicStockService implements StockService {
     }
 
     @Override
-    public void update(PositionData positionData) {
-        stockDAO.update(positionDataToStockPositionConverter.convert(positionData));
+    public void update(PositionDto positionDto) {
+        stockDAO.update(positionDataToStockPositionConverter.convert(positionDto));
     }
 
     @Override
@@ -64,7 +66,7 @@ public class BasicStockService implements StockService {
     }
 
     @Override
-    public boolean addAll(Collection<PositionData> positionData) {
+    public boolean addAll(Collection<PositionDto> positionData) {
         positionData.forEach(this::add);
         return true;
     }

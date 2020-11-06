@@ -4,11 +4,13 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@Entity
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 public abstract class Operation {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    //@GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private long id;
     @Column(name = "date")

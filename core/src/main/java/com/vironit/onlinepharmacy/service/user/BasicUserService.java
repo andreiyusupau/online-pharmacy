@@ -1,31 +1,38 @@
 package com.vironit.onlinepharmacy.service.user;
 
 import com.vironit.onlinepharmacy.dao.UserDao;
-import com.vironit.onlinepharmacy.dto.UserData;
+import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.UserServiceException;
 import com.vironit.onlinepharmacy.util.Converter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class BasicUserService implements UserService {
 
+    private static final Logger LOGGER = LogManager.getLogger(BasicUserService.class);
     private final UserDao userDAO;
-    private final Converter<User,UserData> userDataToUserConverter;
+    private final Converter<User, UserDto> userDataToUserConverter;
 
-    public BasicUserService(UserDao userDAO, Converter<User, UserData> userDataToUserConverter) {
+    public BasicUserService(UserDao userDAO, Converter<User, UserDto> userDataToUserConverter) {
         this.userDAO = userDAO;
         this.userDataToUserConverter = userDataToUserConverter;
     }
 
     @Override
-    public long add(UserData userData) {
-        return userDAO.add(userDataToUserConverter.convert(userData));
+    public long add(UserDto userDto) {
+        LOGGER.info("Adding new user from "+userDto);
+        return userDAO.add(userDataToUserConverter.convert(userDto));
     }
 
     @Override
     public User get(long id) {
-        return userDAO.get(id).orElseThrow(() -> new UserServiceException("Can't get user. User with id " + id + " not found."));
+        return userDAO.get(id)
+                .orElseThrow(() -> new UserServiceException("Can't get user. User with id " + id + " not found."));
     }
 
     @Override
@@ -34,8 +41,8 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public void update(UserData userData) {
-        userDAO.update(userDataToUserConverter.convert(userData));
+    public void update(UserDto userDto) {
+        userDAO.update(userDataToUserConverter.convert(userDto));
     }
 
     @Override

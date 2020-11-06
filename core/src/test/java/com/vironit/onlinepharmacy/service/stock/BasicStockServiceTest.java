@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.service.stock;
 
 import com.vironit.onlinepharmacy.dao.StockDao;
-import com.vironit.onlinepharmacy.dto.PositionData;
+import com.vironit.onlinepharmacy.dto.PositionDto;
 import com.vironit.onlinepharmacy.model.*;
 import com.vironit.onlinepharmacy.service.exception.StockServiceException;
 import org.junit.jupiter.api.Assertions;
@@ -34,9 +34,9 @@ public class BasicStockServiceTest {
 
     private Product product;
     private Product secondProduct;
-    private PositionData positionData;
-    private PositionData secondPositionData;
-    private Collection<PositionData> positionDataCollection;
+    private PositionDto positionDto;
+    private PositionDto secondPositionDto;
+    private Collection<PositionDto> positionDtoCollection;
     private StockPosition stockPosition;
     private StockPosition secondStockPosition;
     private Collection<StockPosition> stockPositions;
@@ -49,13 +49,13 @@ public class BasicStockServiceTest {
     @BeforeEach
     void set() {
         product = new Product(1, "testProduct", new BigDecimal("1421"), null, false);
-        positionData = new PositionData(0, 1, 2);
+        positionDto = new PositionDto(1, 2);
         stockPosition = new StockPosition(1, 2, product, 0);
         secondProduct = new Product(2, "secondTestProduct", new BigDecimal("152"), null, false);
-        secondPositionData = new PositionData(0, 2, 51);
+        secondPositionDto = new PositionDto( 2, 51);
         secondStockPosition = new StockPosition(2, 51, secondProduct, 0);
         stockPositions = List.of(stockPosition, secondStockPosition);
-        positionDataCollection = List.of(positionData, secondPositionData);
+        positionDtoCollection = List.of(positionDto, secondPositionDto);
         order = new Order(1, Instant.now(), null, OrderStatus.PAID);
         orderPosition = new OrderPosition(1, 6, product, order);
         secondOrderPosition = new OrderPosition(2, 5, secondProduct, order);
@@ -67,7 +67,7 @@ public class BasicStockServiceTest {
         when(stockDao.add(any()))
                 .thenReturn(0L);
 
-        long id = stockService.add(positionData);
+        long id = stockService.add(positionDto);
 
         verify(stockDao, times(1)).add(any(StockPosition.class));
         assertEquals(0, id);
@@ -112,9 +112,9 @@ public class BasicStockServiceTest {
         StockPosition positionForUpdate = new StockPosition(1, 5, product, 2);
         when(stockDao.update(any()))
                 .thenReturn(true);
-        PositionData positionDataForUpdate = new PositionData( 1, 1, 5);
-
-        stockService.update(positionDataForUpdate);
+        PositionDto positionDtoForUpdate = new PositionDto(  1, 5);
+positionDtoForUpdate.setId(1);
+        stockService.update(positionDtoForUpdate);
 
         verify(stockDao).update(positionForUpdate);
     }
@@ -134,7 +134,7 @@ public class BasicStockServiceTest {
         when(stockDao.add(any(StockPosition.class)))
                 .thenReturn(1L)
                 .thenReturn(2L);
-        stockService.addAll(positionDataCollection);
+        stockService.addAll(positionDtoCollection);
         verify(stockDao, times(2)).add(any());
     }
 

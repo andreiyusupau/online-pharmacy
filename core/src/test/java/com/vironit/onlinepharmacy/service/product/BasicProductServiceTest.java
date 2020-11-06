@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.service.product;
 
 import com.vironit.onlinepharmacy.dao.ProductDao;
-import com.vironit.onlinepharmacy.dto.ProductData;
+import com.vironit.onlinepharmacy.dto.ProductDto;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.service.exception.ProductServiceException;
 import org.junit.jupiter.api.Assertions;
@@ -31,14 +31,14 @@ public class BasicProductServiceTest {
     @InjectMocks
     private BasicProductService productService;
 
-    private ProductData productData;
+    private ProductDto productDto;
     private Product product;
     private Product secondProduct;
     private Collection<Product> products;
 
     @BeforeEach
     void set() {
-        productData=new ProductData(1, "testProduct", new BigDecimal(1245), 0, false);
+        productDto =new ProductDto("testProduct", new BigDecimal(1245), 0, false);
         product = new Product(1, "testProduct", new BigDecimal(1245), null, false);
         secondProduct = new Product(2, "secondTestProduct", new BigDecimal(1632), null, false);
         products = new ArrayList<>();
@@ -51,7 +51,7 @@ public class BasicProductServiceTest {
         when(productDao.add(any()))
                 .thenReturn(0L);
 
-        long id = productService.add(productData);
+        long id = productService.add(productDto);
 
         verify(productDao).add(product);
         Assertions.assertEquals(0, id);
@@ -95,9 +95,9 @@ public class BasicProductServiceTest {
     void updateShouldUseDao() {
         when(productDao.update(any()))
                 .thenReturn(true);
-ProductData productDataForUpdate=new ProductData(1, "updatedName", new BigDecimal("1245"), 0, false);
-
-productService.update(productDataForUpdate);
+ProductDto productDtoForUpdate =new ProductDto( "updatedName", new BigDecimal("1245"), 0, false);
+productDtoForUpdate.setId(1);
+productService.update(productDtoForUpdate);
 
         Product productForUpdate = new Product(1, "updatedName", new BigDecimal("1245"), null, false);
         verify(productDao).update(productForUpdate);

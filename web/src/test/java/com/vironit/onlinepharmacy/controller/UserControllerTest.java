@@ -1,38 +1,39 @@
 package com.vironit.onlinepharmacy.controller;
 
 
+import com.vironit.onlinepharmacy.model.Role;
+import com.vironit.onlinepharmacy.service.user.UserService;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.ServletContext;
+import java.time.LocalDate;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Disabled
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = ApplicationConfigurationTest.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@WebAppConfiguration
+
+@ExtendWith(MockitoExtension.class)
+@SpringJUnitWebConfig(classes = ApplicationConfigurationTest.class)
 class UserControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private UserService userService;
 
     private MockMvc mockMvc;
 
@@ -43,21 +44,13 @@ class UserControllerTest {
     }
 
     @Test
-    public void givenWac_whenServletContext_thenItProvidesGreetController() {
-        ServletContext servletContext = webApplicationContext.getServletContext();
-
-        assertNotNull(servletContext);
-        assertTrue(servletContext instanceof MockServletContext);
-        assertNotNull(webApplicationContext.getBean("userController"));
-    }
-
-    @Test
     void addShouldReturnFirstUserId() throws Exception {
-
-        String userData="{\"firstName\":\"testf\",\n" +
+//TODO:validation
+        when(userService.add(any())).thenReturn(1L);
+        String userData = "{\"firstName\":\"testf\",\n" +
                 "    \"middleName\":\"testm\",\n" +
                 "    \"lastName\":\"testl\",\n" +
-                "    \"dateOfBirth\":\"2000-12-12\",\n" +
+                "    \"dateOfBirth\":\"2020-12-12\",\n" +
                 "    \"email\":\"email@test.com\",\n" +
                 "    \"password\":\"mytestpass\",\n" +
                 "    \"confirmPassword\":\"mytestpass\"\n" +
@@ -74,26 +67,66 @@ class UserControllerTest {
     }
 
     @Test
+    void addShouldReturnBadRequest() throws Exception {
+//TODO:validation
+        when(userService.add(any())).thenReturn(1L);
+        String userData = "{\"firstName\":\"testf\",\n" +
+                "    \"middleName\":\"testm\",\n" +
+                "    \"lastName\":\"testl\",\n" +
+                "    \"dateOfBirth\":\"2060-12-12\",\n" +
+                "    \"email\":\"emailtest.com\",\n" +
+                "    \"password\":\"mytestpass9\",\n" +
+                "    \"confirmPassword\":\"mytestpass\"\n" +
+                "    }";
+
+        this.mockMvc
+                .perform(post("/users")
+                        .contentType("application/json;charset=UTF-8")
+                        .content(userData))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void getShouldReturnFirstUser() throws Exception {
+        when(userService.get(1)).thenReturn(new UserPublicVo(1, "testfname", "testmname", "testlname", LocalDate.of(2000, 1, 1), "email@test.com", Role.CONSUMER));
         this.mockMvc
                 .perform(get("/users/{id}", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.name").value("testfname"))
+                .andExpect(jsonPath("$.firstName").value("testfname"))
                 .andExpect(jsonPath("$.password").doesNotExist());
     }
 
     @Test
     void getAllShouldReturnAllUsers() throws Exception {
+        when(userService.getAll()).thenReturn(List.of(new UserPublicVo(1, "testfname", "testmname", "testlname", LocalDate.of(2000, 1, 1), "email@test.com", Role.CONSUMER)));
         this.mockMvc
                 .perform(get("/users"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.*").isArray())
-                .andExpect(jsonPath("$.*.length()").value(1))
-        .andExpect(jsonPath("$.*.password").doesNotExist());
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[*].password").doesNotExist());
     }
+
+//    @Test
+//    void updateShouldReturnUser(){
+//        this.mockMvc
+//                .perform(get("/users"))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType("application/json"))
+//                .andExpect(jsonPath("$.*").isArray())
+//                .andExpect(jsonPath("$.length()").value(1))
+//                .andExpect(jsonPath("$[*].password").doesNotExist());
+//    }
+//
+//    @Test
+//    void removeShouldRemoveUser(){
+//
+//    }
 }

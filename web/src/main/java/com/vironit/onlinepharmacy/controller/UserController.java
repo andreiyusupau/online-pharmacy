@@ -1,8 +1,8 @@
 package com.vironit.onlinepharmacy.controller;
 
 import com.vironit.onlinepharmacy.dto.UserDto;
-import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.user.UserService;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,7 +19,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<User> getAll() {
+    public Collection<UserPublicVo> getAll() {
         return userService.getAll();
     }
 
@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User get(@PathVariable Long id) {
+    public UserPublicVo get(@PathVariable Long id) {
         return userService.get(id);
     }
 

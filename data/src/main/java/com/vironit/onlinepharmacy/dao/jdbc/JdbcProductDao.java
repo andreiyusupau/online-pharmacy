@@ -35,9 +35,8 @@ public class JdbcProductDao implements ProductDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, product.getName());
-            preparedStatement.setLong(2, product.getPrice()
-                    .movePointRight(2)
-                    .longValueExact());
+            preparedStatement.setLong(2, product.getPrice().
+                    longValueExact());
             preparedStatement.setBoolean(3, product.isRecipeRequired());
             preparedStatement.setLong(4, product.getProductCategory()
                     .getId());
@@ -57,7 +56,6 @@ public class JdbcProductDao implements ProductDao {
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, product.getName());
             preparedStatement.setLong(2, product.getPrice()
-                    .movePointRight(2)
                     .longValueExact());
             preparedStatement.setBoolean(3, product.isRecipeRequired());
             preparedStatement.setLong(4, product.getProductCategory()
@@ -162,8 +160,7 @@ public class JdbcProductDao implements ProductDao {
         Product product = new Product();
         product.setId(resultSet.getLong(1));
         product.setName(resultSet.getString(2));
-        product.setPrice(BigDecimal.valueOf(resultSet.getLong(3))
-                .movePointLeft(2));
+        product.setPrice(BigDecimal.valueOf(resultSet.getLong(3)));
         product.setRecipeRequired(resultSet.getBoolean(4));
         ProductCategory productCategory = new ProductCategory();
         productCategory.setId(resultSet.getLong(5));

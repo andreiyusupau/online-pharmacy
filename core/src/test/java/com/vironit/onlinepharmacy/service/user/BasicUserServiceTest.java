@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.UserServiceException;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -34,6 +35,7 @@ public class BasicUserServiceTest {
 
     private UserDto userDto;
     private User user;
+    private UserPublicVo userPublicVo;
 
     @BeforeEach
     void set() {
@@ -43,6 +45,9 @@ public class BasicUserServiceTest {
         user = new User(0, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
+        userPublicVo=new UserPublicVo(1, "testFirstName",
+                "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
+                "test@test.com", Role.CONSUMER);
     }
 
     @Test
@@ -61,10 +66,10 @@ public class BasicUserServiceTest {
         when(userDao.get(anyLong()))
                 .thenReturn(Optional.of(user));
 
-        User actualUser = userService.get(1);
+        UserPublicVo actualUserPublicVo = userService.get(1);
 
         verify(userDao).get(1);
-        Assertions.assertEquals(user, actualUser);
+        Assertions.assertEquals(userPublicVo, actualUserPublicVo);
     }
 
     @Test
@@ -88,7 +93,7 @@ public class BasicUserServiceTest {
         when(userDao.getAll())
                 .thenReturn(users);
 
-        Collection<User> actualUsers = userService.getAll();
+        Collection<UserPublicVo> actualUsers = userService.getAll();
 
         Assertions.assertEquals(users, actualUsers);
     }

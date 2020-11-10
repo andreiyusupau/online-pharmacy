@@ -1,73 +1,81 @@
 package com.vironit.onlinepharmacy.controller;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import com.vironit.onlinepharmacy.dto.UserDto;
+import com.vironit.onlinepharmacy.dto.UserLoginDto;
+import com.vironit.onlinepharmacy.service.authentication.AuthenticationService;
+import com.vironit.onlinepharmacy.service.creditcard.CreditCardService;
+import com.vironit.onlinepharmacy.service.order.OrderService;
+import com.vironit.onlinepharmacy.service.procurement.ProcurementService;
+import com.vironit.onlinepharmacy.service.product.ProductCategoryService;
+import com.vironit.onlinepharmacy.service.product.ProductService;
+import com.vironit.onlinepharmacy.service.recipe.RecipeService;
+import com.vironit.onlinepharmacy.service.stock.StockService;
+import com.vironit.onlinepharmacy.service.user.UserService;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
+import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.context.annotation.Primary;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.sql.DataSource;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-@ComponentScan(basePackages = "com.vironit.onlinepharmacy")
+@ComponentScan(basePackages = "com.vironit.onlinepharmacy.controller")
 @Configuration
-@EnableTransactionManagement
-public class ApplicationConfigurationTest {
-
-    public static final String PACKAGES_TO_SCAN = "com.vironit.onlinepharmacy.model";
-    private static final String JDBC_CONFIGURATION_FILE = "src/test/resources/jdbc.properties";
-    private static final String HIBERNATE_CONFIGURATION_FILE = "src/test/resources/hibernate.properties";
+@EnableWebMvc
+public class ApplicationConfigurationTest implements WebMvcConfigurer {
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactoryBean.setDataSource(dataSource());
-        entityManagerFactoryBean.setPackagesToScan(PACKAGES_TO_SCAN);
-        entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter());
-        entityManagerFactoryBean.setJpaProperties(additionalProperties());
-        return entityManagerFactoryBean;
+    @Primary
+    public AuthenticationService<UserDto, UserPublicVo, UserLoginDto> getAuthenticationService(){
+        return Mockito.mock(AuthenticationService.class);
     }
 
     @Bean
-    public DataSource dataSource(){
-        HikariConfig hikariConfig = new HikariConfig(JDBC_CONFIGURATION_FILE);
-        return new HikariDataSource(hikariConfig);
-    }
-
-    private JpaVendorAdapter jpaVendorAdapter() {
-        return new HibernateJpaVendorAdapter();
+    @Primary
+    public CreditCardService getCreditCardService(){
+        return Mockito.mock(CreditCardService.class);
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-        return transactionManager;
+    @Primary
+    public OrderService getOrderService(){
+        return Mockito.mock(OrderService.class);
     }
 
-//    @Bean
-//    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
-//        return new PersistenceExceptionTranslationPostProcessor();
-//    }
-
-    private Properties additionalProperties() {
-         try (InputStream input = new FileInputStream(HIBERNATE_CONFIGURATION_FILE)) {
-            Properties properties = new Properties();
-            properties.load(input);
-             return properties;
-        } catch (IOException ex) {
-             //TODO:own exception
-            throw new NullPointerException();
-        }
+    @Bean
+    @Primary
+    public ProcurementService getProcurementService(){
+        return Mockito.mock(ProcurementService.class);
     }
 
+    @Bean
+    @Primary
+    public ProductService getProductService(){
+        return Mockito.mock(ProductService.class);
+    }
+
+    @Bean
+    @Primary
+    public ProductCategoryService getProductCategoryService(){
+        return Mockito.mock(ProductCategoryService.class);
+    }
+
+    @Bean
+    @Primary
+    public RecipeService getRecipeService(){
+        return Mockito.mock(RecipeService.class);
+    }
+
+    @Bean
+    @Primary
+    public StockService getStockService(){
+        return Mockito.mock(StockService.class);
+    }
+
+    @Bean
+    @Primary
+    public UserService getUserService(){
+        return Mockito.mock(UserService.class);
+    }
 }

@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.dao.jdbc;
 
-import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.dao.DaoException;
+import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.ProductCategory;
 
@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jpa.JpaProductDao}
+ */
+@Deprecated
 public class JdbcProductDao implements ProductDao {
 
     private static final String PRODUCTS_TABLE = "products";
@@ -61,9 +65,9 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setLong(4, product.getProductCategory()
                     .getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()){
+                if (resultSet.next()) {
                     return resultSet.getLong(1);
-                }else {
+                } else {
                     throw new DaoException("Can't add new product.");
                 }
             }

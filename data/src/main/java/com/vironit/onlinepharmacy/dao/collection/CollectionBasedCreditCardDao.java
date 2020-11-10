@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jdbc.JdbcCreditCardDao}
+ */
+@Deprecated
 public class CollectionBasedCreditCardDao implements CreditCardDao {
 
     private final IdGenerator idGenerator;

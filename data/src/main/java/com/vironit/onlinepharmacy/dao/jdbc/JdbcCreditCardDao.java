@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jpa.JpaCreditCardDao}
+ */
+@Deprecated
 public class JdbcCreditCardDao implements CreditCardDao {
 
     private static final String CREDIT_CARDS_TABLE = "credit_cards";
@@ -35,9 +39,9 @@ public class JdbcCreditCardDao implements CreditCardDao {
             preparedStatement.setLong(5, creditCard.getOwner()
                     .getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()){
+                if (resultSet.next()) {
                     return resultSet.getLong(1);
-                }else {
+                } else {
                     throw new DaoException("Can't add new credit card.");
                 }
             }

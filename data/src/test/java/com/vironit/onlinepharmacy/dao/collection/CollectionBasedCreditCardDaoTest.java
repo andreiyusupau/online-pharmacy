@@ -40,9 +40,9 @@ class CollectionBasedCreditCardDaoTest {
                 LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
         secondUser = new User(2, "testFirstName", "testMiddleName", "testLastName",
                 LocalDate.now(), "test@email.com", "testpass123", Role.CONSUMER);
-        creditCard = new CreditCard(-1, "8274473847284729", "TEST USER", LocalDate.of(2000, 12, 1), 123, user);
-        secondCreditCard = new CreditCard(-1, "8574574457534729", "TEST USER", LocalDate.of(2000, 12, 1), 241, secondUser);
-        thirdCreditCard = new CreditCard(-1, "8274093922949375", "INSTANT ISSUE", LocalDate.of(2000, 12, 1), 124, user);
+        creditCard = new CreditCard(-1, "8274473847284729", "TEST USER", LocalDate.of(2000, 12, 1), "123", user);
+        secondCreditCard = new CreditCard(-1, "8574574457534729", "TEST USER", LocalDate.of(2000, 12, 1), "241", secondUser);
+        thirdCreditCard = new CreditCard(-1, "8274093922949375", "INSTANT ISSUE", LocalDate.of(2000, 12, 1), "124", user);
     }
 
     @Test

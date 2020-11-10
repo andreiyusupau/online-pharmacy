@@ -3,30 +3,46 @@ package com.vironit.onlinepharmacy.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.vironit.onlinepharmacy.dto.validation.PasswordMatches;
 
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@PasswordMatches
 public class UserDto {
 
-    private long id;
+    @NotBlank
+    @Size(min = 2, max = 50)
     private final String firstName;
+    @NotBlank
+    @Size(min = 2, max = 50)
     private final String middleName;
+    @NotBlank
+    @Size(min = 2, max = 50)
     private final String lastName;
-    @JsonDeserialize(as=LocalDate.class)
+    @JsonDeserialize(as = LocalDate.class)
+    @NotNull
+    @Past
     private final LocalDate dateOfBirth;
+    @NotBlank
+    @Email
     private final String email;
+    @NotBlank
+    @Size(min = 8, max = 30)
     private final String password;
+    @NotBlank
     private final String confirmPassword;
+    private long id;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public UserDto(@JsonProperty("firstName")String firstName,
-                   @JsonProperty("middleName")String middleName,
-                   @JsonProperty("lastName")String lastName,
-                   @JsonProperty("dateOfBirth")LocalDate dateOfBirth,
-                   @JsonProperty("email")String email,
+    public UserDto(@JsonProperty("firstName") String firstName,
+                   @JsonProperty("middleName") String middleName,
+                   @JsonProperty("lastName") String lastName,
+                   @JsonProperty("dateOfBirth") LocalDate dateOfBirth,
+                   @JsonProperty("email") String email,
                    @JsonProperty("password") String password,
-                   @JsonProperty("confirmPassword")String confirmPassword) {
+                   @JsonProperty("confirmPassword") String confirmPassword) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -105,7 +121,5 @@ public class UserDto {
                 ", confirmPassword='" + confirmPassword + '\'' +
                 '}';
     }
-
-
 }
 

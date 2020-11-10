@@ -72,19 +72,19 @@ class JpaCreditCardDaoTest {
         creditCard.setCardNumber("8274473847284729");
         creditCard.setOwnerName("TEST USER");
         creditCard.setValidThru(LocalDate.of(2000, 12, 1));
-        creditCard.setCvv(123);
+        creditCard.setCvv("123");
         creditCard.setOwner(user);
         secondCreditCard = new CreditCard();
         secondCreditCard.setCardNumber("8574574457534729");
         secondCreditCard.setOwnerName("TEST USER");
         secondCreditCard.setValidThru(LocalDate.of(2000, 12, 1));
-        secondCreditCard.setCvv(241);
+        secondCreditCard.setCvv("241");
         secondCreditCard.setOwner(secondUser);
         thirdCreditCard = new CreditCard();
         thirdCreditCard.setCardNumber("8274093922949375");
         thirdCreditCard.setOwnerName("INSTANT ISSUE");
         thirdCreditCard.setValidThru(LocalDate.of(2000, 12, 1));
-        thirdCreditCard.setCvv(124);
+        thirdCreditCard.setCvv("124");
         thirdCreditCard.setOwner(user);
     }
 

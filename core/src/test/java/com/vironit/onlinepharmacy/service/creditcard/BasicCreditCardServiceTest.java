@@ -44,9 +44,9 @@ public class BasicCreditCardServiceTest {
         user = new User(0, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
-        creditCardDto =new CreditCardDto("0000000000000000", "INSTANT ISSUE", LocalDate.now(), 938, 0);
-        creditCard = new CreditCard(1, "0000000000000000", "INSTANT ISSUE", LocalDate.now(), 938, user);
-        secondCreditCard = new CreditCard(2, "0000000000000001", "INSTANT ISSUE", LocalDate.now(), 542, user);
+        creditCardDto =new CreditCardDto("0000000000000000", "INSTANT ISSUE", LocalDate.now(), "938", 0);
+        creditCard = new CreditCard(1, "0000000000000000", "INSTANT ISSUE", LocalDate.now(), "938", user);
+        secondCreditCard = new CreditCard(2, "0000000000000001", "INSTANT ISSUE", LocalDate.now(), "542", user);
         creditCards = new ArrayList<>();
         creditCards.add(creditCard);
         creditCards.add(secondCreditCard);

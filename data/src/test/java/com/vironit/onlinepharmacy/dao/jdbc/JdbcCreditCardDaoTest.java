@@ -51,9 +51,9 @@ class JdbcCreditCardDaoTest {
                 LocalDate.of(2000, 12, 12), "test@email.com", "testpass123", Role.CONSUMER);
         secondUser = new User(2, "testFirstName2", "testMiddleName2", "testLastName2",
                 LocalDate.of(2000, 11, 12), "test@email.com", "testpass123", Role.CONSUMER);
-        creditCard = new CreditCard(1, "8274473847284729", "TEST USER", LocalDate.of(2000, 12, 1), 123, user);
-        secondCreditCard = new CreditCard(2, "8574574457534729", "TEST USER", LocalDate.of(2000, 12, 1), 241, secondUser);
-        thirdCreditCard = new CreditCard(3, "8274093922949375", "INSTANT ISSUE", LocalDate.of(2000, 12, 1), 124, user);
+        creditCard = new CreditCard(1, "8274473847284729", "TEST USER", LocalDate.of(2000, 12, 1), "123", user);
+        secondCreditCard = new CreditCard(2, "8574574457534729", "TEST USER", LocalDate.of(2000, 12, 1), "241", secondUser);
+        thirdCreditCard = new CreditCard(3, "8274093922949375", "INSTANT ISSUE", LocalDate.of(2000, 12, 1), "124", user);
         String sql = "INSERT INTO roles (name) " +
                 "VALUES('" + Role.CONSUMER.toString() + "');\n" +
                 "INSERT INTO users (first_name, middle_name, last_name, date_of_birth, email, password, role_id) " +

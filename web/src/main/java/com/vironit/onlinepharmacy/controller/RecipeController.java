@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.model.Recipe;
 import com.vironit.onlinepharmacy.service.recipe.RecipeService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -23,7 +24,7 @@ public class RecipeController {
     }
 
     @PostMapping
-    public long add(@RequestBody RecipeDto recipeDto) {
+    public long add(@RequestBody @Valid RecipeDto recipeDto) {
         return recipeService.add(recipeDto);
     }
 

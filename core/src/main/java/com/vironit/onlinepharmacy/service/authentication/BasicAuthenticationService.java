@@ -3,7 +3,7 @@ package com.vironit.onlinepharmacy.service.authentication;
 import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.dto.UserLoginDto;
-import com.vironit.onlinepharmacy.dto.UserPublicDto;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
@@ -11,15 +11,15 @@ import com.vironit.onlinepharmacy.util.Converter;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BasicAuthenticationService implements AuthenticationService<UserDto, UserPublicDto, UserLoginDto> {
+public class BasicAuthenticationService implements AuthenticationService<UserDto, UserPublicVo, UserLoginDto> {
 
     private final UserDao userDao;
     private final PasswordHasher passwordHasher;
-    private final Converter<UserPublicDto, User> userToUserPublicDataConverter;
+    private final Converter<UserPublicVo, User> userToUserPublicDataConverter;
     private final Converter<User, UserDto> userDataToUserConverter;
 
     public BasicAuthenticationService(UserDao userDao, PasswordHasher passwordHasher,
-                                      Converter<UserPublicDto, User> userToUserPublicDataConverter,
+                                      Converter<UserPublicVo, User> userToUserPublicDataConverter,
                                       Converter<User, UserDto> userDataToUserConverter) {
         this.userDao = userDao;
         this.passwordHasher = passwordHasher;
@@ -43,7 +43,7 @@ public class BasicAuthenticationService implements AuthenticationService<UserDto
     }
 
     @Override
-    public UserPublicDto login(UserLoginDto userLoginDto) {
+    public UserPublicVo login(UserLoginDto userLoginDto) {
         String email = userLoginDto.getEmail();
         User user = userDao.getByEmail(email).orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
         String password = userLoginDto.getPassword();

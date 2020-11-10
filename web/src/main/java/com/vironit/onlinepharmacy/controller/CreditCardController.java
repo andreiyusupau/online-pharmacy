@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.model.CreditCard;
 import com.vironit.onlinepharmacy.service.creditcard.CreditCardService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -23,7 +24,7 @@ public class CreditCardController {
     }
 
     @PostMapping
-    public long add(@RequestBody CreditCardDto creditCardDto) {
+    public long add(@RequestBody @Valid CreditCardDto creditCardDto) {
         return creditCardService.add(creditCardDto);
     }
 

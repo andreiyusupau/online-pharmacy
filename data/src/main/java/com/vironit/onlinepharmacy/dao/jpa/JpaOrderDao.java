@@ -20,7 +20,7 @@ public class JpaOrderDao implements OrderDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-   @Transactional
+    @Transactional
     @Override
     public boolean update(Order order) {
         entityManager.merge(order);

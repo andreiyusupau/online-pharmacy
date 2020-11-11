@@ -5,7 +5,7 @@ import com.vironit.onlinepharmacy.dto.CreditCardDto;
 import com.vironit.onlinepharmacy.model.CreditCard;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.CreditCardServiceException;
-import com.vironit.onlinepharmacy.util.Converter;
+import com.vironit.onlinepharmacy.util.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.model.StockPosition;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -23,7 +24,7 @@ public class StockController {
         }
 
         @PostMapping
-        public long add(@RequestBody PositionDto positionDto) {
+        public long add(@RequestBody  @Valid PositionDto positionDto) {
             return stockService.add(positionDto);
         }
 
@@ -33,7 +34,7 @@ public class StockController {
         }
 
         @PutMapping("/{id}")
-        public void update(@RequestBody PositionDto positionDto, @PathVariable Long id) {
+        public void update(@RequestBody  @Valid PositionDto positionDto, @PathVariable Long id) {
             positionDto.setId(id);
             stockService.update(positionDto);
         }

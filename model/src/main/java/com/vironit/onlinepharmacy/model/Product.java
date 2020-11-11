@@ -14,7 +14,6 @@ public class Product {
     @Column(name = "name")
     private String name;
     @Column(name = "price")
-    //TODO:x100 multiplier
     private BigDecimal price;
     @ManyToOne
     @JoinColumn(name = "product_category_id", nullable = false)

@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -39,7 +40,7 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         HikariConfig hikariConfig = new HikariConfig(JDBC_CONFIGURATION_FILE);
         return new HikariDataSource(hikariConfig);
     }
@@ -55,24 +56,18 @@ public class DatabaseConfiguration {
         return transactionManager;
     }
 
-//    @Bean
-//    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
-//        return new PersistenceExceptionTranslationPostProcessor();
-//    }
-//
-    private Properties additionalProperties() {
-         try (InputStream inputStream = getClass().getResourceAsStream(HIBERNATE_CONFIGURATION_FILE)) {
-            Properties properties = new Properties();
-            properties.load(inputStream);
-             return properties;
-        } catch (IOException ex) {
-            throw new ConfigurationException("Can't load configuration.",ex);
-        }
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/resources/**")
-//                .addResourceLocations("/resources/");
-//    }
+    private Properties additionalProperties() {
+        try (InputStream inputStream = getClass().getResourceAsStream(HIBERNATE_CONFIGURATION_FILE)) {
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            return properties;
+        } catch (IOException ex) {
+            throw new ConfigurationException("Can't load configuration.", ex);
+        }
+    }
 }

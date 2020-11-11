@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jpa.JpaUserDao}
+ */
+@Deprecated
 public class JdbcUserDao implements UserDao {
 
     private static final String USERS_TABLE = "users";
@@ -82,9 +86,9 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setString(6, user.getPassword());
             preparedStatement.setString(7, user.getRole().name());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()){
+                if (resultSet.next()) {
                     return resultSet.getLong(1);
-                }else {
+                } else {
                     throw new DaoException("Can't add new user.");
                 }
             }

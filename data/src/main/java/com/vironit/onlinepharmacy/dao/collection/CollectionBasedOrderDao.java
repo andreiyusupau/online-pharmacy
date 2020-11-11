@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jpa.JpaOrderDao}
+ */
+@Deprecated
 public class CollectionBasedOrderDao implements OrderDao {
 
     private final IdGenerator idGenerator;

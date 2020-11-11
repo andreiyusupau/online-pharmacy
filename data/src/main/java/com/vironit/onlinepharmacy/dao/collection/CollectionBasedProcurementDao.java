@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.dao.collection;
 
-import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.dao.ProcurementDao;
+import com.vironit.onlinepharmacy.dao.collection.util.IdGenerator;
 import com.vironit.onlinepharmacy.model.Procurement;
 
 import java.util.ArrayList;
@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jpa.JpaProcurementDao}
+ */
+@Deprecated
 public class CollectionBasedProcurementDao implements ProcurementDao {
 
     private final IdGenerator idGenerator;

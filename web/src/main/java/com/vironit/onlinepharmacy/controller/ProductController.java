@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -23,7 +24,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public long add(@RequestBody ProductDto productDto) {
+    public long add(@RequestBody  @Valid ProductDto productDto) {
         return productService.add(productDto);
     }
 
@@ -33,7 +34,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody ProductDto productDto, @PathVariable Long id) {
+    public void update(@RequestBody  @Valid ProductDto productDto, @PathVariable Long id) {
         productDto.setId(id);
         productService.update(productDto);
     }

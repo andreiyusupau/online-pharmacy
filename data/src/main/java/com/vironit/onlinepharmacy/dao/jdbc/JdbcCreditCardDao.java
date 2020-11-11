@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jpa.JpaCreditCardDao}
+ */
+@Deprecated
 public class JdbcCreditCardDao implements CreditCardDao {
 
     private static final String CREDIT_CARDS_TABLE = "credit_cards";
@@ -31,13 +35,13 @@ public class JdbcCreditCardDao implements CreditCardDao {
             preparedStatement.setString(1, creditCard.getCardNumber());
             preparedStatement.setString(2, creditCard.getOwnerName());
             preparedStatement.setDate(3, Date.valueOf(creditCard.getValidThru()));
-            preparedStatement.setInt(4, creditCard.getCvv());
+            preparedStatement.setString(4, creditCard.getCvv());
             preparedStatement.setLong(5, creditCard.getOwner()
                     .getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()){
+                if (resultSet.next()) {
                     return resultSet.getLong(1);
-                }else {
+                } else {
                     throw new DaoException("Can't add new credit card.");
                 }
             }
@@ -106,7 +110,7 @@ public class JdbcCreditCardDao implements CreditCardDao {
                 preparedStatement.setString(counter + 1, creditCard.getCardNumber());
                 preparedStatement.setString(counter + 2, creditCard.getOwnerName());
                 preparedStatement.setDate(counter + 3, Date.valueOf(creditCard.getValidThru()));
-                preparedStatement.setInt(counter + 4, creditCard.getCvv());
+                preparedStatement.setString(counter + 4, creditCard.getCvv());
                 preparedStatement.setLong(counter + 5, creditCard.getOwner()
                         .getId());
                 counter += 5;
@@ -158,7 +162,7 @@ public class JdbcCreditCardDao implements CreditCardDao {
         creditCard.setOwnerName(resultSet.getString(3));
         creditCard.setValidThru(resultSet.getDate(4)
                 .toLocalDate());
-        creditCard.setCvv(resultSet.getInt(5));
+        creditCard.setCvv(resultSet.getString(5));
         User user = new User();
         user.setId(resultSet.getLong(6));
         creditCard.setOwner(user);

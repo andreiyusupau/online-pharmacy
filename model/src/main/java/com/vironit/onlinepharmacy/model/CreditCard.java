@@ -19,7 +19,7 @@ public class CreditCard {
     @Column(name = "valid_thru")
     private LocalDate validThru;
     @Column(name = "cvv")
-    private int cvv;
+    private String cvv;
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private User owner;
@@ -27,7 +27,7 @@ public class CreditCard {
     public CreditCard() {
     }
 
-    public CreditCard(long id, String cardNumber, String ownerName, LocalDate validThru, int cvv, User owner) {
+    public CreditCard(long id, String cardNumber, String ownerName, LocalDate validThru, String cvv, User owner) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.ownerName = ownerName;
@@ -68,11 +68,11 @@ public class CreditCard {
         this.validThru = validThru;
     }
 
-    public int getCvv() {
+    public String getCvv() {
         return cvv;
     }
 
-    public void setCvv(int cvv) {
+    public void setCvv(String cvv) {
         this.cvv = cvv;
     }
 

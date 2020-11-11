@@ -1,7 +1,7 @@
 package com.vironit.onlinepharmacy.dao.jdbc;
 
-import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.dao.DaoException;
+import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.ProductCategory;
 
@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jpa.JpaProductDao}
+ */
+@Deprecated
 public class JdbcProductDao implements ProductDao {
 
     private static final String PRODUCTS_TABLE = "products";
@@ -35,9 +39,8 @@ public class JdbcProductDao implements ProductDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, product.getName());
-            preparedStatement.setLong(2, product.getPrice()
-                    .movePointRight(2)
-                    .longValueExact());
+            preparedStatement.setLong(2, product.getPrice().
+                    longValueExact());
             preparedStatement.setBoolean(3, product.isRecipeRequired());
             preparedStatement.setLong(4, product.getProductCategory()
                     .getId());
@@ -57,15 +60,14 @@ public class JdbcProductDao implements ProductDao {
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, product.getName());
             preparedStatement.setLong(2, product.getPrice()
-                    .movePointRight(2)
                     .longValueExact());
             preparedStatement.setBoolean(3, product.isRecipeRequired());
             preparedStatement.setLong(4, product.getProductCategory()
                     .getId());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()){
+                if (resultSet.next()) {
                     return resultSet.getLong(1);
-                }else {
+                } else {
                     throw new DaoException("Can't add new product.");
                 }
             }
@@ -162,8 +164,7 @@ public class JdbcProductDao implements ProductDao {
         Product product = new Product();
         product.setId(resultSet.getLong(1));
         product.setName(resultSet.getString(2));
-        product.setPrice(BigDecimal.valueOf(resultSet.getLong(3))
-                .movePointLeft(2));
+        product.setPrice(BigDecimal.valueOf(resultSet.getLong(3)));
         product.setRecipeRequired(resultSet.getBoolean(4));
         ProductCategory productCategory = new ProductCategory();
         productCategory.setId(resultSet.getLong(5));

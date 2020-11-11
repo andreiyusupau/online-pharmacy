@@ -6,7 +6,7 @@ import com.vironit.onlinepharmacy.model.OrderPosition;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.Recipe;
 import com.vironit.onlinepharmacy.service.exception.RecipeServiceException;
-import com.vironit.onlinepharmacy.util.Converter;
+import com.vironit.onlinepharmacy.util.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

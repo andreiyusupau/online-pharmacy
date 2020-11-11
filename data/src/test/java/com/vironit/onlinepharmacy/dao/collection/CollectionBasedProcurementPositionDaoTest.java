@@ -7,6 +7,7 @@ import com.vironit.onlinepharmacy.model.ProcurementStatus;
 import com.vironit.onlinepharmacy.model.Product;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class CollectionBasedProcurementPositionDaoTest {
 

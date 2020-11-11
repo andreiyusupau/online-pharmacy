@@ -1,11 +1,11 @@
-package com.vironit.onlinepharmacy.dto;
+package com.vironit.onlinepharmacy.vo;
 
 import com.vironit.onlinepharmacy.model.Role;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class UserPublicDto {
+public class UserPublicVo {
 
     private final long id;
     private final String firstName;
@@ -15,7 +15,7 @@ public class UserPublicDto {
     private final String email;
     private final Role role;
 
-    public UserPublicDto(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, Role role) {
+    public UserPublicVo(long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, String email, Role role) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -57,7 +57,7 @@ public class UserPublicDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserPublicDto that = (UserPublicDto) o;
+        UserPublicVo that = (UserPublicVo) o;
         return id == that.id &&
                 firstName.equals(that.firstName) &&
                 middleName.equals(that.middleName) &&

@@ -4,45 +4,48 @@ import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.UserServiceException;
-import com.vironit.onlinepharmacy.util.Converter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.vironit.onlinepharmacy.util.converter.Converter;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class BasicUserService implements UserService {
-
-    private static final Logger LOGGER = LogManager.getLogger(BasicUserService.class);
     private final UserDao userDAO;
-    private final Converter<User, UserDto> userDataToUserConverter;
+    private final Converter<User, UserDto> userDtoToUserConverter;
+    private final Converter<UserPublicVo, User> userToUserPublicVoConverter;
 
-    public BasicUserService(UserDao userDAO, Converter<User, UserDto> userDataToUserConverter) {
+    public BasicUserService(UserDao userDAO, Converter<User, UserDto> userDtoToUserConverter, Converter<UserPublicVo, User> userToUserPublicVoConverter) {
         this.userDAO = userDAO;
-        this.userDataToUserConverter = userDataToUserConverter;
+        this.userDtoToUserConverter = userDtoToUserConverter;
+        this.userToUserPublicVoConverter = userToUserPublicVoConverter;
     }
 
     @Override
     public long add(UserDto userDto) {
-        LOGGER.info("Adding new user from "+userDto);
-        return userDAO.add(userDataToUserConverter.convert(userDto));
+        return userDAO.add(userDtoToUserConverter.convert(userDto));
     }
 
     @Override
-    public User get(long id) {
-        return userDAO.get(id)
+    public UserPublicVo get(long id) {
+        User user=userDAO.get(id)
                 .orElseThrow(() -> new UserServiceException("Can't get user. User with id " + id + " not found."));
+        return userToUserPublicVoConverter.convert(user);
     }
 
     @Override
-    public Collection<User> getAll() {
-        return userDAO.getAll();
+    public Collection<UserPublicVo> getAll() {
+        return userDAO.getAll()
+                .stream()
+                .map(userToUserPublicVoConverter::convert)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void update(UserDto userDto) {
-        userDAO.update(userDataToUserConverter.convert(userDto));
+        userDAO.update(userDtoToUserConverter.convert(userDto));
     }
 
     @Override

@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jdbc.JdbcProductDao}
+ */
+@Deprecated
 public class CollectionBasedProductDao implements ProductDao {
 
     private final IdGenerator idGenerator;

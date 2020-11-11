@@ -9,6 +9,7 @@ import com.vironit.onlinepharmacy.service.exception.OrderServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 import com.vironit.onlinepharmacy.service.user.UserService;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -45,6 +46,7 @@ public class BasicOrderServiceTest {
     private BasicOrderService orderService;
 
     private User user;
+    private UserPublicVo userPublicVo;
     private Product firstProduct;
     private Product secondProduct;
     private Product thirdProduct;
@@ -66,6 +68,9 @@ public class BasicOrderServiceTest {
         user = new User(1, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
+        userPublicVo=new UserPublicVo(1, "testFirstName",
+                "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
+                "test@test.com", Role.CONSUMER);
         firstProduct = new Product(1, "firstProduct", new BigDecimal("35"), null, false);
         secondProduct = new Product(2, "secondProduct", new BigDecimal("345"), null, false);
         thirdProduct = new Product(3, "thirdProduct", new BigDecimal("67"), null, false);
@@ -91,7 +96,7 @@ public class BasicOrderServiceTest {
     @Test
     void addShouldUseDao() {
         when(userService.get(anyLong()))
-                .thenReturn(user);
+                .thenReturn(userPublicVo);
 
         OrderDto orderDto = new OrderDto( 1, operationPositionDtoList);
 

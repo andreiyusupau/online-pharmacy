@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.dao.jpa.JpaRecipeDao}
+ */
+@Deprecated
 public class CollectionBasedRecipeDao implements RecipeDao {
 
     private final IdGenerator idGenerator;

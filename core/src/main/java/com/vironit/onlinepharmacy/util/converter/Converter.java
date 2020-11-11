@@ -1,4 +1,4 @@
-package com.vironit.onlinepharmacy.util;
+package com.vironit.onlinepharmacy.util.converter;
 
 /**
  * Converts source object to target object.

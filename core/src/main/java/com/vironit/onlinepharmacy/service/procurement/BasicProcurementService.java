@@ -8,7 +8,7 @@ import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
 import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
 import com.vironit.onlinepharmacy.service.user.UserService;
-import com.vironit.onlinepharmacy.util.Converter;
+import com.vironit.onlinepharmacy.util.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

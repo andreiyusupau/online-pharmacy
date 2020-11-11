@@ -7,7 +7,7 @@ import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
-import com.vironit.onlinepharmacy.util.Converter;
+import com.vironit.onlinepharmacy.util.converter.Converter;
 import org.springframework.stereotype.Service;
 
 @Service

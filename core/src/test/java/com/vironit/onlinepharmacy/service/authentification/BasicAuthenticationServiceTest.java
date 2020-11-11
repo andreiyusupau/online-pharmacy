@@ -9,7 +9,7 @@ import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.authentication.BasicAuthenticationService;
 import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
-import com.vironit.onlinepharmacy.util.Converter;
+import com.vironit.onlinepharmacy.util.converter.Converter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

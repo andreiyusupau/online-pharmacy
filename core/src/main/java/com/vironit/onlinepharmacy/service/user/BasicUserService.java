@@ -4,10 +4,8 @@ import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.UserServiceException;
-import com.vironit.onlinepharmacy.util.Converter;
+import com.vironit.onlinepharmacy.util.converter.Converter;
 import com.vironit.onlinepharmacy.vo.UserPublicVo;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -15,8 +13,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class BasicUserService implements UserService {
-
-    private static final Logger LOGGER = LogManager.getLogger(BasicUserService.class);
     private final UserDao userDAO;
     private final Converter<User, UserDto> userDtoToUserConverter;
     private final Converter<UserPublicVo, User> userToUserPublicVoConverter;
@@ -29,7 +25,6 @@ public class BasicUserService implements UserService {
 
     @Override
     public long add(UserDto userDto) {
-        LOGGER.info("Adding new user from "+userDto);
         return userDAO.add(userDtoToUserConverter.convert(userDto));
     }
 

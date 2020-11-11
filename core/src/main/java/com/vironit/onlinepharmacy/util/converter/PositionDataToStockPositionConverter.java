@@ -1,4 +1,4 @@
-package com.vironit.onlinepharmacy.util;
+package com.vironit.onlinepharmacy.util.converter;
 
 import com.vironit.onlinepharmacy.dto.PositionDto;
 import com.vironit.onlinepharmacy.model.StockPosition;

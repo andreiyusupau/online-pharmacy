@@ -5,7 +5,7 @@ import com.vironit.onlinepharmacy.dto.ProductDto;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.ProductCategory;
 import com.vironit.onlinepharmacy.service.exception.ProductServiceException;
-import com.vironit.onlinepharmacy.util.Converter;
+import com.vironit.onlinepharmacy.util.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

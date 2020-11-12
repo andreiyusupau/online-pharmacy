@@ -3,6 +3,7 @@ package com.vironit.onlinepharmacy.service.authentication;
 import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.dto.UserLoginDto;
+import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
@@ -36,6 +37,7 @@ public class BasicAuthenticationService implements AuthenticationService<UserDto
             String password = userDto.getPassword();
             String hashedPassword = passwordHasher.hashPassword(password);
             user.setPassword(hashedPassword);
+            user.setRole(Role.CONSUMER);
             return userDao.add(user);
         } else {
             throw new AuthenticationServiceException("User with email " + email + " already exists.");

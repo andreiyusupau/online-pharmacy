@@ -48,34 +48,6 @@ public class PBKDF2PasswordEncoder implements PasswordEncoder {
         return bytes;
     }
 
-//    @Override
-//    public String hashPassword(String password) {
-//        int iterations = ITERATIONS;
-//        char[] chars = password.toCharArray();
-//        byte[] salt = getSalt();
-//        PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, KEY_LENGTH);
-//        byte[] hash = getHash(spec);
-//        return iterations + ":" + toHex(salt) + ":" + toHex(hash);
-//    }
-
-//    @Override
-//    public boolean validatePassword(String originalPassword, String storedPassword) {
-//        String[] parts = storedPassword.split(":");
-//        int iterations = Integer.parseInt(parts[0]);
-//        byte[] salt = fromHex(parts[1]);
-//        byte[] hash = fromHex(parts[2]);
-//
-//        PBEKeySpec spec = new PBEKeySpec(originalPassword.toCharArray(), salt, iterations, hash.length * 8);
-//
-//        byte[] testHash = getHash(spec);
-//
-//        int diff = hash.length ^ testHash.length;
-//        for (int i = 0; i < hash.length && i < testHash.length; i++) {
-//            diff |= hash[i] ^ testHash[i];
-//        }
-//        return diff == 0;
-//    }
-
     private byte[] getHash(PBEKeySpec spec) {
 
         SecretKeyFactory skf;

@@ -4,11 +4,11 @@ import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.dto.UserLoginDto;
 import com.vironit.onlinepharmacy.model.Role;
-import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
 import com.vironit.onlinepharmacy.util.converter.Converter;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,15 +16,15 @@ public class BasicAuthenticationService implements AuthenticationService<UserDto
 
     private final UserDao userDao;
     private final PasswordHasher passwordHasher;
-    private final Converter<UserPublicVo, User> userToUserPublicDataConverter;
+    private final Converter<UserPublicVo, User> userToUserPublicVoConverter;
     private final Converter<User, UserDto> userDataToUserConverter;
 
     public BasicAuthenticationService(UserDao userDao, PasswordHasher passwordHasher,
-                                      Converter<UserPublicVo, User> userToUserPublicDataConverter,
+                                      Converter<UserPublicVo, User> userToUserPublicVoConverter,
                                       Converter<User, UserDto> userDataToUserConverter) {
         this.userDao = userDao;
         this.passwordHasher = passwordHasher;
-        this.userToUserPublicDataConverter = userToUserPublicDataConverter;
+        this.userToUserPublicVoConverter = userToUserPublicVoConverter;
         this.userDataToUserConverter = userDataToUserConverter;
     }
 
@@ -47,13 +47,19 @@ public class BasicAuthenticationService implements AuthenticationService<UserDto
     @Override
     public UserPublicVo login(UserLoginDto userLoginDto) {
         String email = userLoginDto.getEmail();
-        User user = userDao.getByEmail(email).orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
+        User user = userDao.getByEmail(email)
+                .orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
         String password = userLoginDto.getPassword();
         if (passwordHasher.validatePassword(password, user.getPassword())) {
-            System.out.println(user);
-            return userToUserPublicDataConverter.convert(user);
+            return userToUserPublicVoConverter.convert(user);
         } else {
             throw new AuthenticationServiceException("Wrong password for user " + email);
         }
+    }
+
+    @Override
+    public User getByEmail(String email) {
+        return userDao.getByEmail(email)
+                .orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
     }
 }

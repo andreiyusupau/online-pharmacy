@@ -1,7 +1,10 @@
 package com.vironit.onlinepharmacy.security;
 
-import com.vironit.onlinepharmacy.dao.UserDao;
+import com.vironit.onlinepharmacy.dto.UserDto;
+import com.vironit.onlinepharmacy.dto.UserLoginDto;
 import com.vironit.onlinepharmacy.model.User;
+import com.vironit.onlinepharmacy.service.authentication.AuthenticationService;
+import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,16 +17,16 @@ import java.util.Set;
 @Service
 public class BasicUserDetailsService implements UserDetailsService {
 
-    private final UserDao userDao;
+    private final AuthenticationService<UserDto, UserPublicVo, UserLoginDto> authenticationService;
 
-    public BasicUserDetailsService(UserDao userDao) {
-        this.userDao = userDao;
+    public BasicUserDetailsService(AuthenticationService<UserDto, UserPublicVo, UserLoginDto> authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.getByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found."));
+        System.out.println("USER DETAILS CALL load by email");
+        User user = authenticationService.getByEmail(username);
         String email = user.getEmail();
         String password = user.getPassword();
         String role = user.getRole()

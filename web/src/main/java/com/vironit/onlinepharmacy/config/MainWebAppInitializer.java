@@ -19,13 +19,13 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
 
         root.scan("com.vironit.onlinepharmacy");
         sc.addListener(new ContextLoaderListener(root));
-
         ServletRegistration.Dynamic appServlet =
                 sc.addServlet("mvc", new DispatcherServlet(new GenericWebApplicationContext()));
+        sc.addFilter("SecurityFilter",new DelegatingFilterProxy("springSecurityFilterChain"))
+                .addMappingForUrlPatterns(null,false,"/*");
         appServlet.setLoadOnStartup(1);
         appServlet.addMapping("/");
         root.setServletContext(sc);
-        sc.addFilter("SecurityFilter",new DelegatingFilterProxy("springSecurityFilterChain"))
-                .addMappingForUrlPatterns(null,false,"/*");
+
     }
 }

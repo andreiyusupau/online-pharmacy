@@ -6,6 +6,7 @@ import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.exception.UserServiceException;
 import com.vironit.onlinepharmacy.util.converter.Converter;
 import com.vironit.onlinepharmacy.vo.UserPublicVo;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -13,19 +14,24 @@ import java.util.stream.Collectors;
 
 @Service
 public class BasicUserService implements UserService {
+
     private final UserDao userDAO;
+    private final PasswordEncoder passwordEncoder;
     private final Converter<User, UserDto> userDtoToUserConverter;
     private final Converter<UserPublicVo, User> userToUserPublicVoConverter;
 
-    public BasicUserService(UserDao userDAO, Converter<User, UserDto> userDtoToUserConverter, Converter<UserPublicVo, User> userToUserPublicVoConverter) {
+    public BasicUserService(UserDao userDAO, PasswordEncoder passwordEncoder, Converter<User, UserDto> userDtoToUserConverter, Converter<UserPublicVo, User> userToUserPublicVoConverter) {
         this.userDAO = userDAO;
+        this.passwordEncoder = passwordEncoder;
         this.userDtoToUserConverter = userDtoToUserConverter;
         this.userToUserPublicVoConverter = userToUserPublicVoConverter;
     }
 
     @Override
     public long add(UserDto userDto) {
-        return userDAO.add(userDtoToUserConverter.convert(userDto));
+        User user=userDtoToUserConverter.convert(userDto);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        return userDAO.add(user);
     }
 
     @Override
@@ -45,6 +51,8 @@ public class BasicUserService implements UserService {
 
     @Override
     public void update(UserDto userDto) {
+        User user=userDtoToUserConverter.convert(userDto);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userDAO.update(userDtoToUserConverter.convert(userDto));
     }
 

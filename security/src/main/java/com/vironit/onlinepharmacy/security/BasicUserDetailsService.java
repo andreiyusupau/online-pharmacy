@@ -25,7 +25,6 @@ public class BasicUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("USER DETAILS CALL load by email");
         User user = authenticationService.getByEmail(username);
         String email = user.getEmail();
         String password = user.getPassword();

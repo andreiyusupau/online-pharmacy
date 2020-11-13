@@ -5,25 +5,25 @@ import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.dto.UserLoginDto;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
-import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
 import com.vironit.onlinepharmacy.util.converter.Converter;
 import com.vironit.onlinepharmacy.vo.UserPublicVo;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BasicAuthenticationService implements AuthenticationService<UserDto, UserPublicVo, UserLoginDto> {
 
     private final UserDao userDao;
-    private final PasswordHasher passwordHasher;
+    private final PasswordEncoder passwordEncoder;
     private final Converter<UserPublicVo, User> userToUserPublicVoConverter;
     private final Converter<User, UserDto> userDataToUserConverter;
 
-    public BasicAuthenticationService(UserDao userDao, PasswordHasher passwordHasher,
+    public BasicAuthenticationService(UserDao userDao, PasswordEncoder passwordEncoder,
                                       Converter<UserPublicVo, User> userToUserPublicVoConverter,
                                       Converter<User, UserDto> userDataToUserConverter) {
         this.userDao = userDao;
-        this.passwordHasher = passwordHasher;
+        this.passwordEncoder = passwordEncoder;
         this.userToUserPublicVoConverter = userToUserPublicVoConverter;
         this.userDataToUserConverter = userDataToUserConverter;
     }
@@ -35,7 +35,7 @@ public class BasicAuthenticationService implements AuthenticationService<UserDto
         if (userDao.getByEmail(email)
                 .isEmpty()) {
             String password = userDto.getPassword();
-            String hashedPassword = passwordHasher.hashPassword(password);
+            String hashedPassword = passwordEncoder.encode(password);
             user.setPassword(hashedPassword);
             user.setRole(Role.CONSUMER);
             return userDao.add(user);
@@ -50,7 +50,7 @@ public class BasicAuthenticationService implements AuthenticationService<UserDto
         User user = userDao.getByEmail(email)
                 .orElseThrow(() -> new AuthenticationServiceException("User with email " + email + " does not exist."));
         String password = userLoginDto.getPassword();
-        if (passwordHasher.validatePassword(password, user.getPassword())) {
+        if (passwordEncoder.matches(password, user.getPassword())) {
             return userToUserPublicVoConverter.convert(user);
         } else {
             throw new AuthenticationServiceException("Wrong password for user " + email);

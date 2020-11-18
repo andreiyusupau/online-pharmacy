@@ -43,6 +43,7 @@ public class JpaStockDao implements StockDao {
         return true;
     }
 
+    @Transactional
     @Override
     public long add(StockPosition stockPosition) {
         entityManager.persist(stockPosition);

@@ -26,6 +26,7 @@ public class JpaProductDao implements ProductDao {
         return true;
     }
 
+    @Transactional
     @Override
     public long add(Product product) {
         entityManager.persist(product);

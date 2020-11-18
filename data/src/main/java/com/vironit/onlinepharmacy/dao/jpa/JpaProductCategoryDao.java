@@ -26,6 +26,7 @@ public class JpaProductCategoryDao implements ProductCategoryDao {
         return true;
     }
 
+    @Transactional
     @Override
     public long add(ProductCategory productCategory) {
         entityManager.persist(productCategory);

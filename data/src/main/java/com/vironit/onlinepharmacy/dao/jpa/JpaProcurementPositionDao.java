@@ -27,6 +27,7 @@ public class JpaProcurementPositionDao implements ProcurementPositionDao {
         return true;
     }
 
+    @Transactional
     @Override
     public long add(ProcurementPosition procurementposition) {
         entityManager.persist(procurementposition);

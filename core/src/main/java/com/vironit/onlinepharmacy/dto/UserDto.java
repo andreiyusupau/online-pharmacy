@@ -45,7 +45,7 @@ public class UserDto {
                    @JsonProperty("email") String email,
                    @JsonProperty("password") String password,
                    @JsonProperty("confirmPassword") String confirmPassword,
-                   @JsonProperty("role") String role) {
+                   @JsonProperty("role") Role role) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -53,7 +53,7 @@ public class UserDto {
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
-        this.role=Role.valueOf(role);
+        this.role=role;
     }
 
     public long getId() {

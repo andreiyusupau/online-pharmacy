@@ -41,7 +41,7 @@ public class BasicUserServiceTest {
     void set() {
         userDto =new UserDto( "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
-                "test@test.com", "testPassword123", "testPassword123");
+                "test@test.com", "testPassword123", "testPassword123",null);
         user = new User(0, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
@@ -102,7 +102,7 @@ public class BasicUserServiceTest {
     void updateShouldUseDao() {
         UserDto userDtoForUpdate = new UserDto("updatedFirstName",
                 "updatedMiddleName", "updatedLastName", LocalDate.of(1999, 12, 12),
-                "test@test2.com", "testPass4word123","\"testPass4word123\"");
+                "test@test2.com", "testPass4word123","\"testPass4word123\"", Role.CONSUMER);
         User userForUpdate = new User(0, "updatedFirstName",
                 "updatedMiddleName", "updatedLastName", LocalDate.of(1999, 12, 12),
                 "test@test2.com", "testPass4word123", Role.MODERATOR);

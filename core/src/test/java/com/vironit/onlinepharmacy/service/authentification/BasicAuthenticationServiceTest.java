@@ -45,7 +45,7 @@ public class BasicAuthenticationServiceTest {
     void set() {
         userDto = new UserDto("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
-                "test@test.com", "testPassword123", "testPassword123");
+                "test@test.com", "testPassword123", "testPassword123",null);
         user = new User(0, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);

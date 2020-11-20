@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.vironit.onlinepharmacy.dto.validation.PasswordMatches;
+import com.vironit.onlinepharmacy.model.Role;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @PasswordMatches
 public class UserDto {
@@ -33,6 +33,8 @@ public class UserDto {
     private final String password;
     @NotBlank
     private final String confirmPassword;
+    //TODO:
+    private Role role;
     private long id;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -42,7 +44,8 @@ public class UserDto {
                    @JsonProperty("dateOfBirth") LocalDate dateOfBirth,
                    @JsonProperty("email") String email,
                    @JsonProperty("password") String password,
-                   @JsonProperty("confirmPassword") String confirmPassword) {
+                   @JsonProperty("confirmPassword") String confirmPassword,
+                   @JsonProperty("role") Role role) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -50,6 +53,7 @@ public class UserDto {
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
+        this.role=role;
     }
 
     public long getId() {
@@ -88,37 +92,58 @@ public class UserDto {
         return confirmPassword;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserDto)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         UserDto userDto = (UserDto) o;
-        return id == userDto.id &&
-                firstName.equals(userDto.firstName) &&
-                middleName.equals(userDto.middleName) &&
-                lastName.equals(userDto.lastName) &&
-                dateOfBirth.equals(userDto.dateOfBirth) &&
-                email.equals(userDto.email) &&
-                password.equals(userDto.password) &&
-                confirmPassword.equals(userDto.confirmPassword);
+
+        if (id != userDto.id) return false;
+        if (!firstName.equals(userDto.firstName)) return false;
+        if (!middleName.equals(userDto.middleName)) return false;
+        if (!lastName.equals(userDto.lastName)) return false;
+        if (!dateOfBirth.equals(userDto.dateOfBirth)) return false;
+        if (!email.equals(userDto.email)) return false;
+        if (!password.equals(userDto.password)) return false;
+        if (!confirmPassword.equals(userDto.confirmPassword)) return false;
+        return role == userDto.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, middleName, lastName, dateOfBirth, email, password, confirmPassword);
+        int result = firstName.hashCode();
+        result = 31 * result + middleName.hashCode();
+        result = 31 * result + lastName.hashCode();
+        result = 31 * result + dateOfBirth.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + password.hashCode();
+        result = 31 * result + confirmPassword.hashCode();
+        result = 31 * result + role.hashCode();
+        result = 31 * result + (int) (id ^ (id >>> 32));
+        return result;
     }
 
     @Override
     public String toString() {
-        return "UserData{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
+        return "UserDto{" +
+                "firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", confirmPassword='" + confirmPassword + '\'' +
+                ", role=" + role +
+                ", id=" + id +
                 '}';
     }
 }

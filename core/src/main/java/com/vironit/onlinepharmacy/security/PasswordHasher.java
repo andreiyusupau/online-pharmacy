@@ -1,5 +1,5 @@
 package com.vironit.onlinepharmacy.security;
-
+@Deprecated
 public interface PasswordHasher {
     String hashPassword(String password);
 

@@ -6,7 +6,6 @@ import com.vironit.onlinepharmacy.dto.UserLoginDto;
 import com.vironit.onlinepharmacy.vo.UserPublicVo;
 import com.vironit.onlinepharmacy.model.Role;
 import com.vironit.onlinepharmacy.model.User;
-import com.vironit.onlinepharmacy.security.PasswordHasher;
 import com.vironit.onlinepharmacy.service.authentication.BasicAuthenticationService;
 import com.vironit.onlinepharmacy.service.exception.AuthenticationServiceException;
 import com.vironit.onlinepharmacy.util.converter.Converter;
@@ -18,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -29,7 +29,7 @@ public class BasicAuthenticationServiceTest {
     @Mock
     private UserDao userDao;
     @Mock
-    private PasswordHasher passwordHasher;
+    private PasswordEncoder passwordEncoder;
     @Mock
     private Converter<UserPublicVo, User> userToUserPublicParametersConverter;
     @Mock
@@ -45,7 +45,7 @@ public class BasicAuthenticationServiceTest {
     void set() {
         userDto = new UserDto("testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
-                "test@test.com", "testPassword123", "testPassword123");
+                "test@test.com", "testPassword123", "testPassword123",null);
         user = new User(0, "testFirstName",
                 "testMiddleName", "testLastName", LocalDate.of(2000, 12, 12),
                 "test@test.com", "testPassword123", Role.CONSUMER);
@@ -59,7 +59,7 @@ public class BasicAuthenticationServiceTest {
                 .thenReturn(user);
         when(userDao.add(user))
                 .thenReturn(0L);
-        when(passwordHasher.hashPassword("testPassword123"))
+        when(passwordEncoder.encode("testPassword123"))
                 .thenReturn("testPassword123");
 
         long id = authenticationService.register(userDto);
@@ -93,7 +93,7 @@ public class BasicAuthenticationServiceTest {
                 "test@test.com", Role.CONSUMER);
         when(userDao.getByEmail("test@test.com"))
                 .thenReturn(Optional.of(user));
-        when(passwordHasher.validatePassword("testPassword123", "testPassword123"))
+        when(passwordEncoder.matches("testPassword123", "testPassword123"))
                 .thenReturn(true);
         when(userToUserPublicParametersConverter.convert(user))
                 .thenReturn(expectedUserPublicVo);
@@ -103,7 +103,7 @@ public class BasicAuthenticationServiceTest {
 //TODO:Not working properly
         verify(userToUserPublicParametersConverter).convert(user);
         verify(userDao).getByEmail("test@test.com");
-        verify(passwordHasher).validatePassword("testPassword123", "testPassword123");
+        verify(passwordEncoder).matches("testPassword123", "testPassword123");
 
         Assertions.assertEquals(expectedUserPublicVo, userPublicVo);
     }
@@ -120,7 +120,7 @@ public class BasicAuthenticationServiceTest {
 
         verify(userToUserPublicParametersConverter, never()).convert(any(User.class));
         verify(userDao).getByEmail("nonexistentemail@test.com");
-        verify(passwordHasher, never()).validatePassword(anyString(), anyString());
+        verify(passwordEncoder, never()).matches(anyString(), anyString());
         verify(userDao, never()).add(any(User.class));
         String expectedMessage = "User with email " + userLoginDto.getEmail() + " does not exist.";
         String actualMessage = exception.getMessage();
@@ -132,7 +132,7 @@ public class BasicAuthenticationServiceTest {
         UserLoginDto userLoginDto = new UserLoginDto("test@test.com", "wrongPassword");
         when(userDao.getByEmail("test@test.com"))
                 .thenReturn(Optional.of(user));
-        when(passwordHasher.validatePassword("wrongPassword", "testPassword123"))
+        when(passwordEncoder.matches("wrongPassword", "testPassword123"))
                 .thenReturn(false);
 
         Exception exception = Assertions.assertThrows(AuthenticationServiceException.class,
@@ -140,7 +140,7 @@ public class BasicAuthenticationServiceTest {
 
         verify(userToUserPublicParametersConverter, never()).convert(any(User.class));
         verify(userDao).getByEmail("test@test.com");
-        verify(passwordHasher).validatePassword("wrongPassword", "testPassword123");
+        verify(passwordEncoder).matches("wrongPassword", "testPassword123");
         verify(userDao, never()).add(any(User.class));
 
         String expectedMessage = "Wrong password for user " + userLoginDto.getEmail();

@@ -4,6 +4,7 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.ServletContext;
@@ -18,11 +19,13 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
 
         root.scan("com.vironit.onlinepharmacy");
         sc.addListener(new ContextLoaderListener(root));
-
         ServletRegistration.Dynamic appServlet =
                 sc.addServlet("mvc", new DispatcherServlet(new GenericWebApplicationContext()));
+        sc.addFilter("SecurityFilter",new DelegatingFilterProxy("springSecurityFilterChain"))
+                .addMappingForUrlPatterns(null,false,"/*");
         appServlet.setLoadOnStartup(1);
         appServlet.addMapping("/");
         root.setServletContext(sc);
+
     }
 }

@@ -43,7 +43,7 @@ public class UserLoginDto {
 
     @Override
     public String toString() {
-        return "UserLoginParameters{" +
+        return "UserLoginDto{" +
                 "email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';

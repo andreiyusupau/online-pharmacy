@@ -5,8 +5,10 @@
 /data/target/
 /model/target/
 /web/target/
+/security/target/
 /model/model.iml
 /data/data.iml
 /core/core.iml
 /web/web.iml
+/security/security.iml
 /out/

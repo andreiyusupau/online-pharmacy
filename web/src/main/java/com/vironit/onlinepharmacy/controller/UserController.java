@@ -3,6 +3,7 @@ package com.vironit.onlinepharmacy.controller;
 import com.vironit.onlinepharmacy.dto.UserDto;
 import com.vironit.onlinepharmacy.service.user.UserService;
 import com.vironit.onlinepharmacy.vo.UserPublicVo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public long add(@RequestBody  @Valid UserDto userDto) {
         return userService.add(userDto);
     }

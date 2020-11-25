@@ -1,9 +1,9 @@
 package com.vironit.onlinepharmacy.service.product;
 
-import com.vironit.onlinepharmacy.dao.ProductDao;
 import com.vironit.onlinepharmacy.dto.ProductDto;
 import com.vironit.onlinepharmacy.model.Product;
 import com.vironit.onlinepharmacy.model.ProductCategory;
+import com.vironit.onlinepharmacy.repository.ProductRepository;
 import com.vironit.onlinepharmacy.service.exception.ProductServiceException;
 import com.vironit.onlinepharmacy.util.converter.Converter;
 import org.springframework.stereotype.Service;
@@ -13,47 +13,46 @@ import java.util.Collection;
 @Service
 public class BasicProductService implements ProductService {
 
-    private final ProductDao productDAO;
-    private final ProductCategoryService productCategoryService;
+    private final ProductRepository productRepository;
     private final Converter<Product, ProductDto> productDataToProductConverter;
 
-    public BasicProductService(ProductDao productDAO, ProductCategoryService productCategoryService, Converter<Product, ProductDto> productDataToProductConverter) {
-        this.productDAO = productDAO;
-        this.productCategoryService = productCategoryService;
+    public BasicProductService(ProductRepository productRepository, Converter<Product, ProductDto> productDataToProductConverter) {
+        this.productRepository = productRepository;
         this.productDataToProductConverter = productDataToProductConverter;
     }
 
     @Override
     public long add(ProductDto productDto) {
-        ProductCategory productCategory= new ProductCategory();
+        ProductCategory productCategory = new ProductCategory();
         productCategory.setId(productDto.getProductCategoryId());
-        Product product= productDataToProductConverter.convert(productDto);
+        Product product = productDataToProductConverter.convert(productDto);
         product.setProductCategory(productCategory);
-        return productDAO.add(product);
+        return productRepository.save(product)
+                .getId();
     }
 
     @Override
     public Product get(long id) {
-        return productDAO.get(id)
+        return productRepository.findById(id)
                 .orElseThrow(() -> new ProductServiceException("Can't get product. Product with id " + id + " not found."));
     }
 
     @Override
     public Collection<Product> getAll() {
-        return productDAO.getAll();
+        return productRepository.findAll();
     }
 
     @Override
     public void update(ProductDto productDto) {
-        ProductCategory productCategory= new ProductCategory();
+        ProductCategory productCategory = new ProductCategory();
         productCategory.setId(productDto.getProductCategoryId());
-        Product product= productDataToProductConverter.convert(productDto);
+        Product product = productDataToProductConverter.convert(productDto);
         product.setProductCategory(productCategory);
-        productDAO.update(product);
+        productRepository.save(product);
     }
 
     @Override
     public void remove(long id) {
-        productDAO.remove(id);
+        productRepository.deleteById(id);
     }
 }

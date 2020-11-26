@@ -1,13 +1,11 @@
 package com.vironit.onlinepharmacy.service.procurement;
 
-import com.vironit.onlinepharmacy.dao.ProcurementDao;
 import com.vironit.onlinepharmacy.dto.PositionDto;
 import com.vironit.onlinepharmacy.dto.ProcurementDto;
 import com.vironit.onlinepharmacy.model.*;
+import com.vironit.onlinepharmacy.repository.ProcurementRepository;
 import com.vironit.onlinepharmacy.service.exception.ProcurementServiceException;
-import com.vironit.onlinepharmacy.service.product.ProductService;
 import com.vironit.onlinepharmacy.service.stock.StockService;
-import com.vironit.onlinepharmacy.service.user.UserService;
 import com.vironit.onlinepharmacy.util.converter.Converter;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +17,15 @@ import java.util.stream.Collectors;
 @Service
 public class BasicProcurementService implements ProcurementService {
 
-    private final ProcurementDao procurementDao;
+    private final ProcurementRepository procurementRepository;
     private final ProcurementPositionService procurementPositionService;
     private final StockService stockService;
-    private final ProductService productService;
-    private final UserService userService;
     private final Converter<PositionDto, ProcurementPosition> procurementPositionToPositionDataConverter;
 
-    public BasicProcurementService(ProcurementDao procurementDao, ProcurementPositionService procurementPositionService, StockService stockService, ProductService productService, UserService userService, Converter<PositionDto, ProcurementPosition> procurementPositionToPositionDataConverter) {
-        this.procurementDao = procurementDao;
+    public BasicProcurementService(ProcurementRepository procurementRepository, ProcurementPositionService procurementPositionService, StockService stockService, Converter<PositionDto, ProcurementPosition> procurementPositionToPositionDataConverter) {
+        this.procurementRepository = procurementRepository;
         this.procurementPositionService = procurementPositionService;
         this.stockService = stockService;
-        this.productService = productService;
-        this.userService = userService;
         this.procurementPositionToPositionDataConverter = procurementPositionToPositionDataConverter;
     }
 
@@ -40,12 +34,13 @@ public class BasicProcurementService implements ProcurementService {
         User owner = new User();
         owner.setId(procurementDto.getOwnerId());
         Procurement procurement = new Procurement(-1, Instant.now(), owner, ProcurementStatus.PREPARATION);
-        long id=procurementDao.add(procurement);
+        long id = procurementRepository.save(procurement)
+                .getId();
         procurement.setId(id);
         List<ProcurementPosition> procurementPositions = procurementDto.getPositionDataList()
                 .stream()
                 .map(positionData -> {
-                    Product product=new Product();
+                    Product product = new Product();
                     product.setId(positionData.getProductId());
                     return new ProcurementPosition(-1, positionData.getQuantity(), product, procurement);
                 })
@@ -56,13 +51,13 @@ public class BasicProcurementService implements ProcurementService {
 
     @Override
     public Procurement get(long id) {
-        return procurementDao.get(id)
+        return procurementRepository.findById(id)
                 .orElseThrow(() -> new ProcurementServiceException("Can't get procurement. Procurement with id " + id + " not found."));
     }
 
     @Override
     public Collection<Procurement> getAll() {
-        return procurementDao.getAll();
+        return procurementRepository.findAll();
     }
 
     @Override
@@ -74,7 +69,7 @@ public class BasicProcurementService implements ProcurementService {
         List<ProcurementPosition> procurementPositions = procurementDto.getPositionDataList()
                 .stream()
                 .map(positionData -> {
-                    Product product=new Product();
+                    Product product = new Product();
                     product.setId(positionData.getProductId());
                     return new ProcurementPosition(-1, positionData.getQuantity(), product, procurement);
                 })
@@ -85,21 +80,21 @@ public class BasicProcurementService implements ProcurementService {
 
     @Override
     public void remove(long id) {
-        procurementDao.remove(id);
+        procurementRepository.deleteById(id);
         procurementPositionService.removeAllByOwnerId(id);
     }
 
     @Override
     public void approveProcurement(long id) {
-        Procurement procurement = procurementDao.get(id)
+        Procurement procurement = procurementRepository.findById(id)
                 .orElseThrow(() -> new ProcurementServiceException("Can't approve procurement. Procurement with id " + id + " not found."));
         procurement.setProcurementStatus(ProcurementStatus.APPROVED);
-        procurementDao.update(procurement);
+        procurementRepository.save(procurement);
     }
 
     @Override
     public void completeProcurement(long id) {
-        Procurement procurement = procurementDao.get(id)
+        Procurement procurement = procurementRepository.findById(id)
                 .orElseThrow(() -> new ProcurementServiceException("Can't complete procurement. Procurement with id " + id + " not found."));
         Collection<PositionDto> positionData = procurementPositionService.getAllByOwnerId(id)
                 .stream()
@@ -107,14 +102,14 @@ public class BasicProcurementService implements ProcurementService {
                 .collect(Collectors.toList());
         stockService.addAll(positionData);
         procurement.setProcurementStatus(ProcurementStatus.COMPLETE);
-        procurementDao.update(procurement);
+        procurementRepository.save(procurement);
     }
 
     @Override
     public void cancelProcurement(long id) {
-        Procurement procurement = procurementDao.get(id)
+        Procurement procurement = procurementRepository.findById(id)
                 .orElseThrow(() -> new ProcurementServiceException("Can't cancel procurement. Procurement with id " + id + " not found."));
         procurement.setProcurementStatus(ProcurementStatus.CANCELED);
-        procurementDao.update(procurement);
+        procurementRepository.save(procurement);
     }
 }

@@ -1,5 +1,6 @@
 package com.vironit.onlinepharmacy.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vironit.onlinepharmacy.model.Role;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ public class UserPublicVo {
     private final String firstName;
     private final String middleName;
     private final String lastName;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private final LocalDate dateOfBirth;
     private final String email;
     private final Role role;

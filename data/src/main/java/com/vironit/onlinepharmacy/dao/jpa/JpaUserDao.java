@@ -2,7 +2,6 @@ package com.vironit.onlinepharmacy.dao.jpa;
 
 import com.vironit.onlinepharmacy.dao.UserDao;
 import com.vironit.onlinepharmacy.model.User;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -14,7 +13,10 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Optional;
 
-@Repository
+/**
+ * @deprecated Replaced with {@link com.vironit.onlinepharmacy.repository.UserRepository}
+ */
+@Deprecated
 public class JpaUserDao implements UserDao {
 
     @PersistenceContext

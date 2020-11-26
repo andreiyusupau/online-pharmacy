@@ -4,6 +4,6 @@ import com.vironit.onlinepharmacy.model.OrderPosition;
 import com.vironit.onlinepharmacy.service.CrudService;
 import com.vironit.onlinepharmacy.service.SlaveService;
 
-public interface OrderPositionService extends CrudService<OrderPosition,OrderPosition>, SlaveService<OrderPosition> {
+public interface OrderPositionService extends CrudService<OrderPosition, OrderPosition>, SlaveService<OrderPosition> {
 
 }

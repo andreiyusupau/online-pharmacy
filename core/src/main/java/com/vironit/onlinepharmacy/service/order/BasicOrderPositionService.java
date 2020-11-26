@@ -23,12 +23,12 @@ public class BasicOrderPositionService implements OrderPositionService {
 
     @Override
     public Collection<OrderPosition> getAllByOwnerId(long id) {
-        return orderPositionRepository.getAllByOwnerId(id);
+        return orderPositionRepository.findByOrder_Id(id);
     }
 
     @Override
     public boolean removeAllByOwnerId(long id) {
-        return orderPositionRepository.removeAllByOwnerId(id);
+        return orderPositionRepository.deleteByOrder_Id(id);
     }
 
     @Override

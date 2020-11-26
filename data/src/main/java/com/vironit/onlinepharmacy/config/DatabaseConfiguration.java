@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -21,6 +22,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com.vironit.onlinepharmacy")
 @Configuration
 @EnableTransactionManagement
+@EnableJpaRepositories("com.vironit.onlinepharmacy.repository")
 //@EnableCaching TODO:caching
 public class DatabaseConfiguration {
 

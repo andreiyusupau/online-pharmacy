@@ -23,12 +23,12 @@ public class BasicProcurementPositionService implements ProcurementPositionServi
 
     @Override
     public Collection<ProcurementPosition> getAllByOwnerId(long id) {
-        return procurementPositionRepository.getAllByOwnerId(id);
+        return procurementPositionRepository.findByProcurement_Id(id);
     }
 
     @Override
     public boolean removeAllByOwnerId(long id) {
-        return procurementPositionRepository.removeAllByOwnerId(id);
+        return procurementPositionRepository.deleteByProcurement_Id(id);
     }
 
     @Override

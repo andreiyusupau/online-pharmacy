@@ -7,5 +7,6 @@ import java.util.List;
 
 
 public interface OrderPositionRepository extends JpaRepository<OrderPosition,Long> {
-    List<OrderPosition> findByOrderId(long orderId);
+    List<OrderPosition> findByOrder_Id(long id);
+    boolean deleteByOrder_Id(long id);
 }

@@ -26,7 +26,7 @@ public class BasicStockService implements StockService {
     @Override
     public long add(PositionDto positionDto) {
         long productId = positionDto.getProductId();
-        Optional<StockPosition> existingStockPosition = stockRepository.getByProductId(productId);
+        Optional<StockPosition> existingStockPosition = stockRepository.findByProduct_Id(productId);
         if (existingStockPosition.isPresent()) {
             StockPosition updatedPosition = existingStockPosition.get();
             updatedPosition.setQuantity(updatedPosition.getQuantity() + positionDto.getQuantity());
@@ -73,7 +73,7 @@ public class BasicStockService implements StockService {
         for (Position position : positions) {
             long productId = position.getProduct()
                     .getId();
-            StockPosition stockPosition = stockRepository.getByProductId(productId)
+            StockPosition stockPosition = stockRepository.findByProduct_Id(productId)
                     .orElseThrow(() -> new StockServiceException("Can't reserveInStock position " + position + ", because it's not in stock."));
             int desiredPositionQuantity = position.getQuantity();
             int reservedStockPositionQuantity = stockPosition.getReservedQuantity();
@@ -95,7 +95,7 @@ public class BasicStockService implements StockService {
         for (Position position : positions) {
             long productId = position.getProduct()
                     .getId();
-            StockPosition stockPosition = stockRepository.getByProductId(productId)
+            StockPosition stockPosition = stockRepository.findByProduct_Id(productId)
                     .orElseThrow(() -> new StockServiceException("Can't takeFromStock position " + position + ", because it's not in stock."));
             int desiredPositionQuantity = position.getQuantity();
             int reservedStockPositionQuantity = stockPosition.getReservedQuantity();
@@ -119,7 +119,7 @@ public class BasicStockService implements StockService {
         for (Position position : positions) {
             long productId = position.getProduct()
                     .getId();
-            StockPosition stockPosition = stockRepository.getByProductId(productId)
+            StockPosition stockPosition = stockRepository.findByProduct_Id(productId)
                     .orElseThrow(() -> new StockServiceException("Can't annulReservationInStock position " + position + " reservation, because it's not in stock."));
             int desiredPositionQuantity = position.getQuantity();
             int reservedStockPositionQuantity = stockPosition.getReservedQuantity();

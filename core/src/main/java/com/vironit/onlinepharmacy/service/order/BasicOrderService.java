@@ -114,7 +114,7 @@ public class BasicOrderService implements OrderService {
 
     @Override
     public Collection<Order> getAllByOwnerId(long id) {
-        return orderRepository.getAllByOwnerId(id);
+        return orderRepository.findByOwner_Id(id);
     }
 
     @Override

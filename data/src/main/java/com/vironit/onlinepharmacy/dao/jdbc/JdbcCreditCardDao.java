@@ -102,7 +102,6 @@ public class JdbcCreditCardDao implements CreditCardDao {
         String sql = "INSERT INTO " + CREDIT_CARDS_TABLE + "(card_number, owner_name, valid_thru, cvv, user_id) " +
                 " VALUES(?,?,?,?,?)" +
                 ",(?,?,?,?,?)".repeat(creditCards.size() - 1) + ";";
-
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             int counter = 0;

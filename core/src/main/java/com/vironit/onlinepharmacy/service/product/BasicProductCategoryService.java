@@ -45,6 +45,7 @@ public class BasicProductCategoryService implements ProductCategoryService {
 
     @Override
     public void remove(long id) {
+        //handle exception Constraint violation
         productCategoryRepository.deleteById(id);
     }
 }

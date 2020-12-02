@@ -5,6 +5,7 @@ import com.vironit.onlinepharmacy.dto.UserLoginDto;
 import com.vironit.onlinepharmacy.model.User;
 import com.vironit.onlinepharmacy.service.authentication.AuthenticationService;
 import com.vironit.onlinepharmacy.vo.UserPublicVo;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 @Service
+@Primary
 public class BasicUserDetailsService implements UserDetailsService {
 
     private final AuthenticationService<UserDto, UserPublicVo, UserLoginDto> authenticationService;

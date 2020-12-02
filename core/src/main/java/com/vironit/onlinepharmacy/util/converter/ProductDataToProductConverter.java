@@ -9,6 +9,7 @@ public class ProductDataToProductConverter implements Converter<Product, Product
     @Override
     public Product convert(ProductDto productDto) {
         Product product=new Product();
+        product.setId(productDto.getId());
         product.setName(productDto.getName());
         product.setPrice(productDto.getPrice());
         product.setRecipeRequired(productDto.isRecipeRequired());

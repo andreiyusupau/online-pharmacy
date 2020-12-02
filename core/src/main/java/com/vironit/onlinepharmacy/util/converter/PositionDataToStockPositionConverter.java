@@ -9,6 +9,7 @@ public class PositionDataToStockPositionConverter implements Converter<StockPosi
     @Override
     public StockPosition convert(PositionDto positionDto) {
         StockPosition stockPosition=new StockPosition();
+        stockPosition.setId(positionDto.getId());
         stockPosition.setQuantity(positionDto.getQuantity());
         return stockPosition;
     }

@@ -54,7 +54,11 @@ public class BasicStockService implements StockService {
 
     @Override
     public void update(PositionDto positionDto) {
-        stockRepository.save(positionDataToStockPositionConverter.convert(positionDto));
+        StockPosition stockPosition = positionDataToStockPositionConverter.convert(positionDto);
+        Product product = new Product();
+        long productId = positionDto.getProductId();
+        product.setId(productId);
+        stockRepository.save(stockPosition);
     }
 
     @Override

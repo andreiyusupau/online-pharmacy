@@ -9,6 +9,7 @@ public class UserDataToUserConverter implements Converter<User, UserDto> {
     @Override
     public User convert(UserDto userDto) {
         User user=new User();
+        user.setId(userDto.getId());
         user.setFirstName(userDto.getFirstName());
         user.setMiddleName(userDto.getMiddleName());
         user.setLastName(userDto.getLastName());

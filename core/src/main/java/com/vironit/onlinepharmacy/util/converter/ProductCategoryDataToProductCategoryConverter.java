@@ -9,6 +9,7 @@ public class ProductCategoryDataToProductCategoryConverter implements Converter<
     @Override
     public ProductCategory convert(ProductCategoryDto productCategoryDto) {
         ProductCategory productCategory=new ProductCategory();
+        productCategory.setId(productCategoryDto.getId());
         productCategory.setName(productCategoryDto.getName());
         productCategory.setDescription(productCategoryDto.getDescription());
         return productCategory;

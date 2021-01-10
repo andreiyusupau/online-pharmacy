@@ -1,5 +1,5 @@
 ## Online Pharmacy
-This project represents the REST service for online pharmacy.  
+This project represents the REST service for online pharmacy.  You can see the frontend part here (https://github.com/andreiyusupau/online-pharmacy-front).
 
 Main entities are User, Operation, Product. User can have many credit cards and one role. User can perform operations such as procurement and order.  
 
